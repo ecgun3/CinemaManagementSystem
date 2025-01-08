@@ -8,8 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" spacing="15.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" spacing="15.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LoginController">
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
    </padding>
@@ -19,13 +18,17 @@
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
-      <TextField fx:id="usernameField" maxWidth="300.0" promptText="Username" />
+      <TextField fx:id="usernameField" maxWidth="300.0" promptText="Username">
+         <padding>
+            <Insets top="20.0" />
+         </padding>
+      </TextField>
       <PasswordField fx:id="passwordField" maxWidth="300.0" promptText="Password" />
       <Button fx:id="loginButton" mnemonicParsing="false" style="-fx-background-color: #2ecc71; -fx-text-fill: white;" text="Login">
          <font>
             <Font size="14.0" />
          </font>
       </Button>
-      <Label style="-fx-background-color: #e74c3c;" text="Label" />
+      <Label fx:id="errorLabel" style="-fx-background-color: #e74c3c;" />
    </children>
 </VBox>

@@ -29,6 +29,9 @@ public class LoginController {
 
         // Enter tuşuna basıldığında da login işlemi gerçekleşsin
         passwordField.setOnAction(event -> handleLogin());
+
+        //Butona tıklandnığı zaman:
+        loginButton.setOnAction(event -> handleLogin());
     }
 
     private void handleLogin() {

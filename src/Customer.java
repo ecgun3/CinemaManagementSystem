@@ -16,15 +16,20 @@ public class Customer {
     }
 
     // Getter ve Setter metodları
+
+    //ID
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
+    //Name
     public String getFirstName() { return firstName; }
     public void setFirstName(String firstName) { this.firstName = firstName; }
 
+    //Surname
     public String getLastName() { return lastName; }
     public void setLastName(String lastName) { this.lastName = lastName; }
 
+    //Date
     public LocalDate getBirthDate() { return birthDate; }
     public void setBirthDate(LocalDate birthDate) { this.birthDate = birthDate; }
 

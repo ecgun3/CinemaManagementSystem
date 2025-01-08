@@ -14,8 +14,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
 
 import java.io.IOException;
 
@@ -80,6 +83,21 @@ public class MovieSearchController {
 
     @FXML
     private void initialize() {
+
+        /*Burayı SİL
+        try {
+            String path = "/denemeFoto.jpg";
+            InputStream stream = getClass().getResourceAsStream(path);
+
+            if(stream != null) {
+                Image image = new Image(stream);
+                posterImageView.setImage(image);
+            } else {
+                System.out.println("Resim dosyası bulunmadı");
+            }
+        } catch (Exception e) {
+            System.err.println("Resmi Yükleme Hatası " + e.getMessage());
+        } */
 
         searchTypeCombo.getItems().addAll(SEARCH_TYPES);
         searchTypeCombo.getSelectionModel().selectFirst();
