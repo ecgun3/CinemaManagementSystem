@@ -1,0 +1,204 @@
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.layout.GridPane;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.control.*;
+import javafx.geometry.Pos;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import javafx.scene.control.cell.PropertyValueFactory;
+
+public class SeatSelectionController {
+
+    private MainCashierController mainController;
+    private Movie movieData;
+    private Session sessionData;
+    private List<Seat> selectedSeats;
+
+    // Salon kapasiteleri
+    private static final int HALL_A_ROWS = 4;
+    private static final int HALL_A_COLS = 4;
+    private static final int HALL_B_ROWS = 8;
+    private static final int HALL_B_COLS = 6;
+
+    @FXML
+    private Button backButton;
+
+    @FXML
+    private Label dateTimeLabel;
+
+    @FXML
+    private Label hallLabel;
+
+    @FXML
+    private Label movieTitleLabel;
+
+    @FXML
+    private Button nextButton;
+
+    @FXML
+    private TableColumn<Seat, Double> priceColumn;
+
+    @FXML
+    private ScrollPane scrollPane;
+
+    @FXML
+    private TableColumn<Seat, String> seatNoColumn;
+
+    @FXML
+    private GridPane seatsGrid;
+
+    @FXML
+    private TableView<Seat> selectedSeatsTable;
+
+    @FXML
+    private Label totalPriceLabel;
+
+    @FXML
+    private void initialize() {
+        selectedSeats = new ArrayList<>();
+
+        // Tablo sütunlarını ayarla
+        seatNoColumn.setCellValueFactory(new PropertyValueFactory<>("seatNumber"));
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+        // Buton event handler'ları
+        backButton.setOnAction(event -> handleBack());
+        nextButton.setOnAction(event -> handleNext());
+
+        // Next butonu başlangıçta devre dışı
+        nextButton.setDisable(true);
+
+        // Toplam fiyat başlangıçta 0
+        updateTotalPrice();
+    }
+
+    public void setMainController(MainCashierController controller) {
+        this.mainController = controller;
+    }
+
+    public void setSessionData(Movie movie, Session session) {
+        this.movieData = movie;
+        this.sessionData = session;
+        updateSessionInfo();
+        createSeatButtons();
+    }
+
+    private void updateSessionInfo() {
+        movieTitleLabel.setText(movieData.getTitle());
+        dateTimeLabel.setText(sessionData.getDateTime().toString());
+        hallLabel.setText(sessionData.getHall());
+    }
+
+    private void createSeatButtons() {
+        seatsGrid.getChildren().clear();
+        int rows = sessionData.getHall().equals("Hall_A") ? HALL_A_ROWS : HALL_B_ROWS;
+        int cols = sessionData.getHall().equals("Hall_A") ? HALL_A_COLS : HALL_B_COLS;
+
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                String seatNo = String.format("%c%d", (char)('A' + row), col + 1);
+                Button seatButton = createSeatButton(seatNo);
+                seatsGrid.add(seatButton, col, row);
+            }
+        }
+    }
+
+    private Button createSeatButton(String seatNo) {
+        Button button = new Button(seatNo);
+        button.setPrefSize(50, 50);
+        button.setAlignment(Pos.CENTER);
+
+        // Koltuğun durumunu kontrol et
+        boolean isOccupied = checkIfSeatOccupied(seatNo);
+        if (isOccupied) {
+            button.setStyle("-fx-background-color: #dc3545; -fx-text-fill: white;");
+            button.setDisable(true);
+        } else {
+            button.setStyle("-fx-background-color: #28a745; -fx-text-fill: white;");
+            button.setOnAction(e -> handleSeatSelection(button, seatNo));
+        }
+
+        return button;
+    }
+
+    private void handleSeatSelection(Button seatButton, String seatNo) {
+        Seat seat = new Seat(0, seatNo, sessionData, false, movieData.getPrice());
+
+        if (seatButton.getStyle().contains("#28a745")) { // Yeşil - seçilmemiş
+            seatButton.setStyle("-fx-background-color: #007bff; -fx-text-fill: white;");
+            selectedSeats.add(seat);
+        } else { // Mavi - seçilmiş
+            seatButton.setStyle("-fx-background-color: #28a745; -fx-text-fill: white;");
+            selectedSeats.removeIf(s -> s.getSeatNumber().equals(seatNo));
+        }
+
+        selectedSeatsTable.getItems().setAll(selectedSeats);
+        updateTotalPrice();
+        nextButton.setDisable(selectedSeats.isEmpty());
+    }
+
+    private boolean checkIfSeatOccupied(String seatNo) {
+        // TODO: Veritabanından koltuk durumunu kontrol et
+        return false;
+    }
+
+    private void updateTotalPrice() {
+        double total = selectedSeats.stream()
+                .mapToDouble(Seat::getPrice)
+                .sum();
+        totalPriceLabel.setText(String.format("%.2f TL", total));
+    }
+
+    @FXML
+    private void handleBack() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("SessionSelection.fxml"));
+            Parent sessionView = loader.load();
+
+            SessionSelectionController sessionController = loader.getController();
+            sessionController.setMainController(mainController);
+            sessionController.setMovieData(movieData);
+
+            mainController.getContentArea().getChildren().setAll(sessionView);
+        } catch (IOException e) {
+            showError("Navigation Error", "Could not return to session selection: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleNext() {
+        if (selectedSeats.isEmpty()) {
+            showError("Selection Error", "Please select at least one seat");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerInfo.fxml"));
+            Parent customerView = loader.load();
+
+            CustomerInfoController customerController = loader.getController();
+            customerController.setMainController(mainController);
+            customerController.setBookingData(movieData, sessionData, selectedSeats);
+
+            mainController.getContentArea().getChildren().setAll(customerView);
+        } catch (IOException e) {
+            showError("Loading Error", "Could not load customer information screen: " + e.getMessage());
+        }
+    }
+
+    private void showError(String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+}
