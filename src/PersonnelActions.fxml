@@ -26,7 +26,7 @@
       </AnchorPane>
       <TabPane prefHeight="591.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-            <Tab text="Personnel Actions View">
+            <Tab fx:id="Logout" text="Personnel Actions View">
                <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="362.0" prefWidth="599.0">
                      <children>
@@ -48,12 +48,12 @@
                            </children>
                         </VBox>
                         <Button fx:id="backToManagerMenu" layoutX="37.0" layoutY="249.0" mnemonicParsing="false" style="-fx-background-color: #C8A2C8;" text="Back to Manager Menu" />
-                        <Button fx:id="backToManagerMenu3" layoutX="401.0" layoutY="249.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="154.0" style="-fx-background-color: #C8A2C8;" text="Logout" />
+                        <Button fx:id="Logout" layoutX="401.0" layoutY="249.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="154.0" style="-fx-background-color: #C8A2C8;" text="Logout" />
                      </children>
                   </AnchorPane>
                </content>
             </Tab>
-            <Tab text="Hire Personnel">
+            <Tab fx:id="Logout" text="Hire Personnel">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="280.0" prefWidth="551.0">
                      <children>
@@ -66,7 +66,7 @@
                         <Label layoutX="100.0" layoutY="181.0" text="Role" />
                         <ChoiceBox fx:id="RoleChoice" layoutX="185.0" layoutY="177.0" prefWidth="150.0" />
                         <Button fx:id="backToManagerMenu1" layoutX="37.0" layoutY="249.0" mnemonicParsing="false" style="-fx-background-color: #C8A2C8;" text="Back to Manager Menu" />
-                        <Button fx:id="backToManagerMenu31" layoutX="401.0" layoutY="249.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="154.0" style="-fx-background-color: #C8A2C8;" text="Logout" />
+                        <Button fx:id="Logout" layoutX="401.0" layoutY="249.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="154.0" style="-fx-background-color: #C8A2C8;" text="Logout" />
                      </children>
                      <padding>
                         <Insets bottom="20.0" />
@@ -74,53 +74,53 @@
                   </AnchorPane>
               </content>
             </Tab>
-            <Tab text="Fire Personnel">
+            <Tab fx:id="Logout" text="Fire Personnel">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TextField fx:id="HireFirstName1" layoutX="73.0" layoutY="24.0" prefHeight="26.0" prefWidth="186.0" promptText="Enter Personnel ID or username" />
+                        <TextField fx:id="SearchPersonnelFire" layoutX="73.0" layoutY="24.0" prefHeight="26.0" prefWidth="186.0" promptText="Enter Personnel ID or username" />
                         <Button fx:id="backToManagerMenu2" layoutX="37.0" layoutY="249.0" mnemonicParsing="false" style="-fx-background-color: #C8A2C8;" text="Back to Manager Menu" />
                         <Label layoutX="18.0" layoutY="28.0" text="Search" />
                         <TableView fx:id="personnelAction1" layoutX="14.0" layoutY="70.0" prefHeight="70.0" prefWidth="580.0">
                            <columns>
-                              <TableColumn fx:id="firstName1" prefWidth="117.0" text="First Name" />
-                              <TableColumn fx:id="lastName1" prefWidth="115.0" text="Last Name" />
-                              <TableColumn fx:id="username1" prefWidth="101.0" text="Username" />
-                              <TableColumn fx:id="password1" minWidth="0.0" prefWidth="129.0" text="Password" />
-                              <TableColumn fx:id="role1" prefWidth="117.0" text="Role" />
+                              <TableColumn fx:id="FireFirstName" prefWidth="117.0" text="First Name" />
+                              <TableColumn fx:id="FireLastName" prefWidth="115.0" text="Last Name" />
+                              <TableColumn fx:id="FireUsername" prefWidth="101.0" text="Username" />
+                              <TableColumn fx:id="FirePassword" minWidth="0.0" prefWidth="129.0" text="Password" />
+                              <TableColumn fx:id="FireRole" prefWidth="117.0" text="Role" />
                            </columns>
                         </TableView>
-                        <Button layoutX="278.0" layoutY="24.0" mnemonicParsing="false" style="-fx-background-color: #89CFF0;" text="Click" />
-                        <Button layoutX="253.0" layoutY="162.0" mnemonicParsing="false" style="-fx-background-color: #89CFF0;" text="Fire Personnel" />
-                        <Button fx:id="backToManagerMenu32" layoutX="401.0" layoutY="249.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="154.0" style="-fx-background-color: #C8A2C8;" text="Logout" />
+                        <Button fx:id="SearchFireClick" layoutX="278.0" layoutY="24.0" mnemonicParsing="false" style="-fx-background-color: #89CFF0;" text="Click" />
+                        <Button fx:id="ClickFire" layoutX="253.0" layoutY="162.0" mnemonicParsing="false" style="-fx-background-color: #89CFF0;" text="Fire Personnel" />
+                        <Button fx:id="Logout" layoutX="401.0" layoutY="249.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="154.0" style="-fx-background-color: #C8A2C8;" text="Logout" />
                      </children>
                   </AnchorPane>
               </content>
             </Tab>
-            <Tab text="Edit Personnel">
+            <Tab fx:id="Logout" text="Edit Personnel">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TextField fx:id="HireFirstName11" layoutX="73.0" layoutY="24.0" prefHeight="26.0" prefWidth="186.0" promptText="Enter Personnel ID or username" />
+                        <TextField fx:id="SearchPersonnelEdit" layoutX="73.0" layoutY="24.0" prefHeight="26.0" prefWidth="186.0" promptText="Enter Personnel ID or username" />
                         <Button fx:id="backToManagerMenu21" layoutX="37.0" layoutY="249.0" mnemonicParsing="false" style="-fx-background-color: #C8A2C8;" text="Back to Manager Menu" />
                         <Label layoutX="18.0" layoutY="28.0" text="Search" />
                         <TableView fx:id="personnelAction11" layoutX="14.0" layoutY="70.0" prefHeight="70.0" prefWidth="580.0">
                            <columns>
-                              <TableColumn fx:id="firstName11" prefWidth="117.0" text="First Name" />
-                              <TableColumn fx:id="lastName11" prefWidth="115.0" text="Last Name" />
-                              <TableColumn fx:id="username11" prefWidth="101.0" text="Username" />
-                              <TableColumn fx:id="password11" minWidth="0.0" prefWidth="129.0" text="Password" />
-                              <TableColumn fx:id="role11" prefWidth="117.0" text="Role" />
+                              <TableColumn fx:id="EditFirstNameCol" prefWidth="117.0" text="First Name" />
+                              <TableColumn fx:id="EditLastNameCol" prefWidth="115.0" text="Last Name" />
+                              <TableColumn fx:id="EditUsernameCol" prefWidth="101.0" text="Username" />
+                              <TableColumn fx:id="EditPasswordCol" minWidth="0.0" prefWidth="129.0" text="Password" />
+                              <TableColumn fx:id="EditRoleCol" prefWidth="117.0" text="Role" />
                            </columns>
                         </TableView>
-                        <Button layoutX="278.0" layoutY="24.0" mnemonicParsing="false" style="-fx-background-color: #89CFF0;" text="Click" />
-                        <TextField fx:id="HireFirstName2" layoutX="14.0" layoutY="151.0" prefHeight="26.0" prefWidth="121.0" />
-                        <TextField fx:id="HireFirstName21" layoutX="135.0" layoutY="151.0" prefHeight="26.0" prefWidth="112.0" />
-                        <TextField fx:id="HireFirstName211" layoutX="244.0" layoutY="151.0" prefHeight="26.0" prefWidth="108.0" />
-                        <TextField fx:id="HireFirstName212" layoutX="352.0" layoutY="151.0" prefHeight="26.0" prefWidth="122.0" />
-                        <TextField fx:id="HireFirstName213" layoutX="474.0" layoutY="151.0" prefHeight="26.0" prefWidth="118.0" />
-                        <Button layoutX="254.0" layoutY="187.0" mnemonicParsing="false" style="-fx-background-color: #89CFF0;" text="Apply Changes" />
-                        <Button fx:id="backToManagerMenu33" layoutX="401.0" layoutY="249.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="154.0" style="-fx-background-color: #C8A2C8;" text="Logout" />
+                        <Button fx:id="SearchEditClick" layoutX="278.0" layoutY="24.0" mnemonicParsing="false" style="-fx-background-color: #89CFF0;" text="Click" />
+                        <TextField fx:id="EditFirstName" layoutX="14.0" layoutY="151.0" prefHeight="26.0" prefWidth="121.0" />
+                        <TextField fx:id="EditLastName" layoutX="135.0" layoutY="151.0" prefHeight="26.0" prefWidth="112.0" />
+                        <TextField fx:id="EditUsername" layoutX="244.0" layoutY="151.0" prefHeight="26.0" prefWidth="108.0" />
+                        <TextField fx:id="EditPassword" layoutX="352.0" layoutY="151.0" prefHeight="26.0" prefWidth="122.0" />
+                        <TextField fx:id="EditRole" layoutX="474.0" layoutY="151.0" prefHeight="26.0" prefWidth="118.0" />
+                        <Button fx:id="PersonnelEditApply" layoutX="254.0" layoutY="187.0" mnemonicParsing="false" style="-fx-background-color: #89CFF0;" text="Apply Changes" />
+                        <Button fx:id="Logout" layoutX="401.0" layoutY="249.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="154.0" style="-fx-background-color: #C8A2C8;" text="Logout" />
                      </children>
                   </AnchorPane>
                </content>
