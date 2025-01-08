@@ -16,10 +16,13 @@
          <font>
             <Font name="System Bold Italic" size="24.0" />
          </font>
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
       </Label>
-      <HBox alignment="CENTER" prefHeight="152.0" prefWidth="600.0">
+      <HBox alignment="CENTER" prefHeight="171.0" prefWidth="600.0">
          <children>
-            <TableView fx:id="productTable" prefHeight="123.0" prefWidth="381.0" style="-fx-border-color: gray;">
+            <TableView fx:id="productTable" prefHeight="120.0" prefWidth="380.0" style="-fx-border-color: gray;">
                <columns>
                   <TableColumn fx:id="productName" prefWidth="184.0" text="Product" />
                   <TableColumn fx:id="stockStatus" prefWidth="214.0" text="Inventory Status" />
@@ -30,7 +33,7 @@
             </TableView>
             <VBox prefHeight="135.0" prefWidth="201.0">
                <children>
-                  <Label alignment="CENTER" prefHeight="27.0" prefWidth="203.0" style="-fx-background-color: gray;" text="Update Stock" textAlignment="CENTER">
+                  <Label alignment="CENTER" prefHeight="47.0" prefWidth="201.0" style="-fx-background-color: gray;" text="Update Stock" textAlignment="CENTER">
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>
@@ -39,8 +42,8 @@
                      </VBox.margin>
                   </Label>
                   <TextField fx:id="updateStockToy" />
-                  <TextField fx:id="updateStockBeverage" />
-                  <TextField fx:id="updateStockBiscuit" prefHeight="73.0" prefWidth="200.0" />
+                  <TextField fx:id="updateStockBeverage" prefHeight="45.0" prefWidth="201.0" />
+                  <TextField fx:id="updateStockBiscuit" prefHeight="0.0" prefWidth="201.0" />
                </children>
                <HBox.margin>
                   <Insets right="10.0" />
