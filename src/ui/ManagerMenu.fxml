@@ -19,50 +19,50 @@
             <Font name="Helvetica Neue" size="16.0" />
          </font>
       </Label>
-      <HBox layoutX="10.0" layoutY="138.0" prefHeight="203.0" prefWidth="580.0" spacing="10.0" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="138.0">
+      <HBox layoutX="10.0" layoutY="138.0" prefHeight="203.0" prefWidth="580.0" style="-fx-border-color: gray;">
          <children>
-            <VBox alignment="CENTER" fillWidth="false" prefHeight="219.0" prefWidth="150.0" spacing="1.0" style="-fx-border-color: gray;">
+            <VBox alignment="CENTER" prefHeight="219.0" prefWidth="150.0" style="-fx-border-color: gray;">
                <children>
                   <Label alignment="CENTER" text="View the Inventory  &#10;&amp; Change the Stocks&#10;&#10;&#10;&#10;" textAlignment="CENTER">
                      <font>
-                        <Font name="Helvetica Neue" size="14.0" />
+                        <Font name="Helvetica Neue" size="15.0" />
                      </font>
                   </Label>
-                  <Button fx:id="InventoryAction" mnemonicParsing="false" style="-fx-background-color: pink;" text="Click" />
+                  <Button fx:id="inventoryMenu" mnemonicParsing="false" onAction="#handleViewInventory" style="-fx-background-color: pink;" text="Click" />
                </children>
             </VBox>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="150.0" style="-fx-border-color: gray;">
                <children>
                   <Label alignment="CENTER" text="Personnel Actions&#10;&#10;&#10;&#10;&#10;" textAlignment="CENTER">
                      <font>
-                        <Font name="Helvetica Neue" size="14.0" />
+                        <Font name="Helvetica Neue" size="15.0" />
                      </font>
                   </Label>
-                  <Button fx:id="PersonnelAction" mnemonicParsing="false" style="-fx-background-color: pink;" text="Click" />
+                  <Button fx:id="personnelActionMenu" mnemonicParsing="false" onAction="#handleViewPersonnelAction" style="-fx-background-color: pink;" text="Click" />
                </children>
             </VBox>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="150.0" style="-fx-border-color: gray;">
                <children>
                   <Label alignment="CENTER" text="View the Prices&#10;&#10;&#10;&#10;&#10;" textAlignment="CENTER">
                      <font>
-                        <Font name="Helvetica Neue" size="14.0" />
+                        <Font name="Helvetica Neue" size="15.0" />
                      </font>
                   </Label>
-                  <Button fx:id="PriceAction" mnemonicParsing="false" style="-fx-background-color: pink;" text="Click" />
+                  <Button fx:id="priceMenu" mnemonicParsing="false" onAction="#handleViewPrices" style="-fx-background-color: pink;" text="Click" />
                </children>
             </VBox>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="150.0" style="-fx-border-color: gray;">
                <children>
                   <Label alignment="CENTER" text="Review the Revenue&#10;&amp; Taxes&#10;&#10;&#10;&#10;" textAlignment="CENTER">
                      <font>
-                        <Font name="Helvetica Neue" size="14.0" />
+                        <Font name="Helvetica Neue" size="15.0" />
                      </font>
                   </Label>
-                  <Button fx:id="RevenueAction" mnemonicParsing="false" style="-fx-background-color: pink;" text="Click" />
+                  <Button fx:id="revenueMenu" mnemonicParsing="false" onAction="#handleViewRevenue" style="-fx-background-color: pink;" text="Click" />
                </children>
             </VBox>
          </children>
       </HBox>
-      <Button fx:id="BackToLogin" layoutX="238.0" layoutY="360.0" mnemonicParsing="false" style="-fx-background-color: #C8A2C8;" text="Back to Login Menu" />
+      <Button fx:id="BackToLoginMenu" layoutX="238.0" layoutY="360.0" mnemonicParsing="false" onAction="#handleBackToLoginMenu" style="-fx-background-color: #C8A2C8;" text="Back to Login Menu" />
    </children>
 </AnchorPane>
