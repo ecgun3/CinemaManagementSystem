@@ -95,7 +95,7 @@ public class SeatSelectionController {
     private void updateSessionInfo() {
         movieTitleLabel.setText(movieData.getTitle());
         dateTimeLabel.setText(sessionData.getDateTime().toString());
-        hallLabel.setText(sessionData.getHall());
+        hallLabel.setText(sessionData.getHall().getName());
     }
 
     private void createSeatButtons() {

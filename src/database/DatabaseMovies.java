@@ -18,7 +18,9 @@ public class DatabaseMovies implements DatabaseSource{
     public void connectDatabase(){
 
         try{
+
             connection = DriverManager.getConnection(url, username, password);
+
         }
         catch(SQLException sqlException){
             sqlException.printStackTrace();
@@ -110,6 +112,7 @@ public class DatabaseMovies implements DatabaseSource{
 
         ArrayList<Movie> movies = new ArrayList<Movie>();
         String query = "SELECT * FROM movies";
+        Movie movie;
 
         try{
 
@@ -117,7 +120,7 @@ public class DatabaseMovies implements DatabaseSource{
 
             while(rs != null && rs.next()){
 
-                Movie movie = new Movie();
+                movie = new Movie();
 
                 if(rs.getString("genre").equalsIgnoreCase(genre)){
 
@@ -201,6 +204,36 @@ public class DatabaseMovies implements DatabaseSource{
         return movies;
     }
 
+    public Movie get1Movie(int id){
+
+        Movie movie = new Movie();
+        String query = "SELECT * FROM movies WHERE idMovie = '" + id + "'";
+
+        try{
+
+            ResultSet rs = executeQuery(query);
+
+            if (rs != null && rs.next()) {
+                movie.setId(rs.getInt("idMovie"));
+                movie.setTitle(rs.getString("title"));
+                movie.setYear(rs.getInt("year"));
+                movie.setGenre(rs.getString("genre"));
+                movie.setSummary(rs.getString("summary"));
+                movie.setPosterImage(rs.getBytes("poster_url"));
+            }
+            else{
+                System.out.println("No hall found with id: " + id);
+            }
+
+                
+        }
+        catch(SQLException sqlException){
+            sqlException.printStackTrace();
+        }
+
+        return movie;
+    }
+
     public void insertMovie(Movie movie){
 
         String query = "INSERT INTO movies (title, year, genre, summary, poster_url) VALUES (?,?,?,?,?)";
@@ -226,7 +259,7 @@ public class DatabaseMovies implements DatabaseSource{
     public void updateMovie(Movie movie, String column, String value){
 
         int ID = movie.getId();
-        String query = "UPDATE employee SET " + column + " = ? WHERE employee_ID = ? ";
+        String query = "UPDATE employee SET " + column + " = ? WHERE idMovie = ? ";
         try(PreparedStatement pStatement = connection.prepareStatement(query);){
 
             pStatement.setString(1, value);

@@ -29,17 +29,16 @@ public class Authentication {
     }
 
 
-    public boolean authenticatePassword(String username, String password) {
+    public Employee authenticatePassword(String username, String password) {
         employee = database.getEmployeeUsername(username);
         if ((employee.getPassword()).equals(password)) {
-            System.out.println("Welcome " + username);
-            if (employee.getPassword().equals("password123")) {
-                // employee.setPasswordFirstTime();
-            }
-            return true;
+            // if (employee.getPassword().equals("password123")) {
+                 // employee.setPasswordFirstTime();
+            // }
+            return employee;
         } else {
             System.out.println("Invalid password");
-            return false;
+            return null;
         }
     }
 

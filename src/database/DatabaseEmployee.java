@@ -65,7 +65,7 @@ public class DatabaseEmployee implements DatabaseSource{
 
                 Employee employee = new Employee();
 
-                employee.setEmployeeID(rs.getInt("employee_ID"));
+                employee.setEmployeeID(rs.getInt("idEmployee"));
                 employee.setUsername(rs.getString("username"));
                 employee.setPassword(rs.getString("password"));
                 employee.setName(rs.getString("name"));
@@ -135,7 +135,7 @@ public class DatabaseEmployee implements DatabaseSource{
                 Employee employee = new Employee();
     
                 employee.setRole(rs.getString("role"));
-                employee.setEmployeeID(rs.getInt("employee_ID"));
+                employee.setEmployeeID(rs.getInt("idEmployee"));
                 employee.setUsername(rs.getString("username"));
                 employee.setPassword(rs.getString("password"));
                 employee.setName(rs.getString("name"));
@@ -188,7 +188,7 @@ public class DatabaseEmployee implements DatabaseSource{
     public void updateEmployee(Employee employee, String column, String value){
 
         int ID = employee.getEmployeeID();
-        String query = "UPDATE employee SET " + column + " = ? WHERE employee_ID = ? ";
+        String query = "UPDATE employee SET " + column + " = ? WHERE idEmployee = ? ";
         try(PreparedStatement pStatement = connection.prepareStatement(query);){
 
             pStatement.setString(1, value);
@@ -228,7 +228,7 @@ public class DatabaseEmployee implements DatabaseSource{
     public void deleteEmployee(Employee employee){
 
         int ID = employee.getEmployeeID();
-        String query = "DELETE FROM employee WHERE employee_ID = ?";
+        String query = "DELETE FROM employee WHERE idEmployee = ?";
         try(PreparedStatement pStatement = connection.prepareStatement(query)){
             pStatement.setInt(1, ID);
             if (pStatement.executeUpdate() > 0)

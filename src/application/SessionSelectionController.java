@@ -7,6 +7,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.fxml.Initializable;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+
+import database.DatabaseHalls;
+import database.DatabaseSession;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -20,8 +27,8 @@ public class SessionSelectionController {
     private Movie movieData;
     private Session selectedSession;
 
-    private static final String[] HALLS = {"Hall_A", "Hall_B"};
-    private static final String[] SESSIONS = {"10:00", "12:00", "14:00", "16:00", "18:00", "20:00"};
+    private static ArrayList<String> HALLS = new ArrayList<>();
+    private static ArrayList<String> SESSIONS = new ArrayList<>();
 
     @FXML
     private Label availableSeatsLabel;
@@ -57,7 +64,18 @@ public class SessionSelectionController {
     private VBox sessionSelectionRoot;
 
     @FXML
-    private void intialize() {
+    private void initialize() {
+
+        DatabaseHalls dataH = new DatabaseHalls();
+        dataH.connectDatabase();
+        ArrayList<Halls> halls = dataH.viewHalls();
+
+        for(Halls hall : halls)
+            HALLS.add(hall.getName());
+
+        DatabaseSession dataS = new DatabaseSession();
+        dataS.connectDatabase();
+        SESSIONS=dataS.getSessionHours();
 
         //Combobox'ları doldurmak için
         hallCombo.getItems().addAll(HALLS);
@@ -76,9 +94,9 @@ public class SessionSelectionController {
         });
 
         //Event Listeners:
-        datePicker.valueProperty().addListener((obs, oldVal, newVal) -> updateAvailableSeats());
-        hallCombo.valueProperty().addListener((obs, oldVal, newVal) -> updateAvailableSeats());
-        sessionCombo.valueProperty().addListener((obs, oldVal, newVal) -> updateAvailableSeats());
+        datePicker.valueProperty().addListener((obs, oldVal, newVal) -> updateAvailableSeats(dataS));
+        hallCombo.valueProperty().addListener((obs, oldVal, newVal) -> updateAvailableSeats(dataS));
+        sessionCombo.valueProperty().addListener((obs, oldVal, newVal) -> updateAvailableSeats(dataS));
 
         backButton.setOnAction(event -> handleBack());
         nextButton.setOnAction(event -> handleNext());
@@ -107,28 +125,29 @@ public class SessionSelectionController {
         }
     }
 
-    private void updateAvailableSeats() {
+    private void updateAvailableSeats(DatabaseSession dataS){
         if (datePicker.getValue() != null && hallCombo.getValue() != null && sessionCombo.getValue() != null) {
             try {
-                // Veritabanından boş koltuk sayısını al
-                int availableSeats = getAvailableSeatsCount(
-                        datePicker.getValue(),
-                        hallCombo.getValue(),
-                        sessionCombo.getValue()
-                );
 
+                ArrayList<Session> sessions = dataS.getSessions();
+
+                for(Session session : sessions){
+                    if(session.getHall().getName().equals(hallCombo.getValue())){
+
+                        String dateTime = datePicker.getValue().toString() + "T" + sessionCombo.getValue().toString();
+                        String time = session.getDateTime().toString().substring(0, 16);
+
+                        if(time.equals(dateTime))
+                            selectedSession = session;
+                    }
+                }
+                
+                // Veritabanından boş koltuk sayısını al
+                int availableSeats = selectedSession.getAvailableSeats();
                 availableSeatsLabel.setText(String.valueOf(availableSeats));
+
                 nextButton.setDisable(availableSeats <= 0);
 
-                // Session nesnesini güncelle
-                selectedSession = new Session(
-                        0, // ID veritabanından gelecek
-                        movieData,
-                        LocalDateTime.of(datePicker.getValue(), LocalTime.parse(sessionCombo.getValue())),
-                        hallCombo.getValue(),
-                        hallCombo.getValue().equals("Hall_A") ? 16 : 48,
-                        availableSeats
-                );
             } catch (Exception e) {
                 showError("Database Error", "Could not fetch available seats: " + e.getMessage());
             }
@@ -138,16 +157,10 @@ public class SessionSelectionController {
         }
     }
 
-    private int getAvailableSeatsCount(LocalDate date, String hall, String session) {
-        // TODO: Veritabanı sorgusu ile boş koltuk sayısını al
-        // Şimdilik örnek olarak:
-        return hall.equals("Hall_A") ? 16 : 48;
-    }
-
     @FXML
     private void handleBack() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("MovieSearch.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/MovieSearch.fxml"));
             Parent movieSearchView = loader.load();
 
             MovieSearchController movieController = loader.getController();
@@ -167,7 +180,7 @@ public class SessionSelectionController {
         }
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("SeatSelection.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/SeatSelection.fxml"));
             Parent seatView = loader.load();
 
             SeatSelectionController seatController = loader.getController();

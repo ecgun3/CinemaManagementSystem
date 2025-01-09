@@ -30,6 +30,9 @@ public class LoginController {
 
         // Enter tuşuna basıldığında da login işlemi gerçekleşsin
         passwordField.setOnAction(event -> handleLogin());
+
+        //Butona tıklandnığı zaman:
+        loginButton.setOnAction(event -> handleLogin());
     }
 
     private void handleLogin() {
@@ -49,36 +52,33 @@ public class LoginController {
             } else {
                 showError("Invalid username or password");
             }
+
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             showError("Login error: " + e.getMessage());
         }
     }
 
     private String authenticateUser(String username, String password) {
-        // Basit kullanıcı kontrolü (gerçek uygulamada veritabanından kontrol edilmeli)
-        switch (username) {
-            case "cashier1":
-                return password.equals("cashier1") ? "cashier" : null;
-            case "admin1":
-                return password.equals("admin1") ? "admin" : null;
-            case "manager1":
-                return password.equals("manager1") ? "manager" : null;
-            default:
-                return null;
-        }
+//KUllanıcıyı kontrol eder
+        Authentication aut = new Authentication();
+        Employee employee = aut.authenticatePassword(username, password);
+        if(employee==null)
+            return null;
+        return employee.role;
     }
 
     private void loadAppropriateScreen(String username, String role) throws IOException {
         String fxmlFile;
         switch (role) {
             case "cashier":
-                fxmlFile = "MainCashier.fxml";
+                fxmlFile = "/ui/MainCashier.fxml";
                 break;
             case "admin":
-                fxmlFile = "MainAdmin.fxml";
+                fxmlFile = "/ui/MainAdmin.fxml";
                 break;
             case "manager":
-                fxmlFile = "MainManager.fxml";
+                fxmlFile = "/ui/MainManager.fxml";
                 break;
             default:
                 throw new IllegalStateException("Unknown role: " + role);

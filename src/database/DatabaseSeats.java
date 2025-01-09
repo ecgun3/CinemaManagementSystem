@@ -4,15 +4,15 @@ import java.sql.Connection;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import application.Halls;
+import application.Movie;
 
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class DatabaseSeats implements DatabaseSource {
-
+public class DatabaseSeats implements DatabaseSource{
+    
     private Connection connection; 
 
     //Database'e bağlan
@@ -53,29 +53,16 @@ public class DatabaseSeats implements DatabaseSource {
         }
     }
 
-    public ArrayList<Halls> viewHalls(){
-        
-        ArrayList<Halls> halls = new ArrayList<Halls>();
-        String query = "SELECT * FROM products";
+    public void disconnectDatabase(){
 
         try{
-            ResultSet rs = executeQuery(query);
-
-            while (rs.next()){ 
-
-                Halls hall = new Halls();
-
-                hall.setId_halls(rs.getInt("idhalls"));
-                hall.setName(rs.getString("name"));
-                hall.setCapacity(rs.getInt("capacity"));
-                halls.add(hall);
-            }
-            
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            if(connection!=null && !connection.isClosed())
+                connection.close();
+            else
+                System.out.println("Disconnection error!");
         }
-    
-        return halls;
+        catch(SQLException sqlException){
+        }
     }
 
 }

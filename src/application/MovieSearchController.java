@@ -3,8 +3,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -15,13 +15,21 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import database.DatabaseEmployee;
+import database.DatabaseMovies;
+
 import java.io.IOException;
 
 public class MovieSearchController {
 
     private MainCashierController mainController;
+    private DatabaseMovies mov = new DatabaseMovies();
+
 
     //Seçilen film bilgilerini tutacak model sınıf
     private Movie selectedMovie;
@@ -80,6 +88,21 @@ public class MovieSearchController {
 
     @FXML
     private void initialize() {
+
+        /*Burayı SİL
+        try {
+            String path = "/denemeFoto.jpg";
+            InputStream stream = getClass().getResourceAsStream(path);
+
+            if(stream != null) {
+                Image image = new Image(stream);
+                posterImageView.setImage(image);
+            } else {
+                System.out.println("Resim dosyası bulunmadı");
+            }
+        } catch (Exception e) {
+            System.err.println("Resmi Yükleme Hatası " + e.getMessage());
+        } */
 
         searchTypeCombo.getItems().addAll(SEARCH_TYPES);
         searchTypeCombo.getSelectionModel().selectFirst();
@@ -179,17 +202,26 @@ public class MovieSearchController {
     // Search metodları (veritabanı bağlantısı gerekecek)
     private List<Movie> searchByGenre(String genre) {
         // Veritabanından genre'a göre filmleri çek
-        return new ArrayList<>(); // TODO: implement
+        mov.connectDatabase();        
+        ArrayList<Movie> movies = mov.getMovieGenre(genre);
+        mov.disconnectDatabase();
+        return movies; // TODO: implement
     }
 
     private List<Movie> searchByPartialName(String partialName) {
         // Veritabanından partial name'e göre filmleri çek
-        return new ArrayList<>(); // TODO: implement
+        mov.connectDatabase();        
+        ArrayList<Movie> movies = mov.getMoviePartial(partialName);
+        mov.disconnectDatabase();
+        return movies; // TODO: implement
     }
 
     private List<Movie> searchByFullName(String fullName) {
         // Veritabanından tam isme göre filmleri çek
-        return new ArrayList<>(); // TODO: implement
+        mov.connectDatabase();        
+        ArrayList<Movie> movies = mov.getMovieTitle(fullName);
+        mov.disconnectDatabase();
+        return movies; // TODO: implement
     }
 
     @FXML
@@ -211,7 +243,7 @@ public class MovieSearchController {
         }
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("SessionSelection.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/SessionSelection.fxml"));
             Parent sessionView = loader.load();
 
             SessionSelectionController sessionController = loader.getController();

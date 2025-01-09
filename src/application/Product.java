@@ -4,14 +4,14 @@ public class Product {
     private String name;
     private double price;
     private int stock;
-    private String type; // "beverage", "biscuit", "toy"
+    // private String type; // "beverage", "biscuit", "toy"
 
     public Product() {
         this.id = 0;
         this.name = null;
         this.price = 0;
         this.stock = 0;
-        this.type = null;
+        // this.type = null;
     }
 
     public Product(int id, String name, double price, int stock, String type) {

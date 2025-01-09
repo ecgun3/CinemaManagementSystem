@@ -36,7 +36,7 @@ public class MainCashierController {
     private void handleLogout() {
         try {
             // Login ekranına geri dön
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/Login.fxml"));
             Parent loginView = loader.load();
 
             // Mevcut pencereyi al ve içeriğini değiştir
@@ -67,7 +67,7 @@ public class MainCashierController {
 
     private void loadMovieSearchScreen() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("MovieSearch.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/MovieSearch.fxml"));
             Parent movieSearch = loader.load();
 
             MovieSearchController movieController = loader.getController();

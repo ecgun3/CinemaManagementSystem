@@ -1,22 +1,33 @@
 package application;
 import java.time.LocalDateTime;
+import java.sql.Date;
 
 // Session.java
 public class Session {
     private int id;
     private Movie movie;
     private LocalDateTime dateTime;
-    private String hall;
-    private int totalSeats;
+    private Halls hall;
     private int availableSeats;
 
-    public Session(int id, Movie movie, LocalDateTime dateTime, String hall, int totalSeats, int availableSeats) {
+    public Session(){
+        this.id = 0;
+        this.movie = null;
+        this.dateTime = null;
+        this.hall = null;
+        this.availableSeats = 0;
+    }
+
+    public Session(int id, Movie movie, LocalDateTime dateTime, Halls hall, int availableSeats) {
         this.id = id;
         this.movie = movie;
         this.dateTime = dateTime;
         this.hall = hall;
-        this.totalSeats = totalSeats;
         this.availableSeats = availableSeats;
+    }
+
+    public String toString() {
+        return "Session{id=" + id + ", availableSeats=" + availableSeats + ", dateTime=" + dateTime + "}";
     }
 
     // Getter ve Setter metodları
@@ -29,11 +40,8 @@ public class Session {
     public LocalDateTime getDateTime() { return dateTime; }
     public void setDateTime(LocalDateTime dateTime) { this.dateTime = dateTime; }
 
-    public String getHall() { return hall; }
-    public void setHall(String hall) { this.hall = hall; }
-
-    public int getTotalSeats() { return totalSeats; }
-    public void setTotalSeats(int totalSeats) { this.totalSeats = totalSeats; }
+    public Halls getHall() { return hall; }
+    public void setHall(Halls hall) { this.hall = hall; }
 
     public int getAvailableSeats() { return availableSeats; }
     public void setAvailableSeats(int availableSeats) { this.availableSeats = availableSeats; }
