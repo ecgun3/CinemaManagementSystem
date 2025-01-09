@@ -20,7 +20,7 @@
             <Font name="Adelle Sans Devanagari Bold" size="20.0" />
          </font>
       </Text>
-      <TableView fx:id="TableMovieManagement" layoutX="9.0" layoutY="33.0" prefHeight="151.0" prefWidth="581.0">
+      <TableView fx:id="TableMovieManagement" layoutX="9.0" layoutY="35.0" prefHeight="151.0" prefWidth="581.0">
         <columns>
             <TableColumn fx:id="tableMovieNo" prefWidth="62.806976318359375" text="No" />
           <TableColumn fx:id="tableMovieTitle" prefWidth="118.83055210113525" text="Title" />
@@ -34,7 +34,7 @@
             <Font name="Adelle Sans Devanagari Regular" size="13.0" />
          </font>
       </Button>
-      <VBox layoutX="108.0" layoutY="212.0" prefHeight="174.0" prefWidth="153.0" spacing="3.0">
+      <VBox layoutX="108.0" layoutY="202.0" prefHeight="179.0" prefWidth="160.0" spacing="3.0">
          <children>
             <TextField fx:id="TitleAddMovie" />
             <TextField fx:id="GenreAddMovie" />
@@ -45,7 +45,7 @@
             <Insets bottom="3.0" />
          </padding>
       </VBox>
-      <VBox layoutX="7.0" layoutY="211.0" prefHeight="107.0" prefWidth="97.0">
+      <VBox layoutX="7.0" layoutY="201.0" prefHeight="107.0" prefWidth="97.0">
          <children>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Title" textAlignment="CENTER" wrappingWidth="96.68997192382812">
                <font>
@@ -69,58 +69,23 @@
             </Text>
          </children>
       </VBox>
-      <VBox layoutX="348.0" layoutY="188.0" prefHeight="208.0" prefWidth="153.0" spacing="3.0">
-         <children>
-            <TextField fx:id="NoOfTheMovie" />
-            <TextField fx:id="TitleUpdateMovie" />
-            <TextField fx:id="GenreUpdateMovie" />
-            <TextField fx:id="SummaryUpdateMovie" />
-            <ImageView fx:id="PosterUpdateMovie" fitHeight="86.0" fitWidth="153.0" pickOnBounds="true" preserveRatio="true" />
-         </children>
-         <padding>
-            <Insets bottom="3.0" />
-         </padding>
-      </VBox>
-      <VBox layoutX="501.0" layoutY="186.0" prefHeight="141.0" prefWidth="97.0">
-         <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="No" textAlignment="CENTER" wrappingWidth="96.68997192382812">
-               <font>
-                  <Font name="Adelle Sans Devanagari Regular" size="15.0" />
-               </font>
-            </Text>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Title" textAlignment="CENTER" wrappingWidth="96.68997192382812">
-               <font>
-                  <Font name="Adelle Sans Devanagari Regular" size="15.0" />
-               </font>
-            </Text>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Genre" textAlignment="CENTER" wrappingWidth="96.68997192382812">
-               <font>
-                  <Font name="Adelle Sans Devanagari Regular" size="15.0" />
-               </font>
-            </Text>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Summary" textAlignment="CENTER" wrappingWidth="96.68997573852539">
-               <font>
-                  <Font name="Adelle Sans Devanagari Regular" size="15.0" />
-               </font>
-            </Text>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Poster" textAlignment="CENTER" wrappingWidth="96.68997573852539">
-               <font>
-                  <Font name="Adelle Sans Devanagari Regular" size="15.0" />
-               </font>
-            </Text>
-         </children>
-      </VBox>
-      <Button fx:id="UpdateMovieButton1" layoutX="509.0" layoutY="335.0" mnemonicParsing="false" prefHeight="54.0" prefWidth="84.0" style="-fx-background-color: #8ca87c;" text="Update Movie" textAlignment="CENTER" wrapText="true">
+      <Button fx:id="UpdateMovieButton1" layoutX="474.0" layoutY="280.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="97.0" style="-fx-background-color: #8ca87c;" text="Update Movie" textAlignment="CENTER" wrapText="true">
          <font>
             <Font name="Adelle Sans Devanagari Regular" size="12.0" />
          </font>
       </Button>
-      <Pane layoutX="268.0" layoutY="193.0" opacity="0.43" prefHeight="200.0" prefWidth="6.0" style="-fx-background-color: #939089;" />
-      <Button fx:id="DeleteMovieButton" layoutX="283.0" layoutY="287.0" mnemonicParsing="false" prefHeight="57.0" prefWidth="56.0" style="-fx-background-color: #cd522b;" text="Delete Movie" textAlignment="CENTER" wrapText="true">
+      <Pane layoutX="287.0" layoutY="193.0" opacity="0.43" prefHeight="200.0" prefWidth="6.0" style="-fx-background-color: #939089;" />
+      <Button fx:id="DeleteMovieButton" layoutX="314.0" layoutY="280.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="90.0" style="-fx-background-color: #cd522b;" text="Delete Movie" textAlignment="CENTER" wrapText="true">
          <font>
             <Font name="Adelle Sans Devanagari Regular" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="backFromMovieMng" layoutX="287.0" layoutY="360.0" mnemonicParsing="false" style="-fx-background-color: #6c757d;" text="Back" textFill="WHITE" />
+      <Button fx:id="backFromMovieMng" layoutX="416.0" layoutY="360.0" mnemonicParsing="false" style="-fx-background-color: #6c757d;" text="Back" textFill="WHITE" />
+      <TextField fx:id="NoOfTheMovie" layoutX="372.0" layoutY="208.0" prefHeight="27.0" prefWidth="158.0" promptText="No for Delete/Update" />
+      <Text layoutX="317.0" layoutY="227.0" strokeType="OUTSIDE" strokeWidth="0.0" text="No:" textAlignment="CENTER" wrappingWidth="55.8514437979959">
+         <font>
+            <Font name="Adelle Sans Devanagari Regular" size="15.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>
