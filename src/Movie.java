@@ -8,7 +8,7 @@ public class Movie {
     //To store database as Binary Large Object
     private byte[] posterImage; //Binary format
 
-    //private double price;
+    private double price;
 
     public Movie(){
         this.id = 0;
@@ -17,17 +17,17 @@ public class Movie {
         this.genre = null;
         this.summary = null;
         this.posterImage = null;
-        //this.price = price;
+        this.price = price;
     }
 
-    public Movie(int id, String title, int year, String genre,  String summary, byte[] posterImage) { //, double price
+    public Movie(int id, String title, int year, String genre,  String summary, byte[] posterImage,double price) { //, double price
         this.id = id;
         this.title = title;
         this.year = year;
         this.genre = genre;
         this.summary = summary;
         this.posterImage = posterImage;
-        //this.price = price;
+        this.price = price;
     }
 
     // Getter ve Setter metodları
@@ -55,10 +55,10 @@ public class Movie {
     public byte[] getPosterImage() { return posterImage; }
     public void setPosterImage(byte[] posterImage) { this.posterImage = posterImage; }
 
-    /*
+
     //Price
     public double getPrice() { return price; }
     public void setPrice(double price) { this.price = price; }
 
-     */
+
 }
