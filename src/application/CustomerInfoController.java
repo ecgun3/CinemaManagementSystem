@@ -142,7 +142,7 @@ public class CustomerInfoController {
             int flag = 0;
             for(OrderItem item : summaryTable.getItems()){
                 if(item.getName().equals(product.getName())){
-                    product.setStock(product.getStock()-1);
+                    item.setQuantity(item.getQuantity()+1);
                     flag=1;
                     break;
                 }
@@ -158,6 +158,7 @@ public class CustomerInfoController {
                     );
                 summaryTable.getItems().add(itemNew);
             }
+            product.setStock(product.getStock()-1);
             summaryTable.refresh();
             productsTable.refresh();
         }
@@ -168,9 +169,8 @@ public class CustomerInfoController {
         for(OrderItem item : summaryTable.getItems()){
             if(item.getName().equals(product.getName())){
                 product.setStock(product.getStock()+1);
-                if(item.getQuantity()!=0)
-                    item.setQuantity(item.getQuantity()-1);
-                else
+                item.setQuantity(item.getQuantity()-1);
+                if(item.getQuantity()==0)
                     itemToRemove=item;
                 break;
             }
@@ -273,16 +273,12 @@ public class CustomerInfoController {
     }
 
     private void handleAddProduct(Product product) {
-        if (product.getStock() > 0) {
-            product.setStock(product.getStock() - 1);
-            addToSummary(product);
-            updateTotalPrice();
-        }
+        addToSummary(product);
+        updateTotalPrice();
     }
 
     private void handleRemoveProduct(Product product) {
         // Remove product from summary
-        product.setStock(product.getStock() + 1);
         removeFromSummary(product);
         updateTotalPrice();
         // Update prices
