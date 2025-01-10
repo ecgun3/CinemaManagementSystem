@@ -111,9 +111,9 @@ public class CustomerInfoController {
         // Veritabanından ya da sabit listeden ürünleri yükle
         // Örnek ürünler ekleyelim
         List<Product> products = List.of(
-                new Product(1, "Cola", 15.0, 50, "beverage"),
-                new Product(2, "Popcorn", 25.0, 50, "biscuit"),
-                new Product(3, "Toy Story Figure", 45.0, 20, "toy")
+                new Product(1, "Cola", 15.0, 50),
+                new Product(2, "Popcorn", 25.0, 50),
+                new Product(3, "Toy Story Figure", 45.0, 20)
         );
         productsTable.getItems().addAll(products);
     }
@@ -148,7 +148,7 @@ public class CustomerInfoController {
 
     private void loadMovieSearch() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("MovieSearch.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/MovieSearch.fxml"));
             Parent movieSearchView = loader.load();
             MovieSearchController movieController = loader.getController();
             movieController.setMainController(mainController);
@@ -204,27 +204,27 @@ public class CustomerInfoController {
         this.movieData = movie;
         this.sessionData = session;
         this.selectedSeats = seats;
-        updateBookingInfo();
+        // updateBookingInfo();
     }
 
-    private void updateBookingInfo() {
-        movieInfoLabel.setText(String.format("Movie: %s - Hall: %s - Date: %s",
-                movieData.getTitle(), sessionData.getHall(), sessionData.getDateTime()));
+    // private void updateBookingInfo() {
+    //     movieInfoLabel.setText(String.format("Movie: %s - Hall: %s - Date: %s",
+    //             movieData.getTitle(), sessionData.getHall(), sessionData.getDateTime()));
 
-        String seatNumbers = selectedSeats.stream()
-                .map(Seat::getSeatNumber)
-                .collect(Collectors.joining(", "));
-        selectedSeatsLabel.setText("Selected Seats: " + seatNumbers);
+    //     String seatNumbers = selectedSeats.stream()
+    //             .map(Seat::getSeatNumber)
+    //             .collect(Collectors.joining(", "));
+    //     selectedSeatsLabel.setText("Selected Seats: " + seatNumbers);
 
-        calculateInitialTotal();
-    }
+    //     calculateInitialTotal();
+    // }
 
-    private void calculateInitialTotal() {
-        totalTicketPrice = selectedSeats.stream()
-                .mapToDouble(Seat::getPrice)
-                .sum();
-        updateTotalPrice();
-    }
+    // private void calculateInitialTotal() {
+    //     totalTicketPrice = selectedSeats.stream()
+    //             // .mapToDouble(Seat::getPrice)
+    //             // .sum();
+    //     updateTotalPrice();
+    // }
 
     private void validateAge() {
         try {
@@ -264,7 +264,7 @@ public class CustomerInfoController {
     @FXML
     private void handleBack() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("SeatSelection.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/SeatSelection.fxml"));
             Parent seatView = loader.load();
 
             SeatSelectionController seatController = loader.getController();

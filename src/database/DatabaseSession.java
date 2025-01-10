@@ -97,14 +97,16 @@ public class DatabaseSession implements DatabaseSource{
         return sessions;
     }
 
-    public ArrayList<String> getSessionHours(){
+    public ArrayList<String> getSessionHours(int movieId){
 
         ArrayList<String> sessions = new ArrayList<String>();
-        String query = "SELECT DISTINCT session_time FROM session";
+        String query = "SELECT DISTINCT session_time FROM session WHERE movieId = ?";
 
-        try{
+        try(PreparedStatement prStatement = connection.prepareStatement(query)){
 
-            ResultSet rs = executeQuery(query);
+            prStatement.setInt(1, movieId);
+
+            ResultSet rs = prStatement.executeQuery();
 
             while(rs != null && rs.next()){
 
@@ -112,6 +114,63 @@ public class DatabaseSession implements DatabaseSource{
 
                 String dateTime = rs.getString("session_time");
                 ses= dateTime.substring(11, 16);
+                sessions.add(ses);
+
+            }
+        }
+        catch(SQLException sqlException){
+            sqlException.printStackTrace();
+        }
+
+        return sessions;
+    }
+
+    public ArrayList<String> getHallNames(int movieId){
+
+        ArrayList<String> sessions = new ArrayList<String>();
+        String query = "SELECT DISTINCT hallId FROM session WHERE movieId = ?";
+
+        try(PreparedStatement prStatement = connection.prepareStatement(query)){
+
+            prStatement.setInt(1, movieId);
+
+            ResultSet rs = prStatement.executeQuery();
+
+            while(rs != null && rs.next()){
+
+                String ses = "";
+                DatabaseHalls dataH = new DatabaseHalls();
+                dataH.connectDatabase();
+                ses=dataH.getHallNames(rs.getInt("hallId"));
+                
+                if(!ses.equals(""))
+                    sessions.add(ses);
+
+            }
+        }
+        catch(SQLException sqlException){
+            sqlException.printStackTrace();
+        }
+
+        return sessions;
+    }
+
+    public ArrayList<String> getSessionDates(int movieId){
+
+        ArrayList<String> sessions = new ArrayList<String>();
+        String query = "SELECT * FROM session WHERE movieId = ?";
+
+        try(PreparedStatement prStatement = connection.prepareStatement(query)){
+
+            prStatement.setInt(1, movieId);
+
+            ResultSet rs = prStatement.executeQuery();
+
+            while(rs != null && rs.next()){
+
+                String ses = "";
+                String dateTime = rs.getString("session_time");
+                ses= dateTime.substring(0, 10);
                 sessions.add(ses);
 
             }

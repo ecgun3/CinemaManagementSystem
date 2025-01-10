@@ -1,32 +1,54 @@
 package application;
 public class Seat {
     private int id;
-    private String seatNumber;
-    private Session session;
+    private String seat;
+    private int session;
     private boolean isOccupied;
-    private double price;
 
-    public Seat(int id, String seatNumber, Session session, boolean isOccupied, double price) {
-        this.id = id;
-        this.seatNumber = seatNumber;
-        this.session = session;
-        this.isOccupied = isOccupied;
-        this.price = price;
+    public Seat() {
+        this.id = 0;
+        this.seat = null;
+        this.session = 0;
+        this.isOccupied = false;
     }
 
-    // Getter ve Setter metodları
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public Seat(int id, String seat, int session, boolean isOccupied) {
+        this.id = id;
+        this.seat = seat;
+        this.session = session;
+        this.isOccupied = isOccupied;
+    }
 
-    public String getSeatNumber() { return seatNumber; }
-    public void setSeatNumber(String seatNumber) { this.seatNumber = seatNumber; }
+    public int getId() {
+        return id;
+    }
 
-    public Session getSession() { return session; }
-    public void setSession(Session session) { this.session = session; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public boolean isOccupied() { return isOccupied; }
-    public void setOccupied(boolean occupied) { isOccupied = occupied; }
+    public String getSeat() {
+        return seat;
+    }
 
-    public double getPrice() { return price; }
-    public void setPrice(double price) { this.price = price; }
+    public void setSeat(String seat) {
+        this.seat = seat;
+    }
+
+    public int getSession() {
+        return session;
+    }
+
+    public void setSession(int session) {
+        this.session = session;
+    }
+
+    public boolean isOccupied() {
+        return isOccupied;
+    }
+
+    public void setOccupied(boolean isOccupied) {
+        this.isOccupied = isOccupied;
+    }
+
 }

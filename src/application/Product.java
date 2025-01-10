@@ -14,12 +14,11 @@ public class Product {
         // this.type = null;
     }
 
-    public Product(int id, String name, double price, int stock, String type) {
+    public Product(int id, String name, double price, int stock) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.stock = stock;
-        // this.type = type;
     }
 
     // Getters

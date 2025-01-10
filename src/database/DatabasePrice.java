@@ -1,11 +1,11 @@
 package database;
-
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.ArrayList;
 
 import application.Halls;
 import application.Movie;
+import application.Price;
 import application.Seat;
 
 import java.sql.DriverManager;
@@ -13,7 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class DatabaseSeats implements DatabaseSource{
+public class DatabasePrice implements DatabaseSource{
     
     private Connection connection; 
 
@@ -55,56 +55,27 @@ public class DatabaseSeats implements DatabaseSource{
         }
     }
 
-    public ArrayList<Seat> getSeats(int id){
+    public Price getPrices(){
 
-        String query = "SELECT * FROM seats WHERE session_id = ?";
-        ArrayList<Seat> seats = new ArrayList<>();
+        Price price = new Price();
+        String query = "SELECT * FROM ticketprices";
 
-        try(PreparedStatement prStatement = connection.prepareStatement(query)){
-            
-            prStatement.setInt(1,id);
-
-            ResultSet rs = prStatement.executeQuery();
-
-            while (rs.next()){
-                Seat seat = new Seat();
-
-                seat.setId(rs.getInt("id"));
-                seat.setSeat(rs.getString("seatNo"));
-                seat.setSession(rs.getInt("session_id"));
-                seat.setOccupied(rs.getBoolean("taken"));
-                seats.add(seat);
-
-            }
-            
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
-        } 
-
-        return seats;
-    }
-
-    public Boolean checkSeat(int id, String seatNo){
-        
-        String query = "SELECT * FROM seats WHERE session_id = ? AND seatNo = ?";
-        Boolean bl = false;
-
-        try(PreparedStatement prStatement = connection.prepareStatement(query)){
-            
-            prStatement.setInt(1,id);
-            prStatement.setString(2,seatNo);
-
-            ResultSet rs = prStatement.executeQuery();
+        try{
+            ResultSet rs = executeQuery(query);
 
             while (rs.next()){ 
-                bl = rs.getBoolean("taken");
+
+                price.setPrice(rs.getDouble("price"));
+                price.setTaxPercentage(rs.getInt("tax"));
+                price.setDiscountPercentage(rs.getInt("discount"));
+
             }
             
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
         } 
     
-        return bl;
+        return price;
     }
 
     public void disconnectDatabase(){
@@ -118,5 +89,5 @@ public class DatabaseSeats implements DatabaseSource{
         catch(SQLException sqlException){
         }
     }
-
+    
 }

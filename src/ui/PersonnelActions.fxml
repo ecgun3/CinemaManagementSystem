@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="369.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ManagerController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="369.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.PersonnelActionsController">
    <children>
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
          <children>
@@ -26,7 +26,7 @@
       </AnchorPane>
       <TabPane prefHeight="591.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-            <Tab fx:id="Logout" text="Personnel Actions View">
+            <Tab text="Personnel Actions View">
                <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="362.0" prefWidth="599.0">
                      <children>
@@ -47,13 +47,13 @@
                               <VBox prefHeight="0.0" prefWidth="600.0" />
                            </children>
                         </VBox>
-                        <Button fx:id="backToManagerMenu" layoutX="37.0" layoutY="249.0" mnemonicParsing="false" onAction="#handleBackToManagerMenu" style="-fx-background-color: #C8A2C8;" text="Back to Manager Menu" />
-                        <Button fx:id="Logout" layoutX="401.0" layoutY="249.0" mnemonicParsing="false" onAction="#handleLogout" prefHeight="26.0" prefWidth="154.0" style="-fx-background-color: #C8A2C8;" text="Logout" />
+                        <Button fx:id="backToManagerMenu" layoutX="37.0" layoutY="249.0" mnemonicParsing="false" onAction="#handleBackToManagerMenuAction" style="-fx-background-color: #C8A2C8;" text="Back to Manager Menu" />
+                        <Button fx:id="Logout" layoutX="401.0" layoutY="249.0" mnemonicParsing="false" onAction="#handleLogoutAction" prefHeight="26.0" prefWidth="154.0" style="-fx-background-color: #C8A2C8;" text="Logout" />
                      </children>
                   </AnchorPane>
                </content>
             </Tab>
-            <Tab fx:id="Logout" text="Hire Personnel">
+            <Tab text="Hire Personnel">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="280.0" prefWidth="551.0">
                      <children>
@@ -64,10 +64,10 @@
                         <Label layoutX="84.0" layoutY="90.0" text="Last Name" />
                         <Label layoutX="84.0" layoutY="136.0" text="Username" />
                         <Label layoutX="100.0" layoutY="181.0" text="Role" />
-                        <ChoiceBox fx:id="RoleChoice" layoutX="185.0" layoutY="177.0" onMouseClicked="#handleRoleSelection" prefWidth="150.0" />
-                        <Button fx:id="backToManagerMenu1" layoutX="37.0" layoutY="249.0" mnemonicParsing="false" onAction="#handleBackToManagerMenu" style="-fx-background-color: #C8A2C8;" text="Back to Manager Menu" />
-                        <Button fx:id="Logout" layoutX="401.0" layoutY="249.0" mnemonicParsing="false" onAction="#handleLogout" prefHeight="26.0" prefWidth="154.0" style="-fx-background-color: #C8A2C8;" text="Logout" />
-                        <Button fx:id="hireButton" layoutX="361.0" layoutY="111.0" mnemonicParsing="false" onAction="#handleHire" style="-fx-background-color: #89CFF0;" text="Hire" />
+                        <ChoiceBox fx:id="RoleChoice" layoutX="180.0" layoutY="177.0" prefWidth="150.0" />
+                        <Button fx:id="backToManagerMenu1" layoutX="37.0" layoutY="249.0" mnemonicParsing="false" onAction="#handleBackToManagerMenuAction" style="-fx-background-color: #C8A2C8;" text="Back to Manager Menu" />
+                        <Button fx:id="Logout1" layoutX="401.0" layoutY="249.0" mnemonicParsing="false" onAction="#handleLogoutAction" prefHeight="26.0" prefWidth="154.0" style="-fx-background-color: #C8A2C8;" text="Logout" />
+                        <Button fx:id="ApplyHire" layoutX="395.0" layoutY="107.0" mnemonicParsing="false" text="Apply" />
                      </children>
                      <padding>
                         <Insets bottom="20.0" />
@@ -75,12 +75,12 @@
                   </AnchorPane>
               </content>
             </Tab>
-            <Tab fx:id="Logout" text="Fire Personnel">
+            <Tab text="Fire Personnel">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TextField fx:id="SearchPersonnelFire" layoutX="73.0" layoutY="24.0" prefHeight="26.0" prefWidth="186.0" promptText="Enter Personnel ID or username" />
-                        <Button fx:id="backToManagerMenu2" layoutX="37.0" layoutY="249.0" mnemonicParsing="false" style="-fx-background-color: #C8A2C8;" text="Back to Manager Menu" />
+                        <TextField fx:id="SearchPersonnelFire" layoutX="73.0" layoutY="24.0" prefHeight="26.0" prefWidth="186.0" promptText="Enter Personnel username" />
+                        <Button fx:id="backToManagerMenu2" layoutX="37.0" layoutY="249.0" mnemonicParsing="false" onAction="#handleBackToManagerMenuAction" style="-fx-background-color: #C8A2C8;" text="Back to Manager Menu" />
                         <Label layoutX="18.0" layoutY="28.0" text="Search" />
                         <TableView fx:id="personnelAction1" layoutX="14.0" layoutY="70.0" prefHeight="70.0" prefWidth="580.0">
                            <columns>
@@ -93,17 +93,17 @@
                         </TableView>
                         <Button fx:id="SearchFireClick" layoutX="278.0" layoutY="24.0" mnemonicParsing="false" style="-fx-background-color: #89CFF0;" text="Click" />
                         <Button fx:id="ClickFire" layoutX="253.0" layoutY="162.0" mnemonicParsing="false" style="-fx-background-color: #89CFF0;" text="Fire Personnel" />
-                        <Button fx:id="Logout" layoutX="401.0" layoutY="249.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="154.0" style="-fx-background-color: #C8A2C8;" text="Logout" />
+                        <Button fx:id="Logout2" layoutX="401.0" layoutY="249.0" mnemonicParsing="false" onAction="#handleLogoutAction" prefHeight="26.0" prefWidth="154.0" style="-fx-background-color: #C8A2C8;" text="Logout" />
                      </children>
                   </AnchorPane>
               </content>
             </Tab>
-            <Tab fx:id="Logout" text="Edit Personnel">
+            <Tab text="Edit Personnel">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TextField fx:id="SearchPersonnelEdit" layoutX="73.0" layoutY="24.0" prefHeight="26.0" prefWidth="186.0" promptText="Enter Personnel ID or username" />
-                        <Button fx:id="backToManagerMenu21" layoutX="37.0" layoutY="249.0" mnemonicParsing="false" style="-fx-background-color: #C8A2C8;" text="Back to Manager Menu" />
+                        <TextField fx:id="SearchPersonnelEdit" layoutX="73.0" layoutY="24.0" prefHeight="26.0" prefWidth="186.0" promptText="Enter Personnel username" />
+                        <Button fx:id="backToManagerMenu21" layoutX="37.0" layoutY="249.0" mnemonicParsing="false" onAction="#handleBackToManagerMenuAction" style="-fx-background-color: #C8A2C8;" text="Back to Manager Menu" />
                         <Label layoutX="18.0" layoutY="28.0" text="Search" />
                         <TableView fx:id="personnelAction11" layoutX="14.0" layoutY="70.0" prefHeight="70.0" prefWidth="580.0">
                            <columns>
@@ -121,7 +121,7 @@
                         <TextField fx:id="EditPassword" layoutX="352.0" layoutY="151.0" prefHeight="26.0" prefWidth="122.0" />
                         <TextField fx:id="EditRole" layoutX="474.0" layoutY="151.0" prefHeight="26.0" prefWidth="118.0" />
                         <Button fx:id="PersonnelEditApply" layoutX="254.0" layoutY="187.0" mnemonicParsing="false" style="-fx-background-color: #89CFF0;" text="Apply Changes" />
-                        <Button fx:id="Logout" layoutX="401.0" layoutY="249.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="154.0" style="-fx-background-color: #C8A2C8;" text="Logout" />
+                        <Button fx:id="Logout3" layoutX="401.0" layoutY="249.0" mnemonicParsing="false" onAction="#handleLogoutAction" prefHeight="26.0" prefWidth="154.0" style="-fx-background-color: #C8A2C8;" text="Logout" />
                      </children>
                   </AnchorPane>
                </content>

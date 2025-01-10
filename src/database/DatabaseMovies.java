@@ -84,56 +84,30 @@ public class DatabaseMovies implements DatabaseSource{
         return movies;
     }
 
-    public ArrayList<String> getGenres(){
-
-        ArrayList<String> genres = new ArrayList<String>();
-        String query = "SELECT DISTINCT genre FROM movies";
-
-        try{
-
-            ResultSet rs = executeQuery(query);
-
-            while(rs != null && rs.next()){
-
-                String str = rs.getString("genre");
-
-                genres.add(str);
-            }
-        }
-
-        catch(SQLException sqlException){
-            sqlException.printStackTrace();
-        }
-
-        return genres;
-    }
 
     public ArrayList<Movie> getMovieGenre(String genre){
 
         ArrayList<Movie> movies = new ArrayList<Movie>();
-        String query = "SELECT * FROM movies";
+        String query = "SELECT * FROM movies WHERE genre LIKE ?";
         Movie movie;
 
-        try{
+        try(PreparedStatement prStatement = connection.prepareStatement(query)){
 
-            ResultSet rs = executeQuery(query);
+            prStatement.setString(1, "%" + genre + "%");
+
+            ResultSet rs = prStatement.executeQuery();
 
             while(rs != null && rs.next()){
 
                 movie = new Movie();
+                movie.setId(rs.getInt("idMovie"));
+                movie.setTitle(rs.getString("title"));
+                movie.setYear(rs.getInt("year"));
+                movie.setGenre(rs.getString("genre"));
+                movie.setSummary(rs.getString("summary"));
+                movie.setPosterImage(rs.getBytes("poster_url"));
+                movies.add(movie);
 
-                if(rs.getString("genre").equalsIgnoreCase(genre)){
-
-                    movie.setId(rs.getInt("idMovie"));
-                    movie.setTitle(rs.getString("title"));
-                    movie.setYear(rs.getInt("year"));
-                    movie.setGenre(rs.getString("genre"));
-                    movie.setSummary(rs.getString("summary"));
-                    movie.setPosterImage(rs.getBytes("poster_url"));
-                    movies.add(movie);
-
-                }
-                
             }
         }
 

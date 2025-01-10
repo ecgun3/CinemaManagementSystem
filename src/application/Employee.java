@@ -27,7 +27,13 @@ public class Employee {
         this.dateOfStart = null;
         this.email = null;
     }
-    
+    public Employee( String name, String surname ,String username,String role){
+        this.name = name;
+        this.surname = surname;
+        this.username = username;
+        this.role = role;
+    }
+
     public Employee(int employeeID, String username, String password, String role, String name, String surname,
             String phoneNo, String email, Date dateOfBirth, Date dateOfStart) {
         this.employeeID = employeeID;

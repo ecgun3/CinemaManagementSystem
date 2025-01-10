@@ -107,6 +107,9 @@ public class MovieSearchController {
         searchTypeCombo.getItems().addAll(SEARCH_TYPES);
         searchTypeCombo.getSelectionModel().selectFirst();
 
+        //Başlangıçta filmleri listele
+        movieResultsTable.getItems().setAll(showMovies());
+
         //Tablo sütunları ayarı:
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
         genreColumn.setCellValueFactory(new PropertyValueFactory<>("genre"));
@@ -118,13 +121,15 @@ public class MovieSearchController {
             if(newWal != null) {
                 selectedMovie = newWal;
                 updateMovieDetails();
+                SessionSelectionController.movieData = selectedMovie;
             }
         });
 
         //next butonu:
         searchButton.setOnAction(event -> handleSearch());
         cancelButton.setOnAction(event -> handleCancel());
-        nextButton.setOnAction(event -> loadSessionSelection());    }
+        nextButton.setOnAction(event -> loadSessionSelection());    
+    }
 
     private void updateMovieDetails() {
         if (selectedMovie != null) {
@@ -174,7 +179,7 @@ public class MovieSearchController {
         String searchTerm = searchTextField.getText().trim();
 
         if (searchTerm.isEmpty()) {
-            showError("Search Error", "Please enter a search term");
+            movieResultsTable.getItems().setAll(showMovies());
             return;
         }
 
@@ -198,6 +203,15 @@ public class MovieSearchController {
             showError("Search Error", "Error while searching: " + e.getMessage());
         }
     }
+
+    private List<Movie> showMovies() {
+        // Veritabanından genre'a göre filmleri çek
+        mov.connectDatabase();        
+        ArrayList<Movie> movies = mov.getMovies();
+        mov.disconnectDatabase();
+        return movies; // TODO: implement
+    }
+
 
     // Search metodları (veritabanı bağlantısı gerekecek)
     private List<Movie> searchByGenre(String genre) {
@@ -244,6 +258,7 @@ public class MovieSearchController {
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/SessionSelection.fxml"));
+
             Parent sessionView = loader.load();
 
             SessionSelectionController sessionController = loader.getController();
@@ -251,10 +266,11 @@ public class MovieSearchController {
                 throw new RuntimeException("Could not load session controller");
             }
 
-            sessionController.setMainController(mainController);
             sessionController.setMovieData(selectedMovie);
+            sessionController.setMainController(mainController);
 
             mainController.getContentArea().getChildren().setAll(sessionView);
+
         } catch (IOException e) {
             showError("Loading Error", "Could not load session selection screen: " + e.getMessage());
         }

@@ -75,10 +75,10 @@ public class LoginController {
                 fxmlFile = "/ui/MainCashier.fxml";
                 break;
             case "admin":
-                fxmlFile = "/ui/MainAdmin.fxml";
+                fxmlFile = "/ui/Admin.fxml";
                 break;
             case "manager":
-                fxmlFile = "/ui/MainManager.fxml";
+                fxmlFile = "/ui/ManagerMenu.fxml";
                 break;
             default:
                 throw new IllegalStateException("Unknown role: " + role);

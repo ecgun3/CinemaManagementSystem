@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="316.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ManagerController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="316.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.InventoryController">
    <children>
       <Label alignment="CENTER" prefHeight="17.0" prefWidth="601.0" text="INVENTORY">
          <font>
@@ -58,7 +58,7 @@
          <children>
             <VBox alignment="BOTTOM_LEFT" prefHeight="139.0" prefWidth="281.0">
                <children>
-                  <Button fx:id="backToManagerMenu" alignment="BOTTOM_LEFT" contentDisplay="CENTER" lineSpacing="100.0" mnemonicParsing="false" onAction="#handleBackToManagerMenu" prefHeight="0.0" prefWidth="163.0" style="-fx-background-color: #C8A2C8;" text="Back to Manager Menu">
+                  <Button fx:id="backToManagerMenu" alignment="BOTTOM_LEFT" contentDisplay="CENTER" lineSpacing="100.0" mnemonicParsing="false" onAction="#handleBackToManagerMenuAction" prefHeight="0.0" prefWidth="163.0" style="-fx-background-color: #C8A2C8;" text="Back to Manager Menu">
                      <VBox.margin>
                         <Insets bottom="10.0" left="10.0" />
                      </VBox.margin></Button>
@@ -66,12 +66,12 @@
             </VBox>
             <VBox alignment="TOP_CENTER" prefHeight="139.0" prefWidth="282.0">
                <children>
-                  <Button fx:id="updateStockOK" alignment="CENTER" mnemonicParsing="false" onAction="#handleApplyChangesUpdateStock" prefHeight="37.0" prefWidth="101.0" style="-fx-background-color: #89CFF0;" text="Apply Changes">
+                  <Button fx:id="updateStockOK" alignment="CENTER" mnemonicParsing="false" onAction="#updateStock" prefHeight="37.0" prefWidth="101.0" style="-fx-background-color: #89CFF0;" text="Apply Changes">
                      <opaqueInsets>
                         <Insets top="5.0" />
                      </opaqueInsets>
                   </Button>
-                  <Button fx:id="backToManagerMenu1" alignment="BOTTOM_CENTER" contentDisplay="CENTER" lineSpacing="100.0" mnemonicParsing="false" onAction="#handleLogout" prefHeight="0.0" prefWidth="163.0" style="-fx-background-color: #C8A2C8;" text="Logout">
+                  <Button fx:id="Logout" alignment="BOTTOM_CENTER" contentDisplay="CENTER" lineSpacing="100.0" mnemonicParsing="false" onAction="#handleLogoutAction" prefHeight="0.0" prefWidth="163.0" style="-fx-background-color: #C8A2C8;" text="Logout">
                      <VBox.margin>
                         <Insets bottom="10.0" top="50.0" />
                      </VBox.margin>

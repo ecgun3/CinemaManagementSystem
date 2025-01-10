@@ -96,10 +96,34 @@ public class DatabaseHalls implements DatabaseSource {
             
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
-        }
+        } 
     
         return halls;
     }
+
+    public String getHallNames(int hallId){
+
+        String hall = "";
+        String query = "SELECT DISTINCT name FROM halls WHERE idhalls = ?";
+
+        try(PreparedStatement prStatement = connection.prepareStatement(query)){
+
+            prStatement.setInt(1, hallId);
+
+            ResultSet rs = prStatement.executeQuery();
+
+            while (rs.next()){ 
+
+                hall = rs.getString("name");
+            }
+            
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        } 
+    
+        return hall;
+    }
+
 
     public void disconnectDatabase(){
 

@@ -1,4 +1,3 @@
-
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
@@ -14,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ManagerController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.PriceController">
     <children>
         <TabPane prefHeight="404.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
             <tabs>
@@ -32,8 +31,8 @@
                                 </TableView>
                             </children>
                             </VBox>
-                        <Button fx:id="BackToManagerMenu" layoutX="27.0" layoutY="311.0" mnemonicParsing="false" onAction="#handleBackToManager" style="-fx-background-color: #C8A2C8;" text="Back To Manager Menu" />
-                        <Button fx:id="Logout" layoutX="401.0" layoutY="311.0" mnemonicParsing="false" onAction="#handleLogout" prefHeight="26.0" prefWidth="141.0" style="-fx-background-color: #C8A2C8;" text="Logout" />
+                        <Button fx:id="BackToManagerMenu" layoutX="27.0" layoutY="311.0" mnemonicParsing="false" onAction="#handleBackToManagerMenuAction" style="-fx-background-color: #C8A2C8;" text="Back To Manager Menu" />
+                        <Button fx:id="Logout" layoutX="401.0" layoutY="311.0" mnemonicParsing="false" onAction="#handleLogoutAction" prefHeight="26.0" prefWidth="141.0" style="-fx-background-color: #C8A2C8;" text="Logout" />
                         <HBox layoutX="272.0" layoutY="119.0" prefHeight="23.0" prefWidth="130.0" />
                         <VBox layoutX="360.0" layoutY="13.0" prefHeight="199.0" prefWidth="150.0">
                            <children>
@@ -45,7 +44,8 @@
                               <TextField fx:id="setNewPrice1" promptText="Set New Price" />
                               <TextField fx:id="setNewPrice2" promptText="Set New Price" />
                               <TextField fx:id="setNewPrice3" promptText="Set New Price" />
-                              <Button fx:id="SetPricesButton" mnemonicParsing="false" onAction="#handleApplyChanges" prefHeight="23.0" prefWidth="156.0" style="-fx-background-color: #89CFF0;" text="Apply Changes" />
+                              <TextField fx:id="setNewPrice4" layoutX="10.0" layoutY="87.0" promptText="Set New Price" />
+                              <Button fx:id="SetPricesButton" mnemonicParsing="false" prefHeight="23.0" prefWidth="156.0" style="-fx-background-color: #89CFF0;" text="Apply Changes" />
                            </children>
                         </VBox>
                         </children>
@@ -58,19 +58,36 @@
                      <children>
                         <VBox prefHeight="100.0" prefWidth="490.0">
                            <children>
-                              <TableView fx:id="AgeBasedDiscountRate" prefHeight="90.0" prefWidth="480.0">
-                                 <columns>
-                                    <TableColumn fx:id="AgeUnder18" prefWidth="250.0" text="Age Under 18" />
-                                    <TableColumn fx:id="AgeOver60" prefWidth="250.0" text="Age Over 60" />
-                                 </columns>
-                                 <VBox.margin>
-                                    <Insets left="10.0" top="10.0" />
-                                 </VBox.margin>
-                              </TableView>
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                 <children>
+                                    <Label layoutX="59.0" layoutY="3.0" prefHeight="22.0" prefWidth="166.0" text="Discount rate for Age Under 18" />
+                                    <Label layoutX="295.0" layoutY="6.0" text="Discount Rate for Age Over 60" />
+                                    <Label fx:id="DiscountRate1" layoutX="91.0" layoutY="23.0" prefHeight="70.0" prefWidth="102.0">
+                                       <font>
+                                          <Font size="64.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="DiscountRate2" layoutX="346.0" layoutY="23.0" prefHeight="70.0" prefWidth="102.0">
+                                       <font>
+                                          <Font size="64.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="59.0" layoutY="43.0" text="\%">
+                                       <font>
+                                          <Font size="36.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="316.0" layoutY="43.0" text="\%">
+                                       <font>
+                                          <Font size="36.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
                            </children>
                         </VBox>
-                        <Button fx:id="BackToManagerMenu" layoutX="33.0" layoutY="313.0" mnemonicParsing="false" onAction="#handleBackToManager" prefHeight="27.0" prefWidth="161.0" style="-fx-background-color: #C8A2C8;" text="Back To Manager Menu" />
-                        <Button fx:id="BackToManagerMenu1" layoutX="384.0" layoutY="313.0" mnemonicParsing="false" onAction="#handleLogout" prefHeight="27.0" prefWidth="161.0" style="-fx-background-color: #C8A2C8;" text="Logout" />
+                        <Button fx:id="BackToManagerMenu1" layoutX="33.0" layoutY="313.0" mnemonicParsing="false" onAction="#handleBackToManagerMenuAction" prefHeight="27.0" prefWidth="161.0" style="-fx-background-color: #C8A2C8;" text="Back To Manager Menu" />
+                        <Button fx:id="Logout1" layoutX="384.0" layoutY="313.0" mnemonicParsing="false" onAction="#handleLogoutAction" prefHeight="27.0" prefWidth="161.0" style="-fx-background-color: #C8A2C8;" text="Logout" />
                         <VBox alignment="CENTER" layoutX="33.0" layoutY="114.0" prefHeight="88.0" prefWidth="200.0" AnchorPane.topAnchor="114.0">
                            <children>
                               <Label alignment="CENTER" prefHeight="17.0" prefWidth="200.0" text="Edit Discount Rate " textAlignment="CENTER">
@@ -83,7 +100,7 @@
                                     <Insets bottom="5.0" />
                                  </VBox.margin>
                               </TextField>
-                              <Button fx:id="ApplyDiscount18" mnemonicParsing="false" onAction="#handleApplyChanges" prefHeight="27.0" prefWidth="201.0" style="-fx-background-color: #89CFF0;" text="Apply Changes" />
+                              <Button fx:id="ApplyDiscount18" mnemonicParsing="false" prefHeight="27.0" prefWidth="201.0" style="-fx-background-color: #89CFF0;" text="Apply Changes" />
                            </children>
                         </VBox>
                         <VBox alignment="CENTER" layoutX="278.0" layoutY="114.0" prefHeight="88.0" prefWidth="200.0">
@@ -98,7 +115,7 @@
                                     <Insets bottom="5.0" />
                                  </VBox.margin>
                               </TextField>
-                              <Button fx:id="ApplyDiscount60" mnemonicParsing="false" onAction="#handleApplyChanges" prefHeight="27.0" prefWidth="201.0" style="-fx-background-color: #89CFF0;" text="Apply Changes" />
+                              <Button fx:id="ApplyDiscount60" mnemonicParsing="false" prefHeight="27.0" prefWidth="201.0" style="-fx-background-color: #89CFF0;" text="Apply Changes" />
                            </children>
                         </VBox>
                      </children>

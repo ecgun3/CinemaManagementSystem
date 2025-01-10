@@ -11,6 +11,7 @@ import javafx.fxml.Initializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 import database.DatabaseHalls;
 import database.DatabaseSession;
@@ -24,7 +25,7 @@ import java.time.LocalTime;
 public class SessionSelectionController {
 
     private MainCashierController mainController;
-    private Movie movieData;
+    public static Movie movieData;
     private Session selectedSession;
 
     private static ArrayList<String> HALLS = new ArrayList<>();
@@ -66,30 +67,35 @@ public class SessionSelectionController {
     @FXML
     private void initialize() {
 
-        DatabaseHalls dataH = new DatabaseHalls();
-        dataH.connectDatabase();
-        ArrayList<Halls> halls = dataH.viewHalls();
-
-        for(Halls hall : halls)
-            HALLS.add(hall.getName());
-
         DatabaseSession dataS = new DatabaseSession();
         dataS.connectDatabase();
-        SESSIONS=dataS.getSessionHours();
+        SESSIONS=dataS.getSessionHours(movieData.getId());
+        HALLS = dataS.getHallNames(movieData.getId());
 
         //Combobox'ları doldurmak için
         hallCombo.getItems().addAll(HALLS);
         sessionCombo.getItems().addAll(SESSIONS);
 
+        List<LocalDate> allowedDates = new ArrayList<>();
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // sadece filmin olduğu seans günlerini veri olarak alır
+            List<String> dates = dataS.getSessionDates(movieData.getId());
+
+            for (String date : dates) {   // Changes strings to local dates
+                LocalDate localDate = LocalDate.parse(date, formatter);
+                allowedDates.add(localDate);
+
+            }
+
         //DatePicker'ı bugünden başlatıp 1 ay ile sınırlayalım
-        datePicker.setValue(LocalDate.now());
+        datePicker.setValue(allowedDates.getFirst());
         datePicker.setDayCellFactory(datePicker1 -> new DateCell() {
             @Override
             public void updateItem(LocalDate date, boolean empty) {
                 super.updateItem(date, empty);
                 LocalDate today = LocalDate.now();
                 LocalDate oneMonthLater = today.plusMonths(1);
-                setDisable(empty || date.compareTo(today) < 0 || date.compareTo(oneMonthLater) > 0);
+                setDisable(empty || date.compareTo(today) < 0 || date.compareTo(oneMonthLater) > 0 || !allowedDates.contains(date));
             }
         });
 
