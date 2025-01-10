@@ -36,6 +36,9 @@ public class MovieManagementController {
     private TableColumn<Movie, String> tableMoviePoster;
 
     @FXML
+    private TableColumn<Movie, String> tableMovieYear;
+
+    @FXML
     private TextField TitleAddMovie;
 
     @FXML
@@ -46,6 +49,9 @@ public class MovieManagementController {
 
     @FXML
     private ImageView PosterAddMovieImageView;
+
+    @FXML
+    private TextField YearAddMovie;
 
     private ObservableList<Movie> movieList;
 
@@ -58,6 +64,7 @@ public class MovieManagementController {
         tableMovieGenre.setCellValueFactory(cellData -> cellData.getValue().genreProperty());
         tableMovieSummary.setCellValueFactory(cellData -> cellData.getValue().summaryProperty());
         tableMoviePoster.setCellValueFactory(cellData -> cellData.getValue().posterProperty());
+        tableMovieYear.setCellValueFactory(cellData -> cellData.getValue().yearProperty());
 
         // Tablonun veri setini ayarla
         TableMovieManagement.setItems(movieList);
@@ -72,8 +79,9 @@ public class MovieManagementController {
         String genre = GenreAddMovie.getText().trim();
         String summary = SummaryAddMovie.getText().trim();
         String poster = PosterAddMovieImageView.getImage() != null ? PosterAddMovieImageView.getImage().getUrl() : "";
+        String year = YearAddMovie.getText().trim();
 
-        if (title.isEmpty() || genre.isEmpty() || summary.isEmpty() || poster.isEmpty()) {
+        if (title.isEmpty() || genre.isEmpty() || summary.isEmpty() || poster.isEmpty()|| year.isEmpty()) {
             showAlert(Alert.AlertType.WARNING, "Missing Information", "Please fill in all fields.");
             return;
         }
@@ -88,7 +96,18 @@ public class MovieManagementController {
             return;
         }
 
-        Movie newMovie = new Movie(title, genre, summary, poster);
+        try {
+            int yearValue = Integer.parseInt(year);
+            if (yearValue < 1800 || yearValue > 2025) {
+                showAlert(Alert.AlertType.WARNING, "Invalid Year", "Please enter a valid year (1800-2025).");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            showAlert(Alert.AlertType.WARNING, "Invalid Year", "Year must be a number.");
+            return;
+        }
+
+        Movie newMovie = new Movie(title, genre, summary, poster, year);
 
         try {
             addMovieToDatabase(newMovie);
@@ -189,6 +208,7 @@ public class MovieManagementController {
         GenreAddMovie.clear();
         SummaryAddMovie.clear();
         PosterAddMovieImageView.setImage(null);
+        YearAddMovie.clear();
     }
 
     private void loadMoviesFromDatabase() {
@@ -229,8 +249,14 @@ public class MovieManagementController {
 
     @FXML
     void summaryEnterPressed(ActionEvent event) {
-        // This method is triggered when the Enter key is pressed in the Summary TextField
-        handleAddButton(event); // Trigger the add movie button action (submit the movie data)
+        // Move focus to the Year TextField
+        YearAddMovie.requestFocus();
+    }
+
+    @FXML
+    void yearEnterPressed(ActionEvent event) {
+        // Move focus to the next logical UI element or remain focused if no further input is needed
+        TitleAddMovie.requestFocus(); // Or specify another TextField
     }
 
     @FXML
@@ -247,6 +273,23 @@ public class MovieManagementController {
             stage.show();
         } catch (IOException e) {
             showAlert(Alert.AlertType.ERROR, "Error", "An error occurred while loading the Admin page.");
+        }
+    }
+
+    @FXML
+    void handleLogoutButton(ActionEvent event) {
+        try {
+            // Load the Login.fxml file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
+            Parent root = loader.load();
+
+            // Get the current window (Stage) and set the new scene
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "An error occurred while loading the Login page.");
         }
     }
 
