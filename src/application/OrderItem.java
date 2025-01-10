@@ -8,6 +8,16 @@ public class OrderItem {
     private double total;
     private String type; // "ticket" veya "product"
 
+    public OrderItem() {
+        this.id = 0;
+        this.name = null;
+        this.quantity = 0;
+        this.price = 0;
+        this.discount = 0;
+        this.type = null;
+        this.total = 0;
+    }
+
     public OrderItem(int id, String name, int quantity, double price, double discount, String type) {
         this.id = id;
         this.name = name;

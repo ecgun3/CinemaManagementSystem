@@ -1,11 +1,8 @@
 package application;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
@@ -16,8 +13,12 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import database.DatabasePrice;
+import database.DatabaseProduct;
 
 
 public class CustomerInfoController {
@@ -27,7 +28,7 @@ public class CustomerInfoController {
     private Session sessionData;
     private List<Seat> selectedSeats;
     private double totalTicketPrice = 0.0;
-
+    private Price prices;
 
     @FXML
     private Button backButton;
@@ -103,18 +104,19 @@ public class CustomerInfoController {
         birthDateField.setOnAction(event -> validateAge());
 
         // Ürünleri yükle
+        DatabasePrice dataPr = new DatabasePrice();
+        dataPr.connectDatabase();
+        prices = dataPr.getPrices();
+        dataPr.disconnectDatabase();
         loadProducts();
     }
 
-    // Bunlar eksik:
     private void loadProducts() {
-        // Veritabanından ya da sabit listeden ürünleri yükle
-        // Örnek ürünler ekleyelim
-        List<Product> products = List.of(
-                new Product(1, "Cola", 15.0, 50),
-                new Product(2, "Popcorn", 25.0, 50),
-                new Product(3, "Toy Story Figure", 45.0, 20)
-        );
+        // Veritabanından ürünleri yükle
+        DatabaseProduct dataP = new DatabaseProduct();
+        dataP.connectDatabase();
+        List<Product> products = dataP.viewInventory();
+        dataP.disconnectDatabase();
         productsTable.getItems().addAll(products);
     }
 
@@ -124,26 +126,58 @@ public class CustomerInfoController {
 
     private void applyAgeDiscount() {
         // %50 indirim uygula
-        totalTicketPrice = totalTicketPrice * 0.5;
+        double discountRate = prices.getDiscountPercentage()/100;
+        totalTicketPrice = totalTicketPrice * discountRate;
         updateTotalPrice();
     }
 
     private double calculateProductsTotal() {
-        return productsTable.getItems().stream()
-                .mapToDouble(product -> product.getPrice() * product.getStock())
+        return summaryTable.getItems().stream()
+                .mapToDouble(product -> product.getPrice() * product.getQuantity())
                 .sum();
     }
 
     private void addToSummary(Product product) {
-        OrderItem item = new OrderItem(
-                0, // id
-                product.getName(),
-                1, // quantity
-                product.getPrice(),
-                0, // no discount for products
-                "product"
-        );
-        summaryTable.getItems().add(item);
+        if(product.getStock()>0){
+            int flag = 0;
+            for(OrderItem item : summaryTable.getItems()){
+                if(item.getName().equals(product.getName())){
+                    product.setStock(product.getStock()-1);
+                    flag=1;
+                    break;
+                }
+            }
+            if(flag==0){
+                OrderItem itemNew = new OrderItem(
+                    0, // id
+                    product.getName(),
+                    1, // quantity
+                    product.getPrice(),
+                    0, // no discount for products
+                    "product"
+                    );
+                summaryTable.getItems().add(itemNew);
+            }
+            summaryTable.refresh();
+            productsTable.refresh();
+        }
+    }
+
+    private void removeFromSummary(Product product) {
+        OrderItem itemToRemove = new OrderItem();
+        for(OrderItem item : summaryTable.getItems()){
+            if(item.getName().equals(product.getName())){
+                product.setStock(product.getStock()+1);
+                if(item.getQuantity()!=0)
+                    item.setQuantity(item.getQuantity()-1);
+                else
+                    itemToRemove=item;
+                break;
+            }
+        }
+        summaryTable.getItems().remove(itemToRemove);
+        summaryTable.refresh();
+        productsTable.refresh();
     }
 
     private void loadMovieSearch() {
@@ -162,7 +196,7 @@ public class CustomerInfoController {
         // Ürünler tablosu
         productNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         productPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
-        productQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        productQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("stock"));
         setupActionColumn();
 
         // Özet tablosu
@@ -204,29 +238,28 @@ public class CustomerInfoController {
         this.movieData = movie;
         this.sessionData = session;
         this.selectedSeats = seats;
-        // updateBookingInfo();
+        updateBookingInfo();
     }
 
-    // private void updateBookingInfo() {
-    //     movieInfoLabel.setText(String.format("Movie: %s - Hall: %s - Date: %s",
-    //             movieData.getTitle(), sessionData.getHall(), sessionData.getDateTime()));
+    private void updateBookingInfo() {
+        movieInfoLabel.setText(String.format("Movie: %s - Hall: %s - Date: %s",
+                movieData.getTitle(), sessionData.getHall().getName(), sessionData.getDateTime()));
 
-    //     String seatNumbers = selectedSeats.stream()
-    //             .map(Seat::getSeatNumber)
-    //             .collect(Collectors.joining(", "));
-    //     selectedSeatsLabel.setText("Selected Seats: " + seatNumbers);
+        String seatNumbers = selectedSeats.stream()
+                .map(Seat::getSeat)
+                .collect(Collectors.joining(", "));
+        selectedSeatsLabel.setText("Selected Seats: " + seatNumbers);
 
-    //     calculateInitialTotal();
-    // }
+        calculateInitialTotal();
+    }
 
-    // private void calculateInitialTotal() {
-    //     totalTicketPrice = selectedSeats.stream()
-    //             // .mapToDouble(Seat::getPrice)
-    //             // .sum();
-    //     updateTotalPrice();
-    // }
+    private void calculateInitialTotal() {
 
-    private void validateAge() {
+        totalTicketPrice = selectedSeats.size()*prices.getPrice();
+        updateTotalPrice();
+    }
+
+    private void validateAge() {//                                                      ECE date picker ile yapılacak!!!
         try {
             LocalDate birthDate = LocalDate.parse(birthDateField.getText(),
                     DateTimeFormatter.ofPattern("dd/MM/yyyy"));
@@ -249,16 +282,19 @@ public class CustomerInfoController {
 
     private void handleRemoveProduct(Product product) {
         // Remove product from summary
+        product.setStock(product.getStock() + 1);
+        removeFromSummary(product);
+        updateTotalPrice();
         // Update prices
     }
 
     private void updateTotalPrice() {
         double totalProducts = calculateProductsTotal();
         double total = totalTicketPrice + totalProducts;
-        double vat = total * 0.20; // 20% VAT
+        double vat = total * prices.getTaxPercentage()/100; // Taxes
 
         vatLabel.setText(String.format("%.2f TL", vat));
-        totalPriceLabel.setText(String.format("%.2f TL", total + vat));
+        totalPriceLabel.setText(String.format("%.2f TL", total));
     }
 
     @FXML

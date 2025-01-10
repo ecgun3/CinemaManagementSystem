@@ -71,7 +71,7 @@
          </padding>
          <children>
             <Label text="Order Summary" />
-            <TableView fx:id="s" prefHeight="200.0" prefWidth="200.0">
+            <TableView fx:id="summaryTable" prefHeight="200.0" prefWidth="200.0">
               <columns>
                 <TableColumn fx:id="itemNameColumn" prefWidth="75.0" text="Item" />
                 <TableColumn fx:id="itemQuantityColumn" prefWidth="75.0" text="Quantity" />

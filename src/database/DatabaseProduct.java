@@ -103,60 +103,59 @@ public class DatabaseProduct implements DatabaseSource {
     //     return types;
     // }
 
-    // public ArrayList<Product> getProducts(String type){
+    public ArrayList<Product> getProducts(String type){
 
-    //     ArrayList<Product> products = new ArrayList<Product>();
-    //     String query = "SELECT * FROM products";
+        ArrayList<Product> products = new ArrayList<Product>();
+        String query = "SELECT * FROM products";
 
-    //     try{
+        try{
 
-    //         ResultSet rs = executeQuery(query);
+            ResultSet rs = executeQuery(query);
 
-    //         while(rs != null && rs.next()){
+            while(rs != null && rs.next()){
 
-    //             Product product = new Product();
+                Product product = new Product();
 
-    //             if(rs.getString("type").equalsIgnoreCase(type)){
+                if(rs.getString("type").equalsIgnoreCase(type)){
 
-    //                 product.setId(rs.getInt("idproducts"));
-    //                 product.setName(rs.getString("name"));
-    //                 product.setPrice(rs.getDouble("price"));
-    //                 product.setStock(rs.getInt("stock"));
-    //                 product.setType(rs.getString("type"));
-    //                 products.add(product);
+                    product.setId(rs.getInt("idproducts"));
+                    product.setName(rs.getString("name"));
+                    product.setPrice(rs.getDouble("price"));
+                    product.setStock(rs.getInt("stock"));
+                    // product.setType(rs.getString("type"));
+                    products.add(product);
 
-    //             }
+                }
                 
-    //         }
-    //     }
+            }
+        }
 
-    //     catch(SQLException sqlException){
-    //         sqlException.printStackTrace();
-    //     }
+        catch(SQLException sqlException){
+            sqlException.printStackTrace();
+        }
 
-    //     return products;
-    // }
+        return products;
+    }
 
-    // public void insertProducts(Product product){
+    public void insertProducts(Product product){
 
-    //     String query = "INSERT INTO products (name, price, stock, type) VALUES (?,?,?,?)";
+        String query = "INSERT INTO products (name, price, stock) VALUES (?,?,?)";
 
-    //     try(PreparedStatement pStatement = connection.prepareStatement(query)){
+        try(PreparedStatement pStatement = connection.prepareStatement(query)){
             
-    //         pStatement.setString(1, product.getName());
-    //         pStatement.setDouble(2,product.getPrice());
-    //         pStatement.setInt(3,product.getStock());
-    //         pStatement.setString(4,product.getType());
+            pStatement.setString(1, product.getName());
+            pStatement.setDouble(2,product.getPrice());
+            pStatement.setInt(3,product.getStock());
 
-    //         if (pStatement.executeUpdate() > 0)
-    //             System.out.println("Product inserted successfully!");
-    //         else
-    //             System.out.println("Insert failed!");
-    //     }
-    //     catch(SQLException sqlException){
-    //         sqlException.printStackTrace();
-    //     }
-    // }
+            if (pStatement.executeUpdate() > 0)
+                System.out.println("Product inserted successfully!");
+            else
+                System.out.println("Insert failed!");
+        }
+        catch(SQLException sqlException){
+            sqlException.printStackTrace();
+        }
+    }
 
     public void updateProduct(Product product, String column, String value){
 
@@ -179,22 +178,22 @@ public class DatabaseProduct implements DatabaseSource {
 
     }
 
-    // public void deleteProduct(Product product){
+    public void deleteProduct(Product product){
 
-    //     int ID = product.getId();
-    //     String query = "DELETE FROM products WHERE idproducts = ?";
-    //     try(PreparedStatement pStatement = connection.prepareStatement(query)){
-    //         pStatement.setInt(1, ID);
-    //         if (pStatement.executeUpdate() > 0)
-    //             System.out.println("Product deleted successfully!");
-    //         else
-    //             System.out.println("Delete failed!");
-    //     }
-    //     catch(SQLException sqlException){
-    //         sqlException.printStackTrace();
-    //     }
+        int ID = product.getId();
+        String query = "DELETE FROM products WHERE idproducts = ?";
+        try(PreparedStatement pStatement = connection.prepareStatement(query)){
+            pStatement.setInt(1, ID);
+            if (pStatement.executeUpdate() > 0)
+                System.out.println("Product deleted successfully!");
+            else
+                System.out.println("Delete failed!");
+        }
+        catch(SQLException sqlException){
+            sqlException.printStackTrace();
+        }
 
-    // }
+    }
 
     public void editTicketPrice(){
 
