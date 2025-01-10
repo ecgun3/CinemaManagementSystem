@@ -238,25 +238,25 @@ public class MovieManagementController {
     @FXML
     void titleEnterPressed(ActionEvent event) {
         // This method is triggered when the Enter key is pressed in the Title TextField
-        GenreAddMovie.requestFocus(); // Move focus to the Genre TextField
+        GenreAddMovie.requestFocus();
     }
 
     @FXML
     void genreEnterPressed(ActionEvent event) {
         // This method is triggered when the Enter key is pressed in the Genre TextField
-        SummaryAddMovie.requestFocus(); // Move focus to the Summary TextField
+        SummaryAddMovie.requestFocus();
     }
 
     @FXML
     void summaryEnterPressed(ActionEvent event) {
-        // Move focus to the Year TextField
+        // This method is triggered when the Enter key is pressed in the Summary TextField
         YearAddMovie.requestFocus();
     }
 
     @FXML
     void yearEnterPressed(ActionEvent event) {
-        // Move focus to the next logical UI element or remain focused if no further input is needed
-        TitleAddMovie.requestFocus(); // Or specify another TextField
+        // This method is triggered when the Enter key is pressed in the Year TextField
+        TitleAddMovie.requestFocus();
     }
 
     @FXML
