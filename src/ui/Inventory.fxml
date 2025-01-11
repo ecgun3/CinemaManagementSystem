@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="316.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.InventoryController">
+   <children>
+      <Label alignment="CENTER" prefHeight="17.0" prefWidth="601.0" text="INVENTORY">
+         <font>
+            <Font name="System Bold Italic" size="24.0" />
+         </font>
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
+      </Label>
+      <HBox alignment="CENTER" prefHeight="171.0" prefWidth="600.0">
+         <children>
+            <TableView fx:id="productTable" prefHeight="120.0" prefWidth="380.0" style="-fx-border-color: gray;">
+               <columns>
+                  <TableColumn fx:id="productName" prefWidth="184.0" text="Product" />
+                  <TableColumn fx:id="stockStatus" prefWidth="214.0" text="Inventory Status" />
+               </columns>
+               <HBox.margin>
+                  <Insets left="10.0" top="40.0" />
+               </HBox.margin>
+            </TableView>
+            <VBox prefHeight="135.0" prefWidth="201.0">
+               <children>
+                  <Label alignment="CENTER" prefHeight="47.0" prefWidth="201.0" style="-fx-background-color: gray;" text="Update Stock" textAlignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets top="40.0" />
+                     </VBox.margin>
+                  </Label>
+                  <TextField fx:id="updateStockToy" />
+                  <TextField fx:id="updateStockBeverage" prefHeight="45.0" prefWidth="201.0" />
+                  <TextField fx:id="updateStockBiscuit" prefHeight="0.0" prefWidth="201.0" />
+               </children>
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin>
+            </VBox>
+         </children>
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox prefHeight="153.0" prefWidth="600.0" spacing="180.0">
+         <children>
+            <VBox alignment="BOTTOM_LEFT" prefHeight="139.0" prefWidth="281.0">
+               <children>
+                  <Button fx:id="backToManagerMenu" alignment="BOTTOM_LEFT" contentDisplay="CENTER" lineSpacing="100.0" mnemonicParsing="false" onAction="#handleBackToManagerMenuAction" prefHeight="0.0" prefWidth="163.0" style="-fx-background-color: #C8A2C8;" text="Back to Manager Menu">
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" />
+                     </VBox.margin></Button>
+               </children>
+            </VBox>
+            <VBox alignment="TOP_CENTER" prefHeight="139.0" prefWidth="282.0">
+               <children>
+                  <Button fx:id="updateStockOK" alignment="CENTER" mnemonicParsing="false" onAction="#updateStock" prefHeight="37.0" prefWidth="101.0" style="-fx-background-color: #89CFF0;" text="Apply Changes">
+                     <opaqueInsets>
+                        <Insets top="5.0" />
+                     </opaqueInsets>
+                  </Button>
+                  <Button fx:id="Logout" alignment="BOTTOM_CENTER" contentDisplay="CENTER" lineSpacing="100.0" mnemonicParsing="false" onAction="#handleLogoutAction" prefHeight="0.0" prefWidth="163.0" style="-fx-background-color: #C8A2C8;" text="Logout">
+                     <VBox.margin>
+                        <Insets bottom="10.0" top="50.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+               <HBox.margin>
+                  <Insets right="10.0" top="10.0" />
+               </HBox.margin>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</VBox>

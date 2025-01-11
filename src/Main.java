@@ -1,3 +1,5 @@
+
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,7 +11,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         // Login ekranını yükle
-        Parent root = FXMLLoader.load(getClass().getResource("Login.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("ui/Login.fxml"));
 
         // Sahneyi oluştur
         Scene scene = new Scene(root, 600, 600);
@@ -19,8 +21,7 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-
-    public static void main(String[] args) {
+    public static void main(String[] args){
         launch(args);
     }
 }
