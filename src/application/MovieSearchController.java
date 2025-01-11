@@ -41,6 +41,9 @@ public class MovieSearchController {
     private TableColumn<Movie, String> genreColumn;
 
     @FXML
+    private TableColumn<Movie, Integer> yearColumn;
+
+    @FXML
     private Label movieGenreLabel;
 
     @FXML
@@ -89,21 +92,6 @@ public class MovieSearchController {
     @FXML
     private void initialize() {
 
-        /*Burayı SİL
-        try {
-            String path = "/denemeFoto.jpg";
-            InputStream stream = getClass().getResourceAsStream(path);
-
-            if(stream != null) {
-                Image image = new Image(stream);
-                posterImageView.setImage(image);
-            } else {
-                System.out.println("Resim dosyası bulunmadı");
-            }
-        } catch (Exception e) {
-            System.err.println("Resmi Yükleme Hatası " + e.getMessage());
-        } */
-
         //İlk yüklendiğinde Label'ların boş gelmesi için
         movieTitleLabel.setText("");
         movieGenreLabel.setText("");
@@ -116,6 +104,7 @@ public class MovieSearchController {
 
         //Tablo sütunları ayarı:
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
+        yearColumn.setCellValueFactory(new PropertyValueFactory<>("year")); // Yeni eklenen
         genreColumn.setCellValueFactory(new PropertyValueFactory<>("genre"));
         summaryColumn.setCellValueFactory(new PropertyValueFactory<>("summary")); // Bu eksik!
 
@@ -141,39 +130,19 @@ public class MovieSearchController {
             movieSummaryArea.setText(selectedMovie.getSummary());
 
             // Poster'ı güncelle
-            if (selectedMovie.getPosterImage() != null) {
-                Image image = new Image(new ByteArrayInputStream(selectedMovie.getPosterImage()));
-                posterImageView.setImage(image);
+            if (selectedMovie.getPoster() != null && !selectedMovie.getPoster().isEmpty()) {
+                try {
+                    Image image = new Image(selectedMovie.getPoster());
+                    posterImageView.setImage(image);
+                } catch (Exception e) {
+                    System.err.println("Error loading image: " + e.getMessage());
+                    posterImageView.setImage(null);
+                }
+            } else {
+                posterImageView.setImage(null);
             }
         }
     }
-
-    //VERİTABANI İÇİN ÖRNEK KOD:
-    /*
-    private List<Movie> searchByGenre(String genre) {
-        List<Movie> movies = new ArrayList<>();
-        String query = "SELECT * FROM movies WHERE genre LIKE ?";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, "%" + genre + "%");
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                movies.add(new Movie(
-                        rs.getInt("id"),
-                        rs.getString("title"),
-                        rs.getString("genre"),
-                        rs.getString("summary"),
-                        rs.getBytes("poster_image"),
-                        rs.getDouble("price")
-                ));
-            }
-        } catch (SQLException e) {
-            showError("Database Error", "Error while fetching movies: " + e.getMessage());
-        }
-        return movies;
-    } */
 
 
     @FXML

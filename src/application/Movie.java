@@ -8,7 +8,7 @@ package application;public class Movie {
     //To store database as Binary Large Object
     private byte[] posterImage; //Binary format
 
-    //private double price;
+    private String poster; // URL için
 
     public Movie(){
         this.id = 0;
@@ -55,10 +55,5 @@ package application;public class Movie {
     public byte[] getPosterImage() { return posterImage; }
     public void setPosterImage(byte[] posterImage) { this.posterImage = posterImage; }
 
-    /*
-    //Price
-    public double getPrice() { return price; }
-    public void setPrice(double price) { this.price = price; }
-
-     */
+    public String getPoster() { return poster; }
 }
