@@ -11,26 +11,29 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
-public class ManagerMenuController {
+public class AdminController {
 
     @FXML
-    private Button BackToLogin;
+    private Button backFromAdminMenu;
 
     @FXML
-    private Button InventoryAction;
+    private Button movieManagementButton;
 
     @FXML
-    private Button PersonnelAction;
+    private Button refundButton;
 
     @FXML
-    private Button PriceAction;
+    private Button updateMovieButton;
 
     @FXML
-    private Button RevenueAction;
+    private Button backToLoginFromAdminButton;
 
     @FXML
-    void PersonnelActionsMenuButton(ActionEvent event) throws IOException {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/PersonnelActions.fxml"));
+    private Button logoutButton;
+
+    @FXML
+    void handleMovieManagementButton(ActionEvent event) throws IOException {
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/MovieManagement.fxml"));//loading new fxml
     Parent root = loader.load();
 
     Scene scene = new Scene(root);
@@ -40,8 +43,8 @@ public class ManagerMenuController {
     }
 
     @FXML
-    void PriceMenuButton(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/Price.fxml"));
+    void handleRefundButton(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/Refunds.fxml"));
         Parent root = loader.load();
     
         Scene scene = new Scene(root);
@@ -49,10 +52,10 @@ public class ManagerMenuController {
         stage.setScene(scene);
         stage.show();
         }
-
+    
     @FXML
-    void ReviewMenuButton(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/RevenueTaxes.fxml"));
+    void handleUpdateMovieButton(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/MonthlySchdules.fxml"));
         Parent root = loader.load();
     
         Scene scene = new Scene(root);
@@ -60,20 +63,9 @@ public class ManagerMenuController {
         stage.setScene(scene);
         stage.show();
         }
-
-    @FXML
-    void ViewInventoryButton(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/Inventory.fxml"));
-        Parent root = loader.load();
     
-        Scene scene = new Scene(root);
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-        stage.show();
-        }
-
     @FXML
-    void handleLogoutAction(ActionEvent event) throws IOException {
+    void handleBackToLogin(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/Login.fxml"));
         Parent root = loader.load();
     
@@ -83,8 +75,15 @@ public class ManagerMenuController {
         stage.show();
         }
 
-    void handleBackToManagerMenuAction(ActionEvent event) {
-        System.out.println("Back to Manager Menu action triggered.");
+    @FXML
+    void handleLogoutButton(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/Login.fxml")); // Login.fxml dosyasını yükler
+        Parent root = loader.load();
+
+        Scene scene = new Scene(root);
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
     }
 
 }

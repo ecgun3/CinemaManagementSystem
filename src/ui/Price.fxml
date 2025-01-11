@@ -23,7 +23,7 @@
                         <children>
                             <VBox layoutX="7.0" layoutY="14.0" prefHeight="198.0" prefWidth="353.0">
                             <children>
-                                <TableView fx:id="personnelAction1" prefHeight="199.0" prefWidth="258.0">
+                                <TableView fx:id="personnelAction1" prefHeight="203.0" prefWidth="353.0">
                                     <columns>
                                         <TableColumn fx:id="category" prefWidth="208.0" text="Category" />
                                         <TableColumn fx:id="categoryPrice" prefWidth="143.0" text="Price" />
@@ -45,7 +45,7 @@
                               <TextField fx:id="setNewPrice2" promptText="Set New Price" />
                               <TextField fx:id="setNewPrice3" promptText="Set New Price" />
                               <TextField fx:id="setNewPrice4" layoutX="10.0" layoutY="87.0" promptText="Set New Price" />
-                              <Button fx:id="SetPricesButton" mnemonicParsing="false" prefHeight="23.0" prefWidth="156.0" style="-fx-background-color: #89CFF0;" text="Apply Changes" />
+                              <Button fx:id="SetPricesButton" mnemonicParsing="false" onAction="#editPriceList" prefHeight="23.0" prefWidth="156.0" style="-fx-background-color: #89CFF0;" text="Apply Changes" />
                            </children>
                         </VBox>
                         </children>
@@ -60,8 +60,8 @@
                            <children>
                               <AnchorPane prefHeight="200.0" prefWidth="200.0">
                                  <children>
-                                    <Label layoutX="59.0" layoutY="3.0" prefHeight="22.0" prefWidth="166.0" text="Discount rate for Age Under 18" />
-                                    <Label layoutX="295.0" layoutY="6.0" text="Discount Rate for Age Over 60" />
+                                    <Label layoutX="59.0" layoutY="3.0" prefHeight="22.0" prefWidth="166.0" text="                 Tax Rate" />
+                                    <Label layoutX="295.0" layoutY="6.0" text="Age Based Discount Rate" />
                                     <Label fx:id="DiscountRate1" layoutX="91.0" layoutY="23.0" prefHeight="70.0" prefWidth="102.0">
                                        <font>
                                           <Font size="64.0" />
@@ -90,12 +90,12 @@
                         <Button fx:id="Logout1" layoutX="384.0" layoutY="313.0" mnemonicParsing="false" onAction="#handleLogoutAction" prefHeight="27.0" prefWidth="161.0" style="-fx-background-color: #C8A2C8;" text="Logout" />
                         <VBox alignment="CENTER" layoutX="33.0" layoutY="114.0" prefHeight="88.0" prefWidth="200.0" AnchorPane.topAnchor="114.0">
                            <children>
-                              <Label alignment="CENTER" prefHeight="17.0" prefWidth="200.0" text="Edit Discount Rate " textAlignment="CENTER">
+                              <Label alignment="CENTER" prefHeight="17.0" prefWidth="200.0" text="Edit Tax Rate " textAlignment="CENTER">
                                  <VBox.margin>
                                     <Insets bottom="10.0" />
                                  </VBox.margin>
                               </Label>
-                              <TextField fx:id="newDiscountRate18" alignment="CENTER" promptText="New Discount Rate">
+                              <TextField fx:id="newDiscountRate18" alignment="CENTER" promptText="New Tax Rate">
                                  <VBox.margin>
                                     <Insets bottom="5.0" />
                                  </VBox.margin>
@@ -105,7 +105,7 @@
                         </VBox>
                         <VBox alignment="CENTER" layoutX="278.0" layoutY="114.0" prefHeight="88.0" prefWidth="200.0">
                            <children>
-                              <Label alignment="CENTER" prefHeight="17.0" prefWidth="200.0" text="Edit Discount Rate " textAlignment="CENTER">
+                              <Label alignment="CENTER" prefHeight="17.0" prefWidth="200.0" text="Edit Age Based Discount Rate " textAlignment="CENTER">
                                  <VBox.margin>
                                     <Insets bottom="10.0" />
                                  </VBox.margin>

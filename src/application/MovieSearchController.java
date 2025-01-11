@@ -104,6 +104,10 @@ public class MovieSearchController {
             System.err.println("Resmi Yükleme Hatası " + e.getMessage());
         } */
 
+        //İlk yüklendiğinde Label'ların boş gelmesi için
+        movieTitleLabel.setText("");
+        movieGenreLabel.setText("");
+
         searchTypeCombo.getItems().addAll(SEARCH_TYPES);
         searchTypeCombo.getSelectionModel().selectFirst();
 
@@ -114,7 +118,6 @@ public class MovieSearchController {
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
         genreColumn.setCellValueFactory(new PropertyValueFactory<>("genre"));
         summaryColumn.setCellValueFactory(new PropertyValueFactory<>("summary")); // Bu eksik!
-
 
         //Tablo seçim event lisetener:
         movieResultsTable.getSelectionModel().selectedItemProperty().addListener((obs,oldVal,newWal) -> {

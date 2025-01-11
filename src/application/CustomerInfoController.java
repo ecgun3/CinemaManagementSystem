@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import database.DatabaseBill;
 import database.DatabasePrice;
 import database.DatabaseProduct;
 
@@ -316,14 +317,69 @@ public class CustomerInfoController {
         }
 
         try {
-            // Save customer info
+
+            DatabaseProduct dataP = new DatabaseProduct();
+            dataP.connectDatabase();
+            deleteStocksFromDatabase(dataP);
+            dataP.disconnectDatabase();
+            saveBill(createCustomer());
+
+            // Save customer info!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             // Process payment
             // Generate tickets and invoice
             // Return to movie search
+
             loadMovieSearch();
         } catch (Exception e) {
             showError("Payment Error", "Could not process payment: " + e.getMessage());
         }
+    }
+
+    private Customer createCustomer(){
+        Customer customer = new Customer(0, firstNameField.getText(), lastNameField.getText(), LocalDate.now());//datePicker.getValue());///////////////datePicker eklenince düzelicek
+        return customer;
+    }
+
+    private void deleteStocksFromDatabase(DatabaseProduct dataP){
+
+        for(OrderItem item : summaryTable.getItems()){
+            Product product = new Product();
+            product.setName(item.getName());
+            product.setPrice(item.getPrice());
+            product.setStock(item.getQuantity()*-1);
+            dataP.updateStocks(product);
+        }
+
+    }
+
+    private ArrayList<ItemBills> createItems(){
+
+        ArrayList<ItemBills> itemBills = new ArrayList<>();
+
+        String seatNames="";
+        for(Seat seat : selectedSeats){
+            seatNames = seatNames + "-" + seat.getSeat();
+        }
+        ItemBills itembill_tickets = new ItemBills(0,0,"ticket",seatNames,
+                                    selectedSeats.size(),prices.getPrice(),(prices.getPrice()*prices.getTaxPercentage()/100));
+        itemBills.add(itembill_tickets);
+
+        for(OrderItem item : summaryTable.getItems()){
+            ItemBills itembill = new ItemBills(0,0,"product",item.getName(),
+                                item.getQuantity(),item.getPrice(),(item.getPrice()*prices.getTaxPercentage()/100));
+            itemBills.add(itembill);
+        }
+        return itemBills;
+
+    }
+
+    private void saveBill(Customer customer){
+        String customerN = customer.getFirstName() + " " + customer.getLastName();
+        Bills bill = new Bills(0,null,customerN,customer.getBirthDate(),sessionData.getId(),totalTicketPrice,(totalTicketPrice*prices.getTaxPercentage()/100));
+        DatabaseBill dataB = new DatabaseBill();
+        dataB.connectDatabase();
+        dataB.setBill(createItems(), bill);
+
     }
 
     private boolean validateFields() {

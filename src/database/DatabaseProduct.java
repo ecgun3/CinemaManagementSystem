@@ -157,7 +157,7 @@ public class DatabaseProduct implements DatabaseSource {
         }
     }
 
-    public void updateProduct(Product product, String column, String value){
+    public void updateProduct(Product product, String column, String value){                 //!!!!!!!!!!!!!!!
 
         int ID = product.getId();
         String query = "UPDATE employee SET " + column + " = ? WHERE idproducts = ? ";
@@ -178,10 +178,33 @@ public class DatabaseProduct implements DatabaseSource {
 
     }
 
+    public void updateStocks(Product product){
+
+        String query = "UPDATE products SET stock = stock + ? WHERE name = ? ";
+
+        try(PreparedStatement pStatement = connection.prepareStatement(query)){
+
+            pStatement.setInt(1, product.getStock());
+            pStatement.setString(2, product.getName());
+
+            if (pStatement.executeUpdate() > 0)
+                System.out.println("Product stock updated successfully!");
+            else
+                System.out.println("Update failed!");
+
+        }
+        catch(SQLException sqlException){
+            sqlException.printStackTrace();
+        }
+
+
+    }
+
     public void deleteProduct(Product product){
 
         int ID = product.getId();
         String query = "DELETE FROM products WHERE idproducts = ?";
+
         try(PreparedStatement pStatement = connection.prepareStatement(query)){
             pStatement.setInt(1, ID);
             if (pStatement.executeUpdate() > 0)
