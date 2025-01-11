@@ -5,9 +5,6 @@ package application;public class Movie {
     private String genre;
     private String summary;
 
-    //To store database as Binary Large Object
-    private byte[] posterImage; //Binary format
-
     private String poster; // URL için
 
     public Movie(){
@@ -16,18 +13,16 @@ package application;public class Movie {
         this.year = 0;
         this.genre = null;
         this.summary = null;
-        this.posterImage = null;
-        //this.price = price;
+        this.poster = null;
     }
 
-    public Movie(int id, String title, int year, String genre,  String summary, byte[] posterImage) { //, double price
+    public Movie(int id, String title, int year, String genre,  String summary, String poster) { //, double price
         this.id = id;
         this.title = title;
         this.year = year;
         this.genre = genre;
         this.summary = summary;
-        this.posterImage = posterImage;
-        //this.price = price;
+        this.poster = poster; // veya URL'yi buraya ekle
     }
 
     // Getter ve Setter metodları
@@ -51,9 +46,7 @@ package application;public class Movie {
     public String getSummary() { return summary; }
     public void setSummary(String summary) { this.summary = summary; }
 
-    //Poster
-    public byte[] getPosterImage() { return posterImage; }
-    public void setPosterImage(byte[] posterImage) { this.posterImage = posterImage; }
-
     public String getPoster() { return poster; }
+    public void setPoster(String poster) { this.poster = poster; }
+
 }

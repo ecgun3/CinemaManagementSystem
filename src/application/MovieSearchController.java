@@ -91,6 +91,7 @@ public class MovieSearchController {
 
     @FXML
     private void initialize() {
+        System.out.println("Initializing MovieSearchController...");
 
         //İlk yüklendiğinde Label'ların boş gelmesi için
         movieTitleLabel.setText("");
@@ -120,7 +121,7 @@ public class MovieSearchController {
         //next butonu:
         searchButton.setOnAction(event -> handleSearch());
         cancelButton.setOnAction(event -> handleCancel());
-        nextButton.setOnAction(event -> loadSessionSelection());    
+        nextButton.setOnAction(event -> loadSessionSelection());
     }
 
     private void updateMovieDetails() {
@@ -150,7 +151,10 @@ public class MovieSearchController {
         String searchType = searchTypeCombo.getValue();
         String searchTerm = searchTextField.getText().trim();
 
+        System.out.println("Search triggered - Type: " + searchType + ", Term: " + searchTerm);  // Debug için
+
         if (searchTerm.isEmpty()) {
+            System.out.println("Empty search term, showing all movies");  // Debug için searchButtonunu
             movieResultsTable.getItems().setAll(showMovies());
             return;
         }
@@ -178,7 +182,7 @@ public class MovieSearchController {
 
     private List<Movie> showMovies() {
         // Veritabanından genre'a göre filmleri çek
-        mov.connectDatabase();        
+        mov.connectDatabase();
         ArrayList<Movie> movies = mov.getMovies();
         mov.disconnectDatabase();
         return movies; // TODO: implement
@@ -188,7 +192,7 @@ public class MovieSearchController {
     // Search metodları (veritabanı bağlantısı gerekecek)
     private List<Movie> searchByGenre(String genre) {
         // Veritabanından genre'a göre filmleri çek
-        mov.connectDatabase();        
+        mov.connectDatabase();
         ArrayList<Movie> movies = mov.getMovieGenre(genre);
         mov.disconnectDatabase();
         return movies; // TODO: implement
@@ -196,7 +200,7 @@ public class MovieSearchController {
 
     private List<Movie> searchByPartialName(String partialName) {
         // Veritabanından partial name'e göre filmleri çek
-        mov.connectDatabase();        
+        mov.connectDatabase();
         ArrayList<Movie> movies = mov.getMoviePartial(partialName);
         mov.disconnectDatabase();
         return movies; // TODO: implement
@@ -204,7 +208,7 @@ public class MovieSearchController {
 
     private List<Movie> searchByFullName(String fullName) {
         // Veritabanından tam isme göre filmleri çek
-        mov.connectDatabase();        
+        mov.connectDatabase();
         ArrayList<Movie> movies = mov.getMovieTitle(fullName);
         mov.disconnectDatabase();
         return movies; // TODO: implement

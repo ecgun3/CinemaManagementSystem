@@ -72,7 +72,7 @@ public class DatabaseMovies implements DatabaseSource{
                 movie.setYear(rs.getInt("year"));
                 movie.setGenre(rs.getString("genre"));
                 movie.setSummary(rs.getString("summary"));
-                movie.setPosterImage(rs.getBytes("poster_url"));
+                movie.setPoster(rs.getString("poster_url")); //getBytes 'tan değiştirdim
                 movies.add(movie);
             }
         }
@@ -104,8 +104,7 @@ public class DatabaseMovies implements DatabaseSource{
                 movie.setTitle(rs.getString("title"));
                 movie.setYear(rs.getInt("year"));
                 movie.setGenre(rs.getString("genre"));
-                movie.setSummary(rs.getString("summary"));
-                movie.setPosterImage(rs.getBytes("poster_url"));
+                movie.setPoster(rs.getString("poster_url")); // setPosterImage yerine                movie.setPosterImage(rs.getBytes("poster_url"));
                 movies.add(movie);
 
             }
@@ -136,8 +135,7 @@ public class DatabaseMovies implements DatabaseSource{
                 movie.setYear(rs.getInt("year"));
                 movie.setGenre(rs.getString("genre"));
                 movie.setSummary(rs.getString("summary"));
-                movie.setPosterImage(rs.getBytes("poster_url"));
-                movies.add(movie);
+                movie.setPoster(rs.getString("poster_url")); // setPosterImage yerine                movies.add(movie);
 
             }
         }
@@ -166,8 +164,7 @@ public class DatabaseMovies implements DatabaseSource{
                 movie.setYear(rs.getInt("year"));
                 movie.setGenre(rs.getString("genre"));
                 movie.setSummary(rs.getString("summary"));
-                movie.setPosterImage(rs.getBytes("poster_url"));
-                movies.add(movie);
+                movie.setPoster(rs.getString("poster_url")); // setPosterImage yerine                movies.add(movie);
 
             }
         }
@@ -193,7 +190,7 @@ public class DatabaseMovies implements DatabaseSource{
                 movie.setYear(rs.getInt("year"));
                 movie.setGenre(rs.getString("genre"));
                 movie.setSummary(rs.getString("summary"));
-                movie.setPosterImage(rs.getBytes("poster_url"));
+                movie.setPoster(rs.getString("poster_url")); // setPosterImage yerine
             }
             else{
                 System.out.println("No hall found with id: " + id);
@@ -218,7 +215,7 @@ public class DatabaseMovies implements DatabaseSource{
             pStatement.setInt(2,movie.getYear());
             pStatement.setString(3,movie.getGenre());
             pStatement.setString(4,movie.getSummary());
-            pStatement.setBytes(5,movie.getPosterImage());
+            pStatement.setString(5,movie.getPoster()); // Değiştirildi
 
             if (pStatement.executeUpdate() > 0)
                 System.out.println("Movie inserted successfully!");

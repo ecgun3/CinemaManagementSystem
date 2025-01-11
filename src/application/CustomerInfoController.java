@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 import database.DatabaseBill;
 import database.DatabasePrice;
 import database.DatabaseProduct;
+import javafx.scene.control.DatePicker;
+import javafx.util.StringConverter;
 
 
 public class CustomerInfoController {
@@ -35,7 +37,7 @@ public class CustomerInfoController {
     private Button backButton;
 
     @FXML
-    private TextField birthDateField;
+    private DatePicker birthDateField;
 
     @FXML
     private Button confirmPayButton;
@@ -99,10 +101,61 @@ public class CustomerInfoController {
         // Tablo sütunlarını ayarla
         setupTables();
 
+        //İlk yüklendiğinde Label'ların boş gelmesi için
+        movieInfoLabel.setText("");
+        selectedSeatsLabel.setText("");
+
         // Event listeners
         backButton.setOnAction(event -> handleBack());
         confirmPayButton.setOnAction(event -> handleConfirmPay());
-        birthDateField.setOnAction(event -> validateAge());
+
+        // value change listener eklendi
+        birthDateField.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                validateAge();
+            }
+        });
+
+        // DatePicker format ve kısıtlama ayarları
+        birthDateField.setPromptText("DD/MM/YYYY");
+        birthDateField.setEditable(false); // Manuel yazı girişini engelle
+
+        // Sadece geçerli tarih girişine izin ver
+        birthDateField.getEditor().setOnKeyTyped(event -> event.consume());
+        birthDateField.getEditor().setOnKeyPressed(event -> event.consume());
+
+        // Tarih formatını ayarla
+        StringConverter<LocalDate> converter = new StringConverter<>() {
+            private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+            @Override
+            public String toString(LocalDate date) {
+                return date != null ? dateFormatter.format(date) : "";
+            }
+
+            @Override
+            public LocalDate fromString(String string) {
+                if (string != null && !string.isEmpty()) {
+                    try {
+                        return LocalDate.parse(string, dateFormatter);
+                    } catch (Exception e) {
+                        return null;
+                    }
+                }
+                return null;
+            }
+        };
+        birthDateField.setConverter(converter);
+
+        // Maksimum tarihi bugün olarak ayarla (gelecek tarihleri engelle)
+        birthDateField.setDayCellFactory(picker -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                setDisable(empty || date.isAfter(LocalDate.now()));
+            }
+        });
+
 
         // Ürünleri yükle
         DatabasePrice dataPr = new DatabasePrice();
@@ -260,16 +313,19 @@ public class CustomerInfoController {
         updateTotalPrice();
     }
 
-    private void validateAge() {//                                                      ECE date picker ile yapılacak!!!
+    private void validateAge() {
         try {
-            LocalDate birthDate = LocalDate.parse(birthDateField.getText(),
-                    DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            LocalDate birthDate = birthDateField.getValue();
+            if (birthDate == null) {
+                return;
+            }
+
             int age = calculateAge(birthDate);
             if (age < 18 || age > 60) {
                 applyAgeDiscount();
             }
         } catch (Exception e) {
-            showError("Invalid Date", "Please enter date in DD/MM/YYYY format");
+            showError("Invalid Date", "Please select a valid date");
         }
     }
 
@@ -335,8 +391,13 @@ public class CustomerInfoController {
         }
     }
 
-    private Customer createCustomer(){
-        Customer customer = new Customer(0, firstNameField.getText(), lastNameField.getText(), LocalDate.now());//datePicker.getValue());///////////////datePicker eklenince düzelicek
+    private Customer createCustomer() {
+        Customer customer = new Customer(
+                0,
+                firstNameField.getText(),
+                lastNameField.getText(),
+                birthDateField.getValue() // DatePicker değerini direkt kullanabilirz
+        );
         return customer;
     }
 
@@ -386,7 +447,7 @@ public class CustomerInfoController {
         if (firstNameField.getText().trim().isEmpty() ||
                 lastNameField.getText().trim().isEmpty() ||
                 idNumberField.getText().trim().isEmpty() ||
-                birthDateField.getText().trim().isEmpty()) {
+                birthDateField.getValue() == null) {  // Değiştirildi
             showError("Validation Error", "Please fill all customer information fields");
             return false;
         }

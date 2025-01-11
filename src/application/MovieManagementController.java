@@ -40,7 +40,7 @@ public class MovieManagementController {
     private TableColumn<Movie, String> tableMovieSummary;
 
     @FXML
-    private TableColumn<Movie, byte[]> tableMoviePoster;
+    private TableColumn<Movie, String> tableMoviePoster;
 
     @FXML
     private TableColumn<Movie, Integer> tableMovieYear;
@@ -71,7 +71,7 @@ public class MovieManagementController {
         tableMovieYear.setCellValueFactory(new PropertyValueFactory<>("year"));
         tableMovieGenre.setCellValueFactory(new PropertyValueFactory<>("genre"));
         tableMovieSummary.setCellValueFactory(new PropertyValueFactory<>("summary"));
-        tableMoviePoster.setCellValueFactory(new PropertyValueFactory<>("posterImage"));
+        tableMoviePoster.setCellValueFactory(new PropertyValueFactory<>("poster"));
 
         // Tablonun veri setini ayarla
         TableMovieManagement.setItems(movieList);
@@ -80,38 +80,18 @@ public class MovieManagementController {
         loadMoviesFromDatabase();
     }
 
-    //imageToByteArray yardımcı metodu:
-    private byte[] imageToByteArray(Image image) {
-        if (image == null) return new byte[0];
-
-        try {
-            // Image'i byte dizisine çevir
-            java.io.ByteArrayOutputStream outputStream = new java.io.ByteArrayOutputStream();
-            javafx.embed.swing.SwingFXUtils.fromFXImage(image, null);
-            javax.imageio.ImageIO.write(
-                    javafx.embed.swing.SwingFXUtils.fromFXImage(image, null),
-                    "png",
-                    outputStream
-            );
-            return outputStream.toByteArray();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new byte[0];
-        }
-    }
 
     @FXML
     void handleAddButton(ActionEvent event) {
         String title = TitleAddMovie.getText().trim();
         String genre = GenreAddMovie.getText().trim();
         String summary = SummaryAddMovie.getText().trim();
-        byte[] poster = PosterAddMovieImageView.getImage() != null ?
-                imageToByteArray(PosterAddMovieImageView.getImage()) :
-                new byte[0];
+        String posterUrl = PosterAddMovieImageView.getImage() != null ?
+                PosterAddMovieImageView.getImage().getUrl() : "";  // byte[] yerine String URL
         String year = YearAddMovie.getText().trim();
         int yearval = 0;
 
-        if (title.isEmpty() || genre.isEmpty() || summary.isEmpty() || poster.length == 0 || year.isEmpty()) {
+        if (title.isEmpty() || genre.isEmpty() || summary.isEmpty() || posterUrl.isEmpty() || year.isEmpty()) {
             showAlert(Alert.AlertType.WARNING, "Missing Information", "Please fill in all fields.");
             return;
         }
@@ -138,7 +118,7 @@ public class MovieManagementController {
             return;
         }
 
-        Movie newMovie = new Movie(0, title, yearval, genre, summary, poster);
+        Movie newMovie = new Movie(0, title, yearval, genre, summary, posterUrl);
 
         try {
             addMovieToDatabase(newMovie);
@@ -179,9 +159,9 @@ public class MovieManagementController {
         String newGenre = GenreAddMovie.getText().trim();
         String newSummary = SummaryAddMovie.getText().trim();
         String newYear = YearAddMovie.getText().trim();
-        byte[] newPoster = PosterAddMovieImageView.getImage() != null ?
-                imageToByteArray(PosterAddMovieImageView.getImage()) :
-                selectedMovie.getPosterImage();
+        String newPoster = PosterAddMovieImageView.getImage() != null ?
+                PosterAddMovieImageView.getImage().getUrl() :
+                selectedMovie.getPoster();
 
         boolean isUpdated = false;
 
@@ -213,8 +193,8 @@ public class MovieManagementController {
             }
         }
 
-        if (!Arrays.equals(newPoster, selectedMovie.getPosterImage())) {
-            selectedMovie.setPosterImage(newPoster);
+        if (!newPoster.equals(selectedMovie.getPoster())) {
+            selectedMovie.setPoster(newPoster);
             isUpdated = true;
         }
 
