@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import database.DatabaseBill;
 import database.DatabasePrice;
 import database.DatabaseProduct;
+import javafx.util.StringConverter;
 
 
 public class CustomerInfoController {
@@ -29,13 +30,14 @@ public class CustomerInfoController {
     private Session sessionData;
     private List<Seat> selectedSeats;
     private double totalTicketPrice = 0.0;
+    private double total_amount = 0.0;
     private Price prices;
 
     @FXML
     private Button backButton;
 
     @FXML
-    private TextField birthDateField;
+    private DatePicker birthDateField;
 
     @FXML
     private Button confirmPayButton;
@@ -99,10 +101,64 @@ public class CustomerInfoController {
         // Tablo sütunlarını ayarla
         setupTables();
 
+        //İlk yüklendiğinde Label'ların boş gelmesi için
+        movieInfoLabel.setText("");
+        selectedSeatsLabel.setText("");
+
         // Event listeners
         backButton.setOnAction(event -> handleBack());
         confirmPayButton.setOnAction(event -> handleConfirmPay());
-        birthDateField.setOnAction(event -> validateAge());
+
+        // value change listener eklendi
+        birthDateField.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                validateAge();
+            }
+        });
+
+        // DatePicker format ve kısıtlama ayarları
+        birthDateField.setPromptText("DD/MM/YYYY");
+        birthDateField.setEditable(false); // Manuel yazı girişini engelle
+
+        // Sadece geçerli tarih girişine izin ver
+        birthDateField.getEditor().setOnKeyTyped(event -> event.consume());
+        birthDateField.getEditor().setOnKeyPressed(event -> event.consume());
+
+        // Tarih formatını ayarla
+        StringConverter<LocalDate> converter = new StringConverter<>() {
+            private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+            @Override
+            public String toString(LocalDate date) {
+                return date != null ? dateFormatter.format(date) : "";
+            }
+
+            @Override
+            public LocalDate fromString(String string) {
+                if (string != null && !string.isEmpty()) {
+                    try {
+                        return LocalDate.parse(string, dateFormatter);
+                    } catch (Exception e) {
+                        return null;
+                    }
+                }
+                return null;
+            }
+        };
+        birthDateField.setConverter(converter);
+
+        // Maksimum tarihi bugün olarak ayarla (gelecek tarihleri engelle)
+        birthDateField.setDayCellFactory(picker -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                LocalDate today = LocalDate.now();
+                LocalDate yearbefore = today.minusYears(6);
+                birthDateField.setValue(yearbefore);
+                setDisable(empty || date.compareTo(yearbefore) > 0);
+            }
+        });
+
 
         // Ürünleri yükle
         DatabasePrice dataPr = new DatabasePrice();
@@ -260,16 +316,19 @@ public class CustomerInfoController {
         updateTotalPrice();
     }
 
-    private void validateAge() {//                                                      ECE date picker ile yapılacak!!!
+    private void validateAge() {
         try {
-            LocalDate birthDate = LocalDate.parse(birthDateField.getText(),
-                    DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            LocalDate birthDate = birthDateField.getValue();
+            if (birthDate == null) {
+                return;
+            }
+
             int age = calculateAge(birthDate);
             if (age < 18 || age > 60) {
                 applyAgeDiscount();
             }
         } catch (Exception e) {
-            showError("Invalid Date", "Please enter date in DD/MM/YYYY format");
+            showError("Invalid Date", "Please select a valid date");
         }
     }
 
@@ -287,11 +346,11 @@ public class CustomerInfoController {
 
     private void updateTotalPrice() {
         double totalProducts = calculateProductsTotal();
-        double total = totalTicketPrice + totalProducts;
-        double vat = total * prices.getTaxPercentage()/100; // Taxes
+        total_amount = totalTicketPrice + totalProducts;
+        double vat = total_amount * prices.getTaxPercentage()/100; // Taxes
 
         vatLabel.setText(String.format("%.2f TL", vat));
-        totalPriceLabel.setText(String.format("%.2f TL", total));
+        totalPriceLabel.setText(String.format("%.2f TL", total_amount));
     }
 
     @FXML
@@ -318,6 +377,7 @@ public class CustomerInfoController {
 
         try {
 
+            updateTotalPrice();
             DatabaseProduct dataP = new DatabaseProduct();
             dataP.connectDatabase();
             deleteStocksFromDatabase(dataP);
@@ -335,8 +395,13 @@ public class CustomerInfoController {
         }
     }
 
-    private Customer createCustomer(){
-        Customer customer = new Customer(0, firstNameField.getText(), lastNameField.getText(), LocalDate.now());//datePicker.getValue());///////////////datePicker eklenince düzelicek
+    private Customer createCustomer() {
+        Customer customer = new Customer(
+                0,
+                firstNameField.getText(),
+                lastNameField.getText(),
+                birthDateField.getValue() // DatePicker değerini direkt kullanabilirz
+        );
         return customer;
     }
 
@@ -361,12 +426,12 @@ public class CustomerInfoController {
             seatNames = seatNames + "-" + seat.getSeat();
         }
         ItemBills itembill_tickets = new ItemBills(0,0,"ticket",seatNames,
-                                    selectedSeats.size(),prices.getPrice(),(prices.getPrice()*prices.getTaxPercentage()/100));
+                                    selectedSeats.size(),prices.getPrice()*selectedSeats.size(),(prices.getPrice()*prices.getTaxPercentage()/100));
         itemBills.add(itembill_tickets);
 
         for(OrderItem item : summaryTable.getItems()){
             ItemBills itembill = new ItemBills(0,0,"product",item.getName(),
-                                item.getQuantity(),item.getPrice(),(item.getPrice()*prices.getTaxPercentage()/100));
+                                item.getQuantity(),item.getPrice()*item.getQuantity(),(item.getPrice()*prices.getTaxPercentage()/100));
             itemBills.add(itembill);
         }
         return itemBills;
@@ -375,7 +440,7 @@ public class CustomerInfoController {
 
     private void saveBill(Customer customer){
         String customerN = customer.getFirstName() + " " + customer.getLastName();
-        Bills bill = new Bills(0,null,customerN,customer.getBirthDate(),sessionData.getId(),totalTicketPrice,(totalTicketPrice*prices.getTaxPercentage()/100));
+        Bills bill = new Bills(0,null,customerN,customer.getBirthDate(),sessionData.getId(),total_amount,(total_amount*prices.getTaxPercentage()/100));
         DatabaseBill dataB = new DatabaseBill();
         dataB.connectDatabase();
         dataB.setBill(createItems(), bill);
@@ -386,7 +451,7 @@ public class CustomerInfoController {
         if (firstNameField.getText().trim().isEmpty() ||
                 lastNameField.getText().trim().isEmpty() ||
                 idNumberField.getText().trim().isEmpty() ||
-                birthDateField.getText().trim().isEmpty()) {
+                birthDateField.getValue() == null) {  // Değiştirildi
             showError("Validation Error", "Please fill all customer information fields");
             return false;
         }

@@ -20,6 +20,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.Node;
 import java.io.IOException;
+import java.util.Arrays;
+import javafx.embed.swing.SwingFXUtils;
+import javax.imageio.ImageIO;
+import java.io.ByteArrayOutputStream;
 
 public class MovieManagementController {
 
@@ -39,7 +43,7 @@ public class MovieManagementController {
     private TableColumn<Movie, String> tableMoviePoster;
 
     @FXML
-    private TableColumn<Movie, String> tableMovieYear;
+    private TableColumn<Movie, Integer> tableMovieYear;
 
     @FXML
     private TextField TitleAddMovie;
@@ -76,16 +80,18 @@ public class MovieManagementController {
         loadMoviesFromDatabase();
     }
 
+
     @FXML
     void handleAddButton(ActionEvent event) {
         String title = TitleAddMovie.getText().trim();
         String genre = GenreAddMovie.getText().trim();
         String summary = SummaryAddMovie.getText().trim();
-        byte[] poster = PosterAddMovieImageView.getImage() != null ? PosterAddMovieImageView.getImage().getUrl() : "";
+        String posterUrl = PosterAddMovieImageView.getImage() != null ?
+                PosterAddMovieImageView.getImage().getUrl() : "";  // byte[] yerine String URL
         String year = YearAddMovie.getText().trim();
         int yearval = 0;
 
-        if (title.isEmpty() || genre.isEmpty() || summary.isEmpty() || poster.isEmpty()|| year.isEmpty()) {
+        if (title.isEmpty() || genre.isEmpty() || summary.isEmpty() || posterUrl.isEmpty() || year.isEmpty()) {
             showAlert(Alert.AlertType.WARNING, "Missing Information", "Please fill in all fields.");
             return;
         }
@@ -99,20 +105,20 @@ public class MovieManagementController {
             showAlert(Alert.AlertType.WARNING, "Summary Too Long", "The summary cannot be longer than 500 characters.");
             return;
         }
-    
+
         try {
             int yearValue = Integer.parseInt(year);
             if (yearValue < 1850 || yearValue > 2025) {
                 showAlert(Alert.AlertType.WARNING, "Invalid Year", "Please enter a valid year (1850-2025).");
                 return;
             }
-            yearval=yearValue;
+            yearval = yearValue;
         } catch (NumberFormatException e) {
             showAlert(Alert.AlertType.WARNING, "Invalid Year", "Year must be a number.");
             return;
         }
 
-        Movie newMovie = new Movie(0, title, yearval, genre, summary, poster);
+        Movie newMovie = new Movie(0, title, yearval, genre, summary, posterUrl);
 
         try {
             addMovieToDatabase(newMovie);
@@ -152,7 +158,10 @@ public class MovieManagementController {
         String newTitle = TitleAddMovie.getText().trim();
         String newGenre = GenreAddMovie.getText().trim();
         String newSummary = SummaryAddMovie.getText().trim();
-        String newPoster = PosterAddMovieImageView.getImage() != null ? PosterAddMovieImageView.getImage().getUrl() : selectedMovie.getPoster();
+        String newYear = YearAddMovie.getText().trim();
+        String newPoster = PosterAddMovieImageView.getImage() != null ?
+                PosterAddMovieImageView.getImage().getUrl() :
+                selectedMovie.getPoster();
 
         boolean isUpdated = false;
 
@@ -171,6 +180,19 @@ public class MovieManagementController {
             isUpdated = true;
         }
 
+        if (!newYear.isEmpty()) {
+            try {
+                int yearValue = Integer.parseInt(newYear);
+                if (yearValue != selectedMovie.getYear()) {
+                    selectedMovie.setYear(yearValue);
+                    isUpdated = true;
+                }
+            } catch (NumberFormatException e) {
+                showAlert(Alert.AlertType.WARNING, "Invalid Year", "Year must be a number.");
+                return;
+            }
+        }
+
         if (!newPoster.equals(selectedMovie.getPoster())) {
             selectedMovie.setPoster(newPoster);
             isUpdated = true;
@@ -180,6 +202,7 @@ public class MovieManagementController {
             try {
                 updateMovieInDatabase(selectedMovie);
                 TableMovieManagement.refresh();
+                clearInputFields();
             } catch (Exception e) {
                 showAlert(Alert.AlertType.ERROR, "Error", "There was an error updating the movie.");
             }
