@@ -1,4 +1,5 @@
 package application;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -10,6 +11,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -59,6 +62,8 @@ public class InventoryController {
         //ArrayList<Product> productList = DatabaseProduct.viewInventory();
         ArrayList<Product> products = new ArrayList<Product>();
 
+
+        //test productları
         Product product1 = new Product(1, "beverage", 50, 100);
         Product product2 = new Product(2, "biscuit", 30, 200);
         Product product3 = new Product(3, "toy", 100, 40);
@@ -66,6 +71,7 @@ public class InventoryController {
         products.add(product2);
         products.add(product3);
 
+        //arraylistten observable list dönüşümü
         ObservableList<Product> listofproducts = FXCollections.observableArrayList(products);
         productTable.setItems(listofproducts);
     }
@@ -74,18 +80,34 @@ public class InventoryController {
     public void updateStock(){
     
         try{
+            //test değerleri
             int beverageQuantity = Integer.parseInt(updateStockBeverage.getText());
             int biscuitQuantity = Integer.parseInt(updateStockBiscuit.getText());
             int toyQuantity = Integer.parseInt(updateStockToy.getText());
+
+            //üçünden biri sıfırdan küçükse alert ver
+            if (beverageQuantity < 0 || biscuitQuantity < 0 || toyQuantity < 0){
+                Alert alert = new Alert(AlertType.WARNING);
+                alert.setTitle("Warning");
+                alert.setHeaderText("Quantity Minus!");
+                alert.setContentText("Stock cannot be a minus value");
+                alert.showAndWait();
+            return;
+            }
             
             //databesedeki productlar güncellencek
             //DatabaseProduct.updateProduct(1,"stock", beverageQuantity);
             //DatabaseProduct.updateProduct(2, "stock", biscuitQuantity);
             //DatabaseProduct.updateProduct(3,"stock", toyQuantity);
 
-        loadInventory();
+            //sonrasında databseden productlar tekrar çekilcek
+            //loadInventory();
         } catch (NumberFormatException e) {
-            System.out.println("Please Enter Valid Numbers!");
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("Warning");
+            alert.setHeaderText("Blank Value!");
+            alert.setContentText("Please Fill All Values");
+            alert.showAndWait();
         }
     }
 

@@ -115,7 +115,6 @@ public class MovieSearchController {
         genreColumn.setCellValueFactory(new PropertyValueFactory<>("genre"));
         summaryColumn.setCellValueFactory(new PropertyValueFactory<>("summary")); // Bu eksik!
 
-
         //Tablo seçim event lisetener:
         movieResultsTable.getSelectionModel().selectedItemProperty().addListener((obs,oldVal,newWal) -> {
             if(newWal != null) {

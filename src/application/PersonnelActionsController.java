@@ -1,6 +1,7 @@
 package application;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.util.ArrayList;
 
 import javafx.collections.FXCollections;
@@ -11,25 +12,73 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Labeled;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-
 public class PersonnelActionsController {
+
+    @FXML
+    private TextField EditEmail;
+
+    @FXML
+    private TableColumn<Employee, String> EditEmailCol;
+    
+    @FXML
+    private TextField HireEmail;
+    
+    @FXML
+    private TableColumn<Employee, String> email;
+
+    @FXML
+    private TableColumn<Employee, String> fireemail;
+
+    @FXML
+    private TextField EditPhoneNo;
+
+    @FXML
+    private TableColumn<Employee, String> EditPhoneNoCol;
+
+    @FXML
+    private TextField HirePhoneNo;
+
+    @FXML
+    private TableColumn<Employee, String> phoneno;
+
+    @FXML
+    private TableColumn<Employee, String> firephoneno;
 
     @FXML
     private Button ApplyHire;
 
     @FXML
+    private DatePicker Birthdate;
+
+    @FXML
     private Button ClickFire;
 
     @FXML
+    private DatePicker EditBirthDate;
+
+    @FXML
+    private TableColumn<Employee, Date> EditBirthDateCol;
+
+    @FXML
     private TextField EditFirstName;
+
+    @FXML
+    private TableColumn<Employee, String> EditFirstNameCol;
+
+    @FXML
+    private TableColumn<Employee, Integer> EditIdCol;
 
     @FXML
     private TextField EditLastName;
@@ -37,48 +86,38 @@ public class PersonnelActionsController {
     @FXML
     private TextField EditPassword;
 
-
-    @FXML
-    private TextField EditRole;
-
-    @FXML
-    private TextField EditUsername;
-
-    @FXML
-    private TableColumn<Employee, String> EditFirstNameCol;
-
-    @FXML
-    private TableColumn<Employee, String> EditLastNameCol;
-
     @FXML
     private TableColumn<Employee, String> EditPasswordCol;
+
+    @FXML
+    private ChoiceBox<String> EditRole;
 
     @FXML
     private TableColumn<Employee, String> EditRoleCol;
 
     @FXML
+    private DatePicker EditStartDate;
+
+    @FXML
+    private TableColumn<Employee, Date> EditStartDateCol;
+
+    @FXML
+    private TableColumn<Employee, String> EditSurnameCol;
+
+    @FXML
+    private TextField EditUsername;
+
+    @FXML
     private TableColumn<Employee, String> EditUsernameCol;
-
-    @FXML
-    private TableColumn<Employee, String> FireFirstName;
-
-    @FXML
-    private TableColumn<Employee, String> FireLastName;
-
-    @FXML
-    private TableColumn<Employee, String> FirePassword;
-
-    @FXML
-    private TableColumn<Employee, String> FireRole;
-
-    @FXML
-    private TableColumn<Employee, String> FireUsername;
 
     @FXML
     private TextField HireFirstName;
 
     @FXML
     private TextField HireLastName;
+
+    @FXML
+    private TextField HirePassword;
 
     @FXML
     private TextField HireUsername;
@@ -99,7 +138,7 @@ public class PersonnelActionsController {
     private Button PersonnelEditApply;
 
     @FXML
-    private ChoiceBox<String> RoleChoice;
+    private ChoiceBox<String> HireRoleChoice;
 
     @FXML
     private Button SearchEditClick;
@@ -114,6 +153,9 @@ public class PersonnelActionsController {
     private TextField SearchPersonnelFire;
 
     @FXML
+    private DatePicker StartDate;
+
+    @FXML
     private Button backToManagerMenu;
 
     @FXML
@@ -124,6 +166,36 @@ public class PersonnelActionsController {
 
     @FXML
     private Button backToManagerMenu21;
+
+    @FXML
+    private TableColumn<Employee, Date> birthdate;
+
+    @FXML
+    private TableColumn<Employee, Integer> employeeid;
+
+    @FXML
+    private TableColumn<Employee, Date> firebirthdate;
+
+    @FXML
+    private TableColumn<Employee, Integer> fireid;
+
+    @FXML
+    private TableColumn<Employee, String> firename;
+
+    @FXML
+    private TableColumn<Employee, String> firepassword;
+
+    @FXML
+    private TableColumn<Employee, String> firerole;
+
+    @FXML
+    private TableColumn<Employee, Date> firestartdate;
+
+    @FXML
+    private TableColumn<Employee, String> firesurname;
+
+    @FXML
+    private TableColumn<Employee, String> fireusername;
 
     @FXML
     private TableColumn<Employee, String> firstName;
@@ -141,10 +213,13 @@ public class PersonnelActionsController {
     private TableView<Employee> personnelAction1;
 
     @FXML
-    private TableView<Employee> personnelAction11;
+    private TableView<Employee> personnelAction2;
 
     @FXML
     private TableColumn<Employee, String> role;
+
+    @FXML
+    private TableColumn<Employee, Date> startdate;
 
     @FXML
     private TableColumn<Employee, String> username;
@@ -152,137 +227,154 @@ public class PersonnelActionsController {
     private Employee currentEmployee;
 
 
+
     @FXML 
     public void initialize(){
-        RoleChoice.setItems(FXCollections.observableArrayList("Admin", "Manager", "Cashier"));
+        HireRoleChoice.setItems(FXCollections.observableArrayList("Admin", "Manager", "Cashier"));
+        EditRole.setItems(FXCollections.observableArrayList("Admin", "Manager", "Cashier"));
         configureTableColumns(personnelAction);
         configureTableColumns(personnelAction1);
-        configureTableColumns(personnelAction11);
+        configureTableColumns(personnelAction2);
 
-        //loadPersonnelTable();
+        loadPersonnelTable();
     }
 
     private void configureTableColumns(TableView<Employee> tableView){
+        employeeid.setCellValueFactory(new PropertyValueFactory<>("employeeID"));
         firstName.setCellValueFactory(new PropertyValueFactory<>("name"));
         lastName.setCellValueFactory(new PropertyValueFactory<>("surname"));
         username.setCellValueFactory(new PropertyValueFactory<>("username"));
         password.setCellValueFactory(new PropertyValueFactory<>("password"));
+        email.setCellValueFactory(new PropertyValueFactory<>("email"));
         role.setCellValueFactory(new PropertyValueFactory<>("role"));
+        birthdate.setCellValueFactory(new PropertyValueFactory<>("dateOfStart"));
+        startdate.setCellValueFactory(new PropertyValueFactory<>("dateOfBirth"));
     }
 
-    
-    /*
     private void loadPersonnelTable(){
-        ArrayList<Employee> employeeList = DatabaseEmployee.getEmployees();
+        //deneme
+        Employee employee1 = new Employee("Kran", "Tug" ,"karo","Manager");
+        Employee employee2 = new Employee("Kran2", "Tug2" ,"karo2","Manager2");
+        ArrayList<Employee> employeeList = new ArrayList<>();
+        employeeList.add(employee1);
+        employeeList.add(employee2);
+
         ObservableList<Employee> employee = FXCollections.observableArrayList(employeeList);
         personnelAction.setItems(employee);
     }
-    
-    
 
-    @SuppressWarnings("unused")
-    private void insertPersonnelButton(ActionEvent event) throws IOException{
-        String name = HireFirstName.getText();
-        String surname = HireLastName.getText();
-        String username = HireUsername.getText();
-        String role = RoleChoice.getValue();
-
-        if (name.isEmpty() || surname.isEmpty() || username.isEmpty() || role.isEmpty()){
-            System.out.println("Please fill all fields");
-            return;
-        }
-
-        Employee employee = new Employee(name, surname, username, role);
-        DatabaseEmployee.insertEmployee(employee);
-        loadPersonnelTable();
-    }
-
-
-    @SuppressWarnings("unused")
-    private void firePersonnelSearchButton(ActionEvent event) throws IOException{
-        String username = SearchPersonnelFire.getText();
-
-        if (username.isEmpty()){
-            System.out.println("Please fill the username");
-            return;
-        }
-
-        ObservableList<Employee> employee = FXCollections.observableArrayList(DatabaseEmployee.getEmployeeUsername(username));
-        personnelAction1.setItems(employee);
-    }
-
-
-    @SuppressWarnings("unused")
-    private void firePersonnelButton(ActionEvent event) throws IOException{
-        String username = SearchPersonnelFire.getText();
-
-        if (username.isEmpty()){
-            System.out.println("Please fill the username");
-            return;
-        }
-        
-        Employee employee = DatabaseEmployee.getEmployeeUsername(username);
-        DatabaseEmployee.deleteEmployee(employee);
-    }
-
-
-    @SuppressWarnings("unused")
-    private void EditPersonnelSearchButton(ActionEvent event) throws IOException{
-        String username = SearchPersonnelEdit.getText();
-
-        if (username.isEmpty()){
-            System.out.println("Please fill the username");
-            return;
-        }
-
-        ObservableList<Employee> employee = FXCollections.observableArrayList(DatabaseEmployee.getEmployeeUsername(username));
-        personnelAction11.setItems(employee);
-
-        if (employee.isEmpty()) {
-            System.out.println("No employee found with the given username.");
-            return;
-        }
-
-        currentEmployee = employee.get(0);
-
-        EditFirstName.setText(currentEmployee.getName());
-        EditLastName.setText(currentEmployee.getSurname());
-        EditUsername.setText(currentEmployee.getUsername());
-        EditPassword.setText(currentEmployee.getPassword());
-        EditRole.setText(currentEmployee.getRole());
-
-    }
-
-
-    @SuppressWarnings("unused")
-    private void EditPersonnelButton(ActionEvent event) throws IOException{
-        if (currentEmployee == null) {
-            System.out.println("No employee selected.");
-            return;
-        }
-
-        String name = EditFirstName.getText();
-        String surname = EditLastName.getText();
-        String username = EditUsername.getText();
-        String password = EditPassword.getText();
-        String role = EditRole.getText();
-
-        if (name.isEmpty() || surname.isEmpty() || username.isEmpty() || password.isEmpty() || role.isEmpty()){
-            System.out.println("Please fill all fields");
-            return;
-        } 
-
-        DatabaseEmployee.updateEmployee(currentEmployee, "name", name);
-        DatabaseEmployee.updateEmployee(currentEmployee, "surname", surname);
-        DatabaseEmployee.updateEmployee(currentEmployee, "username", username);
-        DatabaseEmployee.updateEmployee(currentEmployee, "password", password);
-        DatabaseEmployee.updateEmployee(currentEmployee, "role", role);
-        System.out.println("Employee updated successfully.");
-        
-    }
-        */
 
     @FXML
+    @SuppressWarnings("unused")
+    private void firesearchemployee(){
+
+        String searchText = SearchPersonnelFire.getText();
+
+        if(searchText.isEmpty()){
+            System.err.println("Please enter a value to search!");
+        }
+        //databaseden employee çekme
+        // Employee employee = EmployeeDatabase.getEmployeeUsername(searchText);
+        /*
+        if (employee == null) {
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("Warning");
+            alert.setHeaderText("Employee Not Found!");
+            alert.setContentText("No employee found with the username: " + searchText);
+            alert.showAndWait();
+        return;
+        }
+
+        firesearchloadtable(employee);
+      */  
+    }
+
+
+    //bi üstteki fonksiyonda kullanıldı
+    /*
+    private void firesearchloadtable(Employee employee){
+        ArrayList<Employee> employeeList = new ArrayList<>();
+        employeeList.add(employee);
+
+        ObservableList<Employee> fireemployee = FXCollections.observableArrayList(employeeList);
+        personnelAction1.setItems(fireemployee);
+    }
+
+
+    //onaction ile tuşa eklenicek
+    @FXML 
+    @SuppressWarnings("unused")
+    private void fireemployee(){
+        DatabaseEmployee.deleteEmployee(SearchPersonnelFire.getText());
+        
+    }
+    
+    */
+    
+
+    
+
+
+    @FXML
+    @SuppressWarnings("unused")
+    private void editsearchemployee(){
+
+        String searchText = SearchPersonnelEdit.getText();
+
+        if(searchText.isEmpty()){
+            System.err.println("Please enter a value to search!");
+        }
+        //databaseden employee çekme
+        // Employee employee = EmployeeDatabase.getEmployeeUsername(searchText);
+        /*
+        if (employee == null) {
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("Warning");
+            alert.setHeaderText("Employee Not Found!");
+            alert.setContentText("No employee found with the username: " + searchText);
+            alert.showAndWait();
+        return;
+        }
+
+        editsearchloadtable(employee);
+        */
+    }
+
+    /*
+    private void editsearchloadtable(Employee employee){
+
+        ArrayList<Employee> employeeList = new ArrayList<>();
+        employeeList.add(employee);
+
+        ObservableList<Employee> editemployee = FXCollections.observableArrayList(employeeList);
+        personnelAction2.setItems(editemployee);
+    }
+    */
+
+    
+    //onaction ile tuşa eklenicek
+    /*
+    @FXML 
+    @SuppressWarnings("unused")
+    private void editemployee(){
+        Employee employee = DatabaseEmployee.(SearchPersonnelEdit.getText());
+
+        DatabaseEmployee.updateEmployee(employee, "name", EditFirstName.getText());
+        DatabaseEmployee.updateEmployee(employee, "surname", EditLastName.getText());
+        DatabaseEmployee.updateEmployee(employee, "username", EditUsername.getText());
+        DatabaseEmployee.updateEmployee(employee, "password", EditPassword.getText());
+        DatabaseEmployee.updateEmployee(employee, "email", EditEmail.getText());
+        DatabaseEmployee.updateEmployee(employee, "phoneNo", EditPhoneNo.getText());
+        DatabaseEmployee.updateEmployee(employee, "role", EditRole.getText());              //choicebox
+        DatabaseEmployee.updateEmployee(employee, "dateOfBirth", EditBirthDate.getText()); //datepicker
+        DatabaseEmployee.updateEmployee(employee, "dateOfStart", EditStartDate.getText());  //datepicker
+        System.out.println("Employee updated successfully.");
+    }
+    */
+    
+
+
+     @FXML
     @SuppressWarnings("unused")
     private void handleLogoutAction(ActionEvent event) throws IOException {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/Login.fxml"));
@@ -307,8 +399,3 @@ public class PersonnelActionsController {
         }
 
 }
-
-
-
-
-
