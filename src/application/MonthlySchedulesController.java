@@ -106,6 +106,16 @@ public class MonthlySchedulesController {
         });
         sessionScheduleTable.setCellValueFactory(cellData -> 
             new SimpleStringProperty(cellData.getValue().getDateTime().toLocalTime().toString()));
+
+            ScheduleDateChoice.setDayCellFactory(datePicker1 -> new DateCell() {
+                @Override
+                public void updateItem(LocalDate date, boolean empty) {
+                    super.updateItem(date, empty);
+                    LocalDate today = LocalDate.now();
+                    LocalDate oneMonthLater = today.plusMonths(1);
+                    setDisable(empty || date.compareTo(today) < 0 || date.compareTo(oneMonthLater) > 0);
+                }
+            });
             
         scheduleList.setAll(getSchedules());
         schedulesTable.setItems(scheduleList);
@@ -176,16 +186,6 @@ public class MonthlySchedulesController {
         String movie = ScheduleMovieChoice.getValue();
         Movie sMovie = movieMap.get(movie);
 
-        ScheduleDateChoice.setDayCellFactory(datePicker1 -> new DateCell() {
-            @Override
-            public void updateItem(LocalDate date, boolean empty) {
-                super.updateItem(date, empty);
-                LocalDate today = LocalDate.now();
-                LocalDate oneMonthLater = today.plusMonths(1);
-                setDisable(empty || date.compareTo(today) < 0 || date.compareTo(oneMonthLater) > 0);
-            }
-        });
-
         if (date != null && hall != null && session != null && movie != null) {
 
             LocalDateTime sessionTime = LocalDateTime.of(date, LocalTime.parse(session));
@@ -215,29 +215,46 @@ public class MonthlySchedulesController {
 
     @FXML
     void handleUpdateButton(ActionEvent event) {
+
         Session selectedSchedule = schedulesTable.getSelectionModel().getSelectedItem();
 
-        if (selectedSchedule != null) {
-            LocalDate date = ScheduleDateChoice.getValue();
-            String hall = ScheduleHallChoice.getValue();
-            Halls selectedHall = hallMap.get(hall);
-            String session = ScheduleSessionChoice.getValue();
-            String movie = ScheduleMovieChoice.getValue();
-            Movie sMovie = movieMap.get(movie);
+        if(selectedSchedule.getHall().getCapacity()==selectedSchedule.getAvailableSeats()){
 
-            String temp = date.toString() + " " + session;
-            DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            LocalDateTime DateTime = LocalDateTime.parse(temp, format);
+            if (selectedSchedule != null) {
 
-            if (date != null) selectedSchedule.setDateTime(DateTime);
-            if (hall != null) selectedSchedule.setHall(selectedHall);
-            if (session != null) selectedSchedule.setAvailableSeats(selectedHall.getCapacity());
-            if (sMovie != null) selectedSchedule.setMovie(sMovie);
+                String hall = ScheduleHallChoice.getValue();
+                System.out.println(hall);
+                Halls selectedHall = hallMap.get(hall);
+                LocalDate date = ScheduleDateChoice.getValue();
+                String session = ScheduleSessionChoice.getValue();
+                String movie = ScheduleMovieChoice.getValue();
+                Movie sMovie = movieMap.get(movie);
 
-            updateDatabase(selectedSchedule);
-            schedulesTable.refresh();
-            clearFields();
+                if(session==null){
+                    session=selectedSchedule.getDateTime().toLocalTime().toString();
+                }
+                if(date!=null){
+                String temp = date.toString() + " " + session;
+                DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                LocalDateTime DateTime = LocalDateTime.parse(temp, format);
+                selectedSchedule.setDateTime(DateTime);
+                }
+
+                if (hall != null) selectedSchedule.setHall(selectedHall);
+
+                if (hall != null) selectedSchedule.setAvailableSeats(selectedHall.getCapacity());
+
+                if (sMovie != null) selectedSchedule.setMovie(sMovie);
+
+                updateDatabase(selectedSchedule);
+                schedulesTable.refresh();
+                clearFields();
+
+                }
         }
+        else
+            showAlert(Alert.AlertType.ERROR, "Error", "Tickets sold from this session");
+
     }
 
     @FXML

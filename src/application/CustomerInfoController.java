@@ -388,12 +388,11 @@ public class CustomerInfoController {
         if (!validateFields()) {
             return;
         }
-        if (!customerNameError()){
+        if (customerNameError()){
             return;
         }
 
         try {
-
             updateTotalPrice();
             DatabaseProduct dataP = new DatabaseProduct();
             dataP.connectDatabase();
