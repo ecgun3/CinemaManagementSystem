@@ -1,3 +1,5 @@
+package application;
+
 import java.io.IOException;
 
 import javafx.event.ActionEvent;
@@ -7,6 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 public class AdminController {
@@ -29,9 +32,31 @@ public class AdminController {
     @FXML
     private Button logoutButton;
 
+    private String loginedUser;
+    @FXML
+    private Label userInfoLabel;
+
+    public void setLoginedUser(String username) {
+        this.loginedUser = username;
+        userInfoLabel.setText("Admin: " + username);
+    }
+
+    @FXML
+    public void initialize() {
+
+        if (userInfoLabel == null) {
+            throw new RuntimeException("FXML elements were not properly injected!");
+        }
+
+        // Login olan kullanıcı bilgilerini göster
+        if (loginedUser != null) {
+            userInfoLabel.setText("Cashier: " + loginedUser);
+        }
+    }
+
     @FXML
     void handleMovieManagementButton(ActionEvent event) throws IOException {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("MovieManagement.fxml"));//loading new fxml
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/MovieManagement.fxml"));//loading new fxml
     Parent root = loader.load();
 
     Scene scene = new Scene(root);
@@ -42,7 +67,7 @@ public class AdminController {
 
     @FXML
     void handleRefundButton(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("Refunds.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/Refunds.fxml"));
         Parent root = loader.load();
     
         Scene scene = new Scene(root);
@@ -53,7 +78,7 @@ public class AdminController {
     
     @FXML
     void handleUpdateMovieButton(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("MonthlySchdules.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/MonthlySchedules.fxml"));
         Parent root = loader.load();
     
         Scene scene = new Scene(root);
@@ -64,7 +89,7 @@ public class AdminController {
     
     @FXML
     void handleBackToLogin(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/Login.fxml"));
         Parent root = loader.load();
     
         Scene scene = new Scene(root);
@@ -75,7 +100,7 @@ public class AdminController {
 
     @FXML
     void handleLogoutButton(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml")); // Login.fxml dosyasını yükler
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/Login.fxml")); // Login.fxml dosyasını yükler
         Parent root = loader.load();
 
         Scene scene = new Scene(root);
