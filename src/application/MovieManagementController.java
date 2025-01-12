@@ -1,6 +1,11 @@
 package application;
 
+import javafx.embed.swing.SwingFXUtils;
 import javafx.stage.FileChooser;
+
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import javafx.scene.image.Image;
 import javafx.collections.FXCollections;
@@ -19,11 +24,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.Node;
-import java.io.IOException;
-import java.util.Arrays;
-import javafx.embed.swing.SwingFXUtils;
+
 import javax.imageio.ImageIO;
-import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
 
 public class MovieManagementController {
 
@@ -43,7 +47,7 @@ public class MovieManagementController {
     private TableColumn<Movie, String> tableMoviePoster;
 
     @FXML
-    private TableColumn<Movie, Integer> tableMovieYear;
+    private TableColumn<Movie, String> tableMovieYear;
 
     @FXML
     private TextField TitleAddMovie;
@@ -61,6 +65,7 @@ public class MovieManagementController {
     private TextField YearAddMovie;
 
     private ObservableList<Movie> movieList;
+
 
     @FXML
     public void initialize() {
@@ -80,18 +85,17 @@ public class MovieManagementController {
         loadMoviesFromDatabase();
     }
 
-
     @FXML
     void handleAddButton(ActionEvent event) {
         String title = TitleAddMovie.getText().trim();
         String genre = GenreAddMovie.getText().trim();
         String summary = SummaryAddMovie.getText().trim();
-        String posterUrl = PosterAddMovieImageView.getImage() != null ?
-                PosterAddMovieImageView.getImage().getUrl() : "";  // byte[] yerine String URL
         String year = YearAddMovie.getText().trim();
         int yearval = 0;
+        Image posterImage = PosterAddMovieImageView.getImage();
 
-        if (title.isEmpty() || genre.isEmpty() || summary.isEmpty() || posterUrl.isEmpty() || year.isEmpty()) {
+
+        if (title.isEmpty() || genre.isEmpty() || summary.isEmpty() || year.isEmpty() || posterImage == null) {
             showAlert(Alert.AlertType.WARNING, "Missing Information", "Please fill in all fields.");
             return;
         }
@@ -105,27 +109,46 @@ public class MovieManagementController {
             showAlert(Alert.AlertType.WARNING, "Summary Too Long", "The summary cannot be longer than 500 characters.");
             return;
         }
-
+    
         try {
             int yearValue = Integer.parseInt(year);
             if (yearValue < 1850 || yearValue > 2025) {
                 showAlert(Alert.AlertType.WARNING, "Invalid Year", "Please enter a valid year (1850-2025).");
                 return;
             }
-            yearval = yearValue;
+            yearval=yearValue;
         } catch (NumberFormatException e) {
             showAlert(Alert.AlertType.WARNING, "Invalid Year", "Year must be a number.");
             return;
         }
 
-        Movie newMovie = new Movie(0, title, yearval, genre, summary, posterUrl);
 
         try {
+            // Image'i byte array'e çevir
+            byte[] posterBytes = convertImageToByteArray(posterImage);
+
+            // Movie nesnesini oluştur
+            Movie newMovie = new Movie(0, title, yearval, genre, summary, posterBytes);
+
+            // Veritabanına ekle
             addMovieToDatabase(newMovie);
             movieList.add(newMovie);
             clearInputFields();
+
         } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "Error", "An error occurred while adding the movie to the database.");
+        }
+    }
+
+    private byte[] convertImageToByteArray(Image image) {
+        try {
+            BufferedImage bufferImage = SwingFXUtils.fromFXImage(image, null);
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            // jpg yerine png kullan
+            ImageIO.write(bufferImage, "png", outputStream);
+            return outputStream.toByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException("Error converting image to byte array", e);
         }
     }
 
@@ -159,9 +182,7 @@ public class MovieManagementController {
         String newGenre = GenreAddMovie.getText().trim();
         String newSummary = SummaryAddMovie.getText().trim();
         String newYear = YearAddMovie.getText().trim();
-        String newPoster = PosterAddMovieImageView.getImage() != null ?
-                PosterAddMovieImageView.getImage().getUrl() :
-                selectedMovie.getPoster();
+        Image newPosterImage = PosterAddMovieImageView.getImage();
 
         boolean isUpdated = false;
 
@@ -193,9 +214,15 @@ public class MovieManagementController {
             }
         }
 
-        if (!newPoster.equals(selectedMovie.getPoster())) {
-            selectedMovie.setPoster(newPoster);
-            isUpdated = true;
+        if (newPosterImage != null) {
+            try {
+                byte[] newPosterBytes = convertImageToByteArray(newPosterImage);
+                selectedMovie.setPosterImage(newPosterBytes);
+                isUpdated = true;
+            } catch (Exception e) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Could not process the new poster image.");
+                return;
+            }
         }
 
         if (isUpdated) {
@@ -215,19 +242,28 @@ public class MovieManagementController {
     private void handleChoosePosterButton(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Poster");
+        // Önce png destekleyen filtreler
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Image Files", ".png", ".jpg", ".jpeg", ".gif"));
+                new FileChooser.ExtensionFilter("PNG Images", "*.png"),
+                new FileChooser.ExtensionFilter("All Images", "*.png", "*.jpg", "*.jpeg"));
 
         File selectedFile = fileChooser.showOpenDialog(PosterAddMovieImageView.getScene().getWindow());
         if (selectedFile != null) {
             try {
-                Image image = new Image(selectedFile.toURI().toString());
+                // Dosyayı byte array'e çevir
+                byte[] imageBytes = Files.readAllBytes(selectedFile.toPath());
+
+                // Debug için boyut kontrolü
+                System.out.println("Image size: " + imageBytes.length + " bytes");
+
+                // ImageView'da göstermek için Image nesnesine çevir
+                Image image = new Image(new ByteArrayInputStream(imageBytes));
                 PosterAddMovieImageView.setImage(image);
-            } catch (Exception e) {
-                showAlert(Alert.AlertType.ERROR, "Error", "Image could not be uploaded. Please select a suitable file.");
+
+            } catch (IOException e) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Image could not be uploaded: " + e.getMessage());
+                e.printStackTrace();
             }
-        } else {
-            showAlert(Alert.AlertType.INFORMATION, "Poster Not Selected", "Please select a poster.");
         }
     }
 

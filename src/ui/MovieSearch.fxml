@@ -27,12 +27,11 @@
          </padding>
       </HBox>
       <TableView fx:id="movieResultsTable" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-         <columns>
-            <TableColumn fx:id="titleColumn" prefWidth="75.0" text="Title" />
-            <TableColumn fx:id="yearColumn" prefWidth="75.0" text="Year" />  <!-- Yeni eklenen kolon -->
-            <TableColumn fx:id="genreColumn" prefWidth="75.0" text="Genre" />
+        <columns>
+          <TableColumn fx:id="titleColumn" prefWidth="75.0" text="Title" />
+          <TableColumn fx:id="genreColumn" prefWidth="75.0" text="Genre" />
             <TableColumn fx:id="summaryColumn" prefWidth="75.0" text="Summary" />
-         </columns>
+        </columns>
       </TableView>
       <VBox alignment="CENTER" maxHeight="-Infinity" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
          <children>

@@ -41,9 +41,6 @@ public class MovieSearchController {
     private TableColumn<Movie, String> genreColumn;
 
     @FXML
-    private TableColumn<Movie, Integer> yearColumn;
-
-    @FXML
     private Label movieGenreLabel;
 
     @FXML
@@ -91,11 +88,6 @@ public class MovieSearchController {
 
     @FXML
     private void initialize() {
-        System.out.println("Initializing MovieSearchController...");
-
-        //İlk yüklendiğinde Label'ların boş gelmesi için
-        movieTitleLabel.setText("");
-        movieGenreLabel.setText("");
 
         searchTypeCombo.getItems().addAll(SEARCH_TYPES);
         searchTypeCombo.getSelectionModel().selectFirst();
@@ -105,7 +97,6 @@ public class MovieSearchController {
 
         //Tablo sütunları ayarı:
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
-        yearColumn.setCellValueFactory(new PropertyValueFactory<>("year")); // Yeni eklenen
         genreColumn.setCellValueFactory(new PropertyValueFactory<>("genre"));
         summaryColumn.setCellValueFactory(new PropertyValueFactory<>("summary")); // Bu eksik!
 
@@ -121,7 +112,7 @@ public class MovieSearchController {
         //next butonu:
         searchButton.setOnAction(event -> handleSearch());
         cancelButton.setOnAction(event -> handleCancel());
-        nextButton.setOnAction(event -> loadSessionSelection());
+        nextButton.setOnAction(event -> loadSessionSelection());    
     }
 
     private void updateMovieDetails() {
@@ -131,12 +122,20 @@ public class MovieSearchController {
             movieSummaryArea.setText(selectedMovie.getSummary());
 
             // Poster'ı güncelle
-            if (selectedMovie.getPoster() != null && !selectedMovie.getPoster().isEmpty()) {
+            byte[] posterBytes = selectedMovie.getPosterImage();
+            if (posterBytes != null && posterBytes.length > 0) {
                 try {
-                    Image image = new Image(selectedMovie.getPoster());
+                    // Debug için boyut kontrolü
+                    System.out.println("Loading image, size: " + posterBytes.length + " bytes");
+
+                    Image image = new Image(new ByteArrayInputStream(posterBytes));
                     posterImageView.setImage(image);
+
+                    // Debug için yükleme kontrolü
+                    System.out.println("Image loaded successfully: " + !image.isError());
                 } catch (Exception e) {
                     System.err.println("Error loading image: " + e.getMessage());
+                    e.printStackTrace();
                     posterImageView.setImage(null);
                 }
             } else {
@@ -145,16 +144,12 @@ public class MovieSearchController {
         }
     }
 
-
     @FXML
     private void handleSearch() {
         String searchType = searchTypeCombo.getValue();
         String searchTerm = searchTextField.getText().trim();
 
-        System.out.println("Search triggered - Type: " + searchType + ", Term: " + searchTerm);  // Debug için
-
         if (searchTerm.isEmpty()) {
-            System.out.println("Empty search term, showing all movies");  // Debug için searchButtonunu
             movieResultsTable.getItems().setAll(showMovies());
             return;
         }
@@ -182,7 +177,7 @@ public class MovieSearchController {
 
     private List<Movie> showMovies() {
         // Veritabanından genre'a göre filmleri çek
-        mov.connectDatabase();
+        mov.connectDatabase();        
         ArrayList<Movie> movies = mov.getMovies();
         mov.disconnectDatabase();
         return movies; // TODO: implement
@@ -192,7 +187,7 @@ public class MovieSearchController {
     // Search metodları (veritabanı bağlantısı gerekecek)
     private List<Movie> searchByGenre(String genre) {
         // Veritabanından genre'a göre filmleri çek
-        mov.connectDatabase();
+        mov.connectDatabase();        
         ArrayList<Movie> movies = mov.getMovieGenre(genre);
         mov.disconnectDatabase();
         return movies; // TODO: implement
@@ -200,7 +195,7 @@ public class MovieSearchController {
 
     private List<Movie> searchByPartialName(String partialName) {
         // Veritabanından partial name'e göre filmleri çek
-        mov.connectDatabase();
+        mov.connectDatabase();        
         ArrayList<Movie> movies = mov.getMoviePartial(partialName);
         mov.disconnectDatabase();
         return movies; // TODO: implement
@@ -208,7 +203,7 @@ public class MovieSearchController {
 
     private List<Movie> searchByFullName(String fullName) {
         // Veritabanından tam isme göre filmleri çek
-        mov.connectDatabase();
+        mov.connectDatabase();        
         ArrayList<Movie> movies = mov.getMovieTitle(fullName);
         mov.disconnectDatabase();
         return movies; // TODO: implement
