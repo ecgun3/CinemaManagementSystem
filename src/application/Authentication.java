@@ -30,7 +30,7 @@ public class Authentication {
 
 
     public Employee authenticatePassword(String username, String password) {
-        employee = database.getEmployeeUsername(username);
+        employee = database.authEmployee(username);
         if ((employee.getPassword()).equals(password)) {
             // if (employee.getPassword().equals("password123")) {
                  // employee.setPasswordFirstTime();

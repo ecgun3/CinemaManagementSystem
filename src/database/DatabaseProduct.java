@@ -157,13 +157,13 @@ public class DatabaseProduct implements DatabaseSource {
         }
     }
 
-    public void updateProduct(Product product, String column, String value){                 //!!!!!!!!!!!!!!!
+    public void updateProduct(Product product, String column, int value){                 //!!!!!!!!!!!!!!!
 
         int ID = product.getId();
-        String query = "UPDATE employee SET " + column + " = ? WHERE idproducts = ? ";
+        String query = "UPDATE products SET " + column + " = ? WHERE idproducts = ? ";
         try(PreparedStatement pStatement = connection.prepareStatement(query);){
 
-            pStatement.setString(1, value);
+            pStatement.setInt(1, value);
             pStatement.setInt(2, ID);
 
             if (pStatement.executeUpdate() > 0)

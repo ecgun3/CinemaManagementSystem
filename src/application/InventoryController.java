@@ -19,8 +19,11 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import database.DatabaseProduct;
 
 public class InventoryController {
+
+    private DatabaseProduct databaseProduct;
 
     @FXML
     private Button backToManagerMenu;
@@ -42,77 +45,78 @@ public class InventoryController {
     private Button updateStockOK;
 
     @FXML
-    private TextField updateStockBeverage;
+    private TextField updatedQuantity;
 
     @FXML
-    private TextField updateStockBiscuit;
-
-    @FXML
-    private TextField updateStockToy;
 
     public void initialize(){
+
+        databaseProduct = new DatabaseProduct();
+        databaseProduct.connectDatabase();
+
         productName.setCellValueFactory(new PropertyValueFactory<>("name"));
         stockStatus.setCellValueFactory(new PropertyValueFactory<>("stock"));
         loadInventory();
     }
+
+    private void clearFields() {
+        updatedQuantity.clear();
+    }
+    
     
     
     public void loadInventory(){
-        //databaseden product listesini çekiyor
-        //ArrayList<Product> productList = DatabaseProduct.viewInventory();
-        ArrayList<Product> products = new ArrayList<Product>();
+        //get the products from database
+        ArrayList<Product> products = databaseProduct.viewInventory();
 
-
-        //test productları
-        Product product1 = new Product(1, "beverage", 50, 100);
-        Product product2 = new Product(2, "biscuit", 30, 200);
-        Product product3 = new Product(3, "toy", 100, 40);
-        products.add(product1);
-        products.add(product2);
-        products.add(product3);
-
-        //arraylistten observable list dönüşümü
+        //arraylist to observable list to set data on table
         ObservableList<Product> listofproducts = FXCollections.observableArrayList(products);
         productTable.setItems(listofproducts);
     }
 
-
-    public void updateStock(){
-    
-        try{
-            //test değerleri
-            int beverageQuantity = Integer.parseInt(updateStockBeverage.getText());
-            int biscuitQuantity = Integer.parseInt(updateStockBiscuit.getText());
-            int toyQuantity = Integer.parseInt(updateStockToy.getText());
-
-            //üçünden biri sıfırdan küçükse alert ver
-            if (beverageQuantity < 0 || biscuitQuantity < 0 || toyQuantity < 0){
+    public void updateStock() {
+        try {
+            Product selectedProduct = productTable.getSelectionModel().getSelectedItem(); //selected product from table
+            if (selectedProduct == null) {
                 Alert alert = new Alert(AlertType.WARNING);
                 alert.setTitle("Warning");
-                alert.setHeaderText("Quantity Minus!");
-                alert.setContentText("Stock cannot be a minus value");
+                alert.setHeaderText("No Product Selected!");
+                alert.setContentText("Select a product to update.");
                 alert.showAndWait();
-            return;
+                return;
             }
-            
-            //databesedeki productlar güncellencek
-            //DatabaseProduct.updateProduct(1,"stock", beverageQuantity);
-            //DatabaseProduct.updateProduct(2, "stock", biscuitQuantity);
-            //DatabaseProduct.updateProduct(3,"stock", toyQuantity);
+    
+            int newQuantity = Integer.parseInt(updatedQuantity.getText());
+    
+            if (newQuantity < 0) {
+                Alert alert = new Alert(AlertType.WARNING);
+                alert.setTitle("Warning");
+                alert.setHeaderText("Minus Quantity!");
+                alert.setContentText("Stock cannot be a negative value.");
+                alert.showAndWait();
+                return;
+            }
+    
+        
+            databaseProduct.updateProduct(selectedProduct, "stock", newQuantity);//update the stock of the selected product in database
+    
+            selectedProduct.setStock(newQuantity); // Update the stock of the selected product on table
+            clearFields(); // Clear the textfield
+    
+            // refresh the table
+            productTable.refresh();
 
-            //sonrasında databseden productlar tekrar çekilcek
-            //loadInventory();
         } catch (NumberFormatException e) {
             Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Warning");
-            alert.setHeaderText("Blank Value!");
-            alert.setContentText("Please Fill All Values");
+            alert.setHeaderText("Invalid Input!");
+            alert.setContentText("Please enter a valid number.");
             alert.showAndWait();
         }
     }
+    
 
     @FXML
-    @SuppressWarnings("unused")
     private void handleLogoutAction(ActionEvent event) throws IOException {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/Login.fxml"));
     Parent root = loader.load();
@@ -125,7 +129,6 @@ public class InventoryController {
 
     
     @FXML
-    @SuppressWarnings("unused")
     private void handleBackToManagerMenuAction(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/ManagerMenu.fxml"));
         Parent root = loader.load();

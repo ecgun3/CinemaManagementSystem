@@ -65,7 +65,7 @@ public class LoginController {
         Employee employee = aut.authenticatePassword(username, password);
         if(employee==null)
             return null;
-        return employee.role;
+        return employee.getRole();
     }
 
     private void loadAppropriateScreen(String username, String role) throws IOException {

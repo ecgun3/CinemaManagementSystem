@@ -18,17 +18,12 @@
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
-      <TextField fx:id="usernameField" maxWidth="300.0" promptText="Username">
-         <padding>
-            <Insets top="20.0" />
-         </padding>
-      </TextField>
-      <PasswordField fx:id="passwordField" maxWidth="300.0" promptText="Password" />
+      <TextField fx:id="usernameField" maxWidth="300.0" prefHeight="34.0" prefWidth="300.0" promptText="Username" />
+      <PasswordField fx:id="passwordField" maxWidth="300.0" prefHeight="34.0" prefWidth="300.0" promptText="Password" />
       <Button fx:id="loginButton" mnemonicParsing="false" style="-fx-background-color: #2ecc71; -fx-text-fill: white;" text="Login">
          <font>
             <Font size="14.0" />
          </font>
       </Button>
-      <Label fx:id="errorLabel" style="-fx-background-color: #e74c3c;" />
    </children>
 </VBox>

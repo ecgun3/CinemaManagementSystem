@@ -43,43 +43,37 @@
                         <Font name="Adelle Sans Devanagari Bold" size="30.0" />
                      </font>
                   </Label>
-                  <HBox alignment="CENTER" layoutX="11.0" layoutY="44.0" prefHeight="229.0" prefWidth="600.0">
+                  <HBox alignment="CENTER" layoutX="11.0" layoutY="85.0" prefHeight="229.0" prefWidth="600.0">
                      <children>
-                        <TableView fx:id="productTable" prefHeight="129.0" prefWidth="432.0" style="-fx-border-color: gray;">
+                        <TableView fx:id="productTable" prefHeight="229.0" prefWidth="393.0" style="-fx-border-color: gray;">
                            <columns>
-                              <TableColumn fx:id="productName" prefWidth="222.0" text="Product" />
-                              <TableColumn fx:id="stockStatus" prefWidth="208.0" text="Inventory Status" />
+                              <TableColumn fx:id="productName" prefWidth="175.0" text="Product" />
+                              <TableColumn fx:id="stockStatus" prefWidth="231.0" text="Inventory Status" />
                            </columns>
                            <HBox.margin>
-                              <Insets left="10.0" top="40.0" />
+                              <Insets left="10.0" />
                            </HBox.margin>
                         </TableView>
-                        <VBox prefHeight="191.0" prefWidth="175.0">
-                           <children>
-                              <Label alignment="CENTER" prefHeight="47.0" prefWidth="201.0" style="-fx-background-color: gray;" text="Update Stock" textAlignment="CENTER">
-                                 <font>
-                                    <Font name="System Bold" size="13.0" />
-                                 </font>
-                                 <VBox.margin>
-                                    <Insets top="40.0" />
-                                 </VBox.margin>
-                              </Label>
-                              <TextField fx:id="updateStockToy" alignment="CENTER" promptText="Enter Toy" />
-                              <TextField fx:id="updateStockBeverage" alignment="CENTER" prefHeight="26.0" prefWidth="201.0" promptText="Enter Beverage" />
-                              <TextField fx:id="updateStockBiscuit" alignment="CENTER" prefHeight="0.0" prefWidth="201.0" promptText="Enter Biscuit" />
-                           </children>
+                        <VBox alignment="CENTER" prefHeight="174.0" prefWidth="160.0">
                            <HBox.margin>
                               <Insets right="10.0" />
                            </HBox.margin>
+                           <children>
+                              <TextField fx:id="updatedQuantity" alignment="CENTER" prefHeight="26.0" prefWidth="132.0" promptText="Enter the quantity">
+                                 <VBox.margin>
+                                    <Insets bottom="15.0" left="15.0" right="15.0" />
+                                 </VBox.margin>
+                              </TextField>
+                              <Button fx:id="updateStockOK" alignment="CENTER" mnemonicParsing="false" onAction="#updateStock" prefHeight="28.0" prefWidth="124.0" style="-fx-background-color: #89CFF0;" text="Update Stock">
+                                 <opaqueInsets>
+                                    <Insets top="5.0" />
+                                 </opaqueInsets>
+                              </Button>
+                           </children>
                         </VBox>
                      </children>
                   </HBox>
                   <Button fx:id="backToManagerMenu" alignment="CENTER" contentDisplay="CENTER" layoutX="69.0" layoutY="364.0" lineSpacing="100.0" mnemonicParsing="false" onAction="#handleBackToManagerMenuAction" prefHeight="27.0" prefWidth="53.0" style="-fx-background-color: #6c757d;" text="Back" textAlignment="CENTER" textFill="WHITE" />
-                  <Button fx:id="updateStockOK" alignment="CENTER" layoutX="449.0" layoutY="364.0" mnemonicParsing="false" onAction="#updateStock" prefHeight="28.0" prefWidth="124.0" style="-fx-background-color: #89CFF0;" text="Apply Changes">
-                     <opaqueInsets>
-                        <Insets top="5.0" />
-                     </opaqueInsets>
-                  </Button>
                </children>
             </AnchorPane>
          </bottom>

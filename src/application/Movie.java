@@ -1,12 +1,15 @@
-package application;
-public class Movie {
+
+package application;public class Movie {
     private int id;
     private String title;
     private int year;
     private String genre;
     private String summary;
 
-    private String poster; // URL için
+    //To store database as Binary Large Object
+    private byte[] posterImage; //Binary format
+
+    //private double price;
 
     public Movie(){
         this.id = 0;
@@ -14,16 +17,18 @@ public class Movie {
         this.year = 0;
         this.genre = null;
         this.summary = null;
-        this.poster = null;
+        this.posterImage = null;
+        //this.price = price;
     }
 
-    public Movie(int id, String title, int year, String genre,  String summary, String poster) { //, double price
+    public Movie(int id, String title, int year, String genre,  String summary, byte[] posterImage) { //, double price
         this.id = id;
         this.title = title;
         this.year = year;
         this.genre = genre;
         this.summary = summary;
-        this.poster = poster; // veya URL'yi buraya ekle
+        this.posterImage = posterImage;
+        //this.price = price;
     }
 
     // Getter ve Setter metodları
@@ -47,7 +52,8 @@ public class Movie {
     public String getSummary() { return summary; }
     public void setSummary(String summary) { this.summary = summary; }
 
-    public String getPoster() { return poster; }
-    public void setPoster(String poster) { this.poster = poster; }
+    //Poster
+    public byte[] getPosterImage() { return posterImage; }
+    public void setPosterImage(byte[] posterImage) { this.posterImage = posterImage; }
 
 }

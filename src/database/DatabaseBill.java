@@ -7,7 +7,9 @@ import java.util.ArrayList;
 
 import application.OrderItem;
 import application.Bills;
+import application.Employee;
 import application.ItemBills;
+import application.Movie;
 
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -66,7 +68,7 @@ public class DatabaseBill implements DatabaseSource{
 
                 PreparedStatement pStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
                 pStatement.setString(1, bill.getCustomer());
-                pStatement.setDate(2,Date.valueOf(bill.getCustomerBirth()));
+                pStatement.setDate(2,Date.valueOf(bill.getCustomerBirthDate()));
                 pStatement.setInt(3,bill.getSessionId());
                 pStatement.setDouble(4,bill.getTotal_amount());
                 pStatement.setDouble(5,bill.getTax_amount());
@@ -105,6 +107,88 @@ public class DatabaseBill implements DatabaseSource{
             }
         }catch(SQLException sqlException){
             sqlException.printStackTrace();
+        }
+    }
+
+   public ArrayList<Bills> getBills(){
+
+    ArrayList<Bills> bills = new ArrayList<Bills>();
+    String query = "SELECT * FROM bills";
+
+    try{
+
+        ResultSet rs = executeQuery(query);
+
+        while(rs != null && rs.next()){
+
+            Bills bill = new Bills();
+            
+            bill.setBill_id(rs.getInt("bill_id"));
+            bill.setTime(rs.getTimestamp("time").toLocalDateTime());
+            bill.setCustomer(rs.getString("customer"));
+            bill.setCustomerBirthDate(rs.getTimestamp("customerBirthDate").toLocalDateTime().toLocalDate());
+            bill.setSessionId(rs.getInt("sessionId"));
+            bill.setTotal_amount(rs.getInt("total_amount"));
+            bill.setTax_amount(rs.getInt("tax_amount"));
+            bills.add(bill);
+        }
+    }
+
+    catch(SQLException sqlException){
+        sqlException.printStackTrace();
+    }
+    return bills;
+}
+   
+
+    public Bills getBillCustomer(String customer){
+
+        customer = "'%" + customer + "%'";
+        String query = "SELECT * FROM bills WHERE customer LIKE " + customer;
+
+        try{
+
+            ResultSet rs = executeQuery(query);
+
+            if(rs.next()){
+                   
+                Bills bill = new Bills();
+    
+                bill.setBill_id(rs.getInt("bill_id"));
+                bill.setTime(rs.getTimestamp("time").toLocalDateTime());
+                bill.setCustomer(rs.getString("customer"));
+                bill.setCustomerBirthDate(rs.getTimestamp("customerBirthDate").toLocalDateTime().toLocalDate());
+                bill.setSessionId(rs.getInt("sessionId"));
+                bill.setTotal_amount(rs.getInt("total_amount"));
+                bill.setTax_amount(rs.getInt("tax_amount"));
+                    
+                return bill;
+            }
+            else
+                return null;
+
+        }
+        catch(SQLException sqlException){
+            sqlException.printStackTrace();
+            return null;
+        }
+
+    }
+
+
+    public void deleteBill(int billId){
+
+        int ID = billId;
+        String query = "DELETE FROM bills WHERE bill_id = ?";
+
+        try(PreparedStatement pStatement = connection.prepareStatement(query)){
+            pStatement.setInt(1, ID);
+            if (pStatement.executeUpdate() > 0)
+            System.out.println("Bill Refunded Succesfully");
+            else
+                System.out.println("Delete failed!");
+        } catch(SQLException sqlException){
+        sqlException.printStackTrace();
         }
     }
 

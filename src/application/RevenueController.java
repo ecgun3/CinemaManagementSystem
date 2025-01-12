@@ -2,6 +2,7 @@ package application;
 
 import java.io.IOException;
 
+import database.DatabaseProduct;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -33,10 +34,10 @@ public class RevenueController {
 
     public void initialize() {
         //bunu kullanıp databaseden double array çekilcek, sonra 0 ve 1 yazdırılcak.
-        //double[] revenueData = DatabaseProduct.viewRevenue();
-
-
-        double[] revenueData = {1000,2000};     //database bağlantısı kurulunca bu silincek
+        DatabaseProduct dataP = new DatabaseProduct();
+        dataP.connectDatabase();
+        double[] revenueData = dataP.viewRevenue();
+        dataP.disconnectDatabase();
         TotalRevenue.setText("Total Revenue: " + revenueData[0]);       
         TotalTaxes.setText("Total Taxes: " + revenueData[1]);
     }

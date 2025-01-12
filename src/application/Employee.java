@@ -2,18 +2,18 @@ package application;
 import java.sql.Date;
 
 public class Employee {
-    protected int employeeID;
+    private int employeeID;
 
-    protected String username;
-    protected String password;
-    protected String role;
-    protected String name;
-    protected String surname;
-    protected String phoneNo;
-    protected String email;
+    private String username;
+    private String password;
+    private String role;
+    private String name;
+    private String surname;
+    private String phoneNo;
+    private String email;
 
-    protected Date dateOfBirth;
-    protected Date dateOfStart;
+    private Date dateOfBirth;
+    private Date dateOfStart;
 
     public Employee(){
         this.employeeID = 0;

@@ -2,8 +2,14 @@ package application;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import database.DatabaseEmployee;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -225,7 +231,11 @@ public class PersonnelActionsController {
     private TableColumn<Employee, String> username;
 
     private Employee currentEmployee;
+    private Employee currentEmployee1;
+    private Employee currentEmployee2;
 
+
+    private DatabaseEmployee dataE = new DatabaseEmployee();
 
 
     @FXML 
@@ -235,8 +245,24 @@ public class PersonnelActionsController {
         configureTableColumns(personnelAction);
         configureTableColumns(personnelAction1);
         configureTableColumns(personnelAction2);
+        dataE.connectDatabase();
+
+        ClickFire.setOnAction(event -> fireemployee());
+
+        personnelAction.getSelectionModel().selectedItemProperty().addListener((obs,oldVal,newWal) -> {
+            if(newWal != null)
+                currentEmployee = newWal;});
+
+        personnelAction1.getSelectionModel().selectedItemProperty().addListener((obs,oldVal,newWal) -> {
+            if(newWal != null)
+                currentEmployee1 = newWal;});
+
+        personnelAction2.getSelectionModel().selectedItemProperty().addListener((obs,oldVal,newWal) -> {
+            if(newWal != null)
+                currentEmployee2 = newWal;});
 
         loadPersonnelTable();
+
     }
 
     private void configureTableColumns(TableView<Employee> tableView){
@@ -246,21 +272,21 @@ public class PersonnelActionsController {
         username.setCellValueFactory(new PropertyValueFactory<>("username"));
         password.setCellValueFactory(new PropertyValueFactory<>("password"));
         email.setCellValueFactory(new PropertyValueFactory<>("email"));
+        phoneno.setCellValueFactory(new PropertyValueFactory<>("phoneNo"));
         role.setCellValueFactory(new PropertyValueFactory<>("role"));
         birthdate.setCellValueFactory(new PropertyValueFactory<>("dateOfStart"));
         startdate.setCellValueFactory(new PropertyValueFactory<>("dateOfBirth"));
     }
 
     private void loadPersonnelTable(){
-        //deneme
-        Employee employee1 = new Employee("Kran", "Tug" ,"karo","Manager");
-        Employee employee2 = new Employee("Kran2", "Tug2" ,"karo2","Manager2");
-        ArrayList<Employee> employeeList = new ArrayList<>();
-        employeeList.add(employee1);
-        employeeList.add(employee2);
+
+        ArrayList<Employee> employeeList = dataE.getEmployees();
 
         ObservableList<Employee> employee = FXCollections.observableArrayList(employeeList);
         personnelAction.setItems(employee);
+        personnelAction1.setItems(employee);
+        personnelAction2.setItems(employee);
+
     }
 
 
@@ -274,8 +300,9 @@ public class PersonnelActionsController {
             System.err.println("Please enter a value to search!");
         }
         //databaseden employee çekme
-        // Employee employee = EmployeeDatabase.getEmployeeUsername(searchText);
-        /*
+
+        ArrayList<Employee> employee = dataE.getEmployeeUsername(searchText);
+
         if (employee == null) {
             Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Warning");
@@ -286,15 +313,13 @@ public class PersonnelActionsController {
         }
 
         firesearchloadtable(employee);
-      */  
+        
     }
 
 
     //bi üstteki fonksiyonda kullanıldı
-    /*
-    private void firesearchloadtable(Employee employee){
-        ArrayList<Employee> employeeList = new ArrayList<>();
-        employeeList.add(employee);
+
+    private void firesearchloadtable(ArrayList<Employee> employeeList){
 
         ObservableList<Employee> fireemployee = FXCollections.observableArrayList(employeeList);
         personnelAction1.setItems(fireemployee);
@@ -305,15 +330,9 @@ public class PersonnelActionsController {
     @FXML 
     @SuppressWarnings("unused")
     private void fireemployee(){
-        DatabaseEmployee.deleteEmployee(SearchPersonnelFire.getText());
-        
+        dataE.deleteEmployee(currentEmployee1);
     }
     
-    */
-    
-
-    
-
 
     @FXML
     @SuppressWarnings("unused")
@@ -325,9 +344,9 @@ public class PersonnelActionsController {
             System.err.println("Please enter a value to search!");
         }
         //databaseden employee çekme
-        // Employee employee = EmployeeDatabase.getEmployeeUsername(searchText);
-        /*
-        if (employee == null) {
+        ArrayList<Employee> employees = dataE.getEmployeeUsername(searchText);
+
+        if (employees == null) {
             Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Warning");
             alert.setHeaderText("Employee Not Found!");
@@ -336,47 +355,147 @@ public class PersonnelActionsController {
         return;
         }
 
-        editsearchloadtable(employee);
-        */
+        editsearchloadtable(employees);
+        
     }
 
-    /*
-    private void editsearchloadtable(Employee employee){
-
-        ArrayList<Employee> employeeList = new ArrayList<>();
-        employeeList.add(employee);
+    
+    private void editsearchloadtable(ArrayList<Employee> employeeList){
 
         ObservableList<Employee> editemployee = FXCollections.observableArrayList(employeeList);
         personnelAction2.setItems(editemployee);
     }
-    */
 
+    private boolean nameError(String str){
+        if (str.matches("[a-zA-ZÇçĞğİıÖöŞşÜü]+")){
+            return false;
+        } else{
+            return true;
+        }
+    }
     
     //onaction ile tuşa eklenicek
-    /*
     @FXML 
     @SuppressWarnings("unused")
     private void editemployee(){
-        Employee employee = DatabaseEmployee.(SearchPersonnelEdit.getText());
 
-        DatabaseEmployee.updateEmployee(employee, "name", EditFirstName.getText());
-        DatabaseEmployee.updateEmployee(employee, "surname", EditLastName.getText());
-        DatabaseEmployee.updateEmployee(employee, "username", EditUsername.getText());
-        DatabaseEmployee.updateEmployee(employee, "password", EditPassword.getText());
-        DatabaseEmployee.updateEmployee(employee, "email", EditEmail.getText());
-        DatabaseEmployee.updateEmployee(employee, "phoneNo", EditPhoneNo.getText());
-        DatabaseEmployee.updateEmployee(employee, "role", EditRole.getText());              //choicebox
-        DatabaseEmployee.updateEmployee(employee, "dateOfBirth", EditBirthDate.getText()); //datepicker
-        DatabaseEmployee.updateEmployee(employee, "dateOfStart", EditStartDate.getText());  //datepicker
+        Employee employee = currentEmployee2;
+
+        String name = EditFirstName.getText();
+
+        if(name != null){
+            if(nameError(name)){
+                showError("Please fill customer name with only alphabetical characters");
+                return;
+            }
+            if(name.length()>50){
+                showError("Customer name too long. Maximum 50 character.");
+                return;
+            }
+            dataE.updateEmployee(employee, "name", name);
+        }
+
+        String surname = EditLastName.getText();
+
+        if(surname != null){
+            if(nameError(name)){
+                showError("Please fill customer surname with only alphabetical characters");
+                return;
+            }
+            if(surname.length()>50){
+                showError("Customer name too long. Maximum 50 character.");
+                return;
+            }
+            dataE.updateEmployee(employee, "surname",surname);
+        }
+
+        String username = EditUsername.getText();
+
+        if(username != null){
+            if(username.matches("^[a-zA-Z0-9]+$")){
+                if(username.length()>50){
+                    showError("Customer name too long. Maximum 50 character.");
+                    return;
+                }
+                dataE.updateEmployee(employee, "username", username);
+            }
+            else{
+                showError("Please fill customer username with only alphanumerical characters");
+                return;
+            }
+        }
+
+        String password = EditPassword.getText();
+
+        if(password != null){
+            if(password.matches("^[a-zA-Z0-9]+$")){
+                if(password.length()>70){
+                    showError("Password name too long. Maximum 70 character.");
+                    return;
+                }
+                dataE.updateEmployee(employee, "password", password);
+            }
+            else{
+                showError("Please fill customer password with only alphanumerical characters");
+                return;
+            }
+        }
+
+        String email = EditEmail.getText();
+
+        if(email != null){
+            if(email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")){
+                if(email.length()>45){
+                    showError("Password name too long. Maximum 45 character.");
+                    return;
+                }
+                dataE.updateEmployee(employee, "email", email);
+            }
+            else{
+                showError("Please fill vaild email address.");
+                return;
+            }
+        }
+
+        String phoneNo = EditPhoneNo.getText();
+
+        if(phoneNo != null){
+            if(phoneNo.matches("^(\\\\+90|0)?5\\\\d{2} \\\\d{3} \\\\d{2} \\\\d{2}$"))
+                dataE.updateEmployee(employee, "phoneNo", phoneNo);
+            else{
+                showError("Please fill valid phone number.");
+                return;
+            }
+        }
+
+        if(EditRole.getValue()!=null) dataE.updateEmployee(employee, "role", EditRole.getValue());
+
+        LocalDate startDate = EditStartDate.getValue();
+    
+        LocalDate birthdate = Birthdate.getValue();
+        if(birthdate!=null){
+            if (Period.between(birthdate, LocalDate.now()).getYears() < 18) {
+                showError("Employee must be at least 18 years old!");
+                return;
+            }
+            dataE.updateEmployee(employee, "dateOfBirth", birthdate.toString());
+        }
+
+        if(startDate!=null){ 
+            if (Period.between(employee.getDateOfBirth().toLocalDate(), startDate).getYears() < 18) {
+                showError("Start date must be at least 18 years after the birthdate!");
+                return;
+            }
+            dataE.updateEmployee(employee, "dateOfStart", EditStartDate.getValue().toString());
+        }
         System.out.println("Employee updated successfully.");
     }
-    */
-    
 
 
      @FXML
     @SuppressWarnings("unused")
     private void handleLogoutAction(ActionEvent event) throws IOException {
+        dataE.disconnectDatabase();
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/Login.fxml"));
     Parent root = loader.load();
 
@@ -389,6 +508,8 @@ public class PersonnelActionsController {
     @FXML
     @SuppressWarnings("unused")
     private void handleBackToManagerMenuAction(ActionEvent event) throws IOException {
+        dataE.disconnectDatabase();
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/ManagerMenu.fxml"));
         Parent root = loader.load();
     
@@ -397,5 +518,136 @@ public class PersonnelActionsController {
         stage.setScene(scene);
         stage.show();
         }
+
+    private void hireemployee(){
+
+        if (HireFirstName.getText().isEmpty() || 
+        HireLastName.getText().isEmpty() || 
+        HireUsername.getText().isEmpty() || 
+        HirePassword.getText().isEmpty() || 
+        HireEmail.getText().isEmpty() || 
+        HirePhoneNo.getText().isEmpty() || 
+        HireRoleChoice.getValue().isEmpty() || 
+        Birthdate.getValue() == null || 
+        StartDate.getValue() == null) {
+        
+            showError("Please fill all the blanks!");
+        return;
+    }
+
+        LocalDate birthdate = Birthdate.getValue();
+        LocalDate startDate = StartDate.getValue();
+
+        if (Period.between(birthdate, LocalDate.now()).getYears() < 18) {
+            showError("Employee must be at least 18 years old!");
+        return;
+    }
+        if (Period.between(birthdate, startDate).getYears() < 18) {
+            showError("Start date must be at least 18 years after the birthdate!");
+            return;
+    }
+
+
+        Employee employee = new Employee();
+
+        String name = HireFirstName.getText();
+
+        if(nameError(name)){
+            showError("Please fill customer name with only alphabetical characters");
+            return;
+        }
+        else if(name.length()>50){
+            showError("Customer name too long. Maximum 50 character.");
+            return;
+        }
+        else
+            employee.setName(name);
+
+        String surname = HireLastName.getText();
+
+        if(nameError(surname)){
+            showError("Please fill customer surname with only alphabetical characters");
+            return;
+        }
+        else if(surname.length()>50){
+            showError("Customer name too long. Maximum 50 character.");
+            return;
+        }
+        else employee.setSurname(surname);
+
+        String username = HireUsername.getText();
+        
+        if(username.matches("^[a-zA-Z0-9]+$")){
+            if(username.length()>50){
+            showError("Customer name too long. Maximum 50 character.");
+                return;
+            }
+            employee.setUsername(username);
+        }
+        else{
+            showError("Please fill customer username with only alphanumerical characters");
+            return;
+        }
+        
+        String password = HirePassword.getText();
+
+        if(password.matches("^[a-zA-Z0-9]+$")){
+            if(password.length()>70){
+                showError("Password name too long. Maximum 70 character.");
+                return;
+            }
+            employee.setPassword(password);
+        }
+        else{
+            showError("Please fill customer password with only alphanumerical characters");
+            return;
+        }
+
+        String email = HireEmail.getText();
+
+        if(email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")){
+            if(email.length()>45){
+                showError("Password name too long. Maximum 45 character.");
+                return;
+            }
+            employee.setEmail(email);
+        }
+        else{
+            showError("Please fill vaild email address.");
+            return;
+        }
+
+        String phoneNo = EditPhoneNo.getText();
+
+        if(phoneNo.matches("^(\\\\+90|0)?5\\\\d{2} \\\\d{3} \\\\d{2} \\\\d{2}$"))
+            employee.setPhoneNo(phoneNo);
+        else{
+            showError("Please fill valid phone number.");
+            return;
+        }
+
+        employee.setRole(HireRoleChoice.getValue());
+        employee.setDateOfBirth(Date.valueOf(birthdate));
+        employee.setDateOfStart(Date.valueOf(startDate));
+
+        dataE.insertEmployee(employee);
+        showDone("Employee hired succesfully!");
+    }
+
+    private void showError(String message) {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private  void showDone(String message){
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Operation Success");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 
 }

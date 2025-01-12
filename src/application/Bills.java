@@ -8,7 +8,7 @@ public class Bills {
     private int bill_id;
     private LocalDateTime time;
     private String customer;
-    private LocalDate customerBirth;
+    private LocalDate customerBirthDate;
     private int sessionId;
     private double total_amount;
     private double tax_amount;
@@ -17,18 +17,18 @@ public class Bills {
         this.bill_id = 0;
         this.time = null;
         this.customer = null;
-        this.customerBirth = null;
+        this.customerBirthDate = null;
         this.sessionId = 0;
         this.total_amount = 0;
         this.tax_amount = 0;
     }
 
-    public Bills(int bill_id, LocalDateTime time, String customer, LocalDate customerBirth, int sessionId,
+    public Bills(int bill_id, LocalDateTime time, String customer, LocalDate customerBirthDate, int sessionId,
             double total_amount, double tax_amount) {
         this.bill_id = bill_id;
         this.time = time;
         this.customer = customer;
-        this.customerBirth = customerBirth;
+        this.customerBirthDate = customerBirthDate;
         this.sessionId = sessionId;
         this.total_amount = total_amount;
         this.tax_amount = tax_amount;
@@ -58,12 +58,12 @@ public class Bills {
         this.customer = customer;
     }
 
-    public LocalDate getCustomerBirth() {
-        return customerBirth;
+    public LocalDate getCustomerBirthDate() {
+        return customerBirthDate;
     }
 
-    public void setCustomerBirth(LocalDate customerBirth) {
-        this.customerBirth = customerBirth;
+    public void setCustomerBirthDate(LocalDate customerBirthDate) {
+        this.customerBirthDate = customerBirthDate;
     }
 
     public int getSessionId() {

@@ -1,5 +1,6 @@
 
 
+import database.DatabaseMovies;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,6 +11,11 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+        // Resimleri yükle (sadece bir kez çalıştırın)
+        DatabaseMovies db = new DatabaseMovies();
+        db.loadAllMovieImages();
+
         // Login ekranını yükle
         Parent root = FXMLLoader.load(getClass().getResource("ui/Login.fxml"));
 

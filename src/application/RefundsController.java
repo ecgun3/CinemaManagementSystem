@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import database.DatabaseBill;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,6 +15,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -62,14 +65,16 @@ public class RefundsController {
     @FXML
     private TableColumn<Bills, ?> totalReceiptCol;
 
+    private DatabaseBill dataB = new DatabaseBill();
+
     public void initialize(){
+        dataB.connectDatabase();
         noReceiptCol.setCellValueFactory(new PropertyValueFactory<>("bill_id"));
         timeReceiptCol.setCellValueFactory(new PropertyValueFactory<>("time"));
         nameReceiptCol.setCellValueFactory(new PropertyValueFactory<>("customer"));
-        birthReceiptCol.setCellValueFactory(new PropertyValueFactory<>("customerBirth"));
+        birthReceiptCol.setCellValueFactory(new PropertyValueFactory<>("customerBirthDate"));
         totalReceiptCol.setCellValueFactory(new PropertyValueFactory<>("total_amount"));
         taxReceiptCol.setCellValueFactory(new PropertyValueFactory<>("tax_amount"));
-
 
         loadBills();
         }
@@ -77,15 +82,7 @@ public class RefundsController {
     private void loadBills(){
 
         //database'den verileri çek
-        //örnek veri
-        ArrayList<Bills> list = new ArrayList<>();
-        list.add(new Bills(1, LocalDateTime.parse("2024-01-20T14:30:00"),"karan1", LocalDate.parse("2001-02-25"), 1, 20.00, 30.00));
-        list.add(new Bills(2, LocalDateTime.parse("2024-01-21T14:30:00"),"karan2", LocalDate.parse("2024-01-12"), 2, 20.00, 30.00));
-        list.add(new Bills(3, LocalDateTime.parse("2024-01-22T14:30:00"),"karan3", LocalDate.parse("2000-01-01"), 3, 20.00, 30.00));
-        list.add(new Bills(4, LocalDateTime.parse("2024-01-23T14:30:00"),"karan4", LocalDate.parse("2000-01-25"), 4, 20.00, 30.00));
-
-
-        //Database fonksiyonu ile listeyi ArrayList olarak al ..
+        ArrayList<Bills> list = dataB.getBills();
 
         //observableliste çevir
         ObservableList<Bills> bills = FXCollections.observableArrayList(list);
@@ -93,6 +90,23 @@ public class RefundsController {
         //tabloya geçir
         receiptTable.setItems(bills);
     }
+
+    private void showInfo(String message) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void showError(String message) {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
 
     @FXML
     void handleBackToAdminMenu(ActionEvent event) throws IOException {
@@ -107,6 +121,7 @@ public class RefundsController {
 
     @FXML
     void handleLogout(ActionEvent event) throws IOException {
+        dataB.disconnectDatabase();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/Login.fxml"));
         Parent root = loader.load();
     
@@ -116,19 +131,18 @@ public class RefundsController {
         stage.show();
         }
 
+    @SuppressWarnings("unused")
     @FXML
     void handleRefund(ActionEvent event) {
-        //try catch ile receipt id alma
+
         try {
             int receiptno = Integer.parseInt(noOfReceiptText.getText());
+            dataB.deleteBill(receiptno);
+            showInfo("Receipt Refunded Succesfully");
+
         } catch (NumberFormatException e) {
-            System.out.println("Invalid Input, Please Try Again.");
+            showError("Invalid Input, Please Try Again.");
         }
-
-        //receiptno ile sorgulanıp db'den fatura silincek
-
-        //String query = "DELETE * FROM bills WHERE receiptno ?";
-        //pstmt.setInt(1, receiptno);
     }
 
     @FXML
@@ -136,19 +150,20 @@ public class RefundsController {
         String customerName = searchByNameText.getText(); 
 
         if (customerName.isEmpty()){
-            System.out.println("Please enter a name ");//gets the name 
+            showError("Please enter a name ");//gets the name 
             return;
         }
 
-        //customername ile query
+        Bills bill = dataB.getBillCustomer(customerName);
 
-        //database'den verileri çek
-        ArrayList<Bills> list = new ArrayList<>();
-        list.add(new Bills(22, LocalDateTime.parse("2024-01-20T14:30:00"),"karanoooo", LocalDate.parse("2001-02-25"), 1, 20.00, 30.00));
-        ObservableList<Bills> bills = FXCollections.observableArrayList(list);
-
-        receiptTable.setItems(bills);
-
+        if(bill != null){
+            ArrayList<Bills> list = new ArrayList<>();
+            list.add(bill);
+            ObservableList<Bills> bills = FXCollections.observableArrayList(list);
+            receiptTable.setItems(bills);
+        }
+        else
+            showError("Bill for Customer name not Found!");
     }
 
 }

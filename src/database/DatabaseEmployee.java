@@ -121,7 +121,44 @@ public class DatabaseEmployee implements DatabaseSource{
         return employees;
     }
 
-    public Employee getEmployeeUsername(String username){
+    public ArrayList<Employee> getEmployeeUsername(String username){
+
+        username = "'" + username + "'";
+        String query = "SELECT * FROM employee WHERE username LIKE " + username;
+
+        ArrayList<Employee> employees = new ArrayList<>();
+
+        try{
+
+            ResultSet rs = executeQuery(query);
+
+            if(rs.next()){
+                   
+                Employee employee = new Employee();
+    
+                employee.setRole(rs.getString("role"));
+                employee.setEmployeeID(rs.getInt("idEmployee"));
+                employee.setUsername(rs.getString("username"));
+                employee.setPassword(rs.getString("password"));
+                employee.setName(rs.getString("name"));
+                employee.setSurname(rs.getString("surname"));
+                employee.setPhoneNo(rs.getString("phone_no"));
+                employee.setEmail(rs.getString("email"));
+                employee.setDateOfBirth(rs.getDate("date_of_birth"));
+                employee.setDateOfStart(rs.getDate("date_of_start"));
+                
+                employees.add(employee);
+            }
+
+        }
+        catch(SQLException sqlException){
+            sqlException.printStackTrace();
+        }
+        return employees;
+
+    }
+
+    public Employee authEmployee(String username){
 
         username = "'" + username + "'";
         String query = "SELECT * FROM employee WHERE username = " + username;

@@ -16,6 +16,7 @@ import java.util.List;
 import database.DatabaseHalls;
 import database.DatabaseSession;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -123,18 +124,9 @@ public class SessionSelectionController {
         if (movieData != null) {
             selectedMovieLabel.setText(movieData.getTitle());
             selectedGenreLabel.setText(movieData.getGenre());
-
-            // Poster'ı URL'den yükle
-            if (movieData.getPoster() != null && !movieData.getPoster().isEmpty()) {
-                try {
-                    Image image = new Image(movieData.getPoster());
-                    moviePosterView.setImage(image);
-                } catch (Exception e) {
-                    System.err.println("Error loading image: " + e.getMessage());
-                    moviePosterView.setImage(null);
-                }
-            } else {
-                moviePosterView.setImage(null);
+            if (movieData.getPosterImage() != null) {
+                Image image = new Image(new ByteArrayInputStream(movieData.getPosterImage()));
+                moviePosterView.setImage(image);
             }
         }
     }
