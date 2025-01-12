@@ -3,8 +3,8 @@ package application;
 public class Price {
     
     private double price;
-    private int taxPercentage;
-    private int discountPercentage;
+    private double taxPercentage;
+    private double discountPercentage;
 
     public Price(){
         this.price = 0;
@@ -24,16 +24,16 @@ public class Price {
     public void setPrice(double price) {
         this.price = price;
     }
-    public int getTaxPercentage() {
+    public double getTaxPercentage() {
         return taxPercentage;
     }
-    public void setTaxPercentage(int taxPercentage) {
+    public void setTaxPercentage(double taxPercentage) {
         this.taxPercentage = taxPercentage;
     }
-    public int getDiscountPercentage() {
+    public double getDiscountPercentage() {
         return discountPercentage;
     }
-    public void setDiscountPercentage(int discountPercentage) {
+    public void setDiscountPercentage(double discountPercentage) {
         this.discountPercentage = discountPercentage;
     }
 

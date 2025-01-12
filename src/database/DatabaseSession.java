@@ -8,6 +8,8 @@ import java.time.format.DateTimeFormatter;
 
 import application.Session;
 import application.Halls;
+import application.Movie;
+import application.Seat;
 
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -222,6 +224,66 @@ public class DatabaseSession implements DatabaseSource{
         }
 
         return ses;
+    }
+
+    public void fillSeats(Session sessionData, int size) {
+        
+        String query = "UPDATE session SET available_seats = available_seats - ? WHERE idSession = ?";
+
+            try(PreparedStatement pStatement2 = connection.prepareStatement(query)){
+                
+                pStatement2.setInt(1, size);
+                pStatement2.setInt(2, sessionData.getId());
+                
+                executeQuery(query);
+                
+            }catch (SQLException sqlException) {
+                sqlException.printStackTrace();
+            }
+    }
+
+    public void insertSession(Session session){
+
+        String query = "INSERT INTO session (movieId, hallId, session_time, available_seats) VALUES (?,?,?,?)";
+
+        try(PreparedStatement pStatement = connection.prepareStatement(query)){
+            
+            pStatement.setInt(1, session.getMovie().getId());
+            pStatement.setInt(2,session.getHall().getId_halls());
+            pStatement.setObject(3,session.getDateTime());
+            pStatement.setInt(4,session.getAvailableSeats());
+
+            if (pStatement.executeUpdate() > 0)
+                System.out.println("Session inserted successfully!");
+            else
+                System.out.println("Insert failed!");
+        }
+        catch(SQLException sqlException){
+            sqlException.printStackTrace();
+        }
+    }
+
+    public void updateSession(Session session){
+
+        String query = "UPDATE session SET movieId = ? , hallId = ? , session_time = ? , available_seats = ? WHERE idSession = ? ";
+        try(PreparedStatement pStatement = connection.prepareStatement(query);){
+
+            pStatement.setInt(1, session.getMovie().getId());
+            pStatement.setInt(2, session.getHall().getId_halls());
+            pStatement.setObject(3, session.getDateTime());
+            pStatement.setInt(4, session.getAvailableSeats());
+            pStatement.setInt(5, session.getId());
+
+            if (pStatement.executeUpdate() > 0)
+                System.out.println("Session updated successfully!");
+            else
+                System.out.println("Update failed.");
+
+        }
+        catch(SQLException sqlException){
+            sqlException.printStackTrace();
+        }
+
     }
 
     public void disconnectDatabase(){

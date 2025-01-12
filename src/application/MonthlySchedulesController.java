@@ -2,7 +2,15 @@ package application;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
+import database.DatabaseHalls;
+import database.DatabaseSession;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -14,6 +22,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.DateCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -22,8 +31,15 @@ import javafx.stage.Stage;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 
 public class MonthlySchedulesController {
+
+    private final String[] HOURS = {"10:00", "12:00", "14:00", "16:00", "18:00", "20:00"};
+    private ArrayList<String> HALLS = new ArrayList<>();
+    private ArrayList<String> MOVIES = new ArrayList<>();
+
 
     @FXML
     private DatePicker ScheduleDateChoice;
@@ -44,24 +60,29 @@ public class MonthlySchedulesController {
     private Button createSchedulesButton;
 
     @FXML
-    private TableColumn<Schedule, LocalDate> dateScheduleTable;
+    private TableColumn<Session, LocalDate> dateScheduleTable;
 
     @FXML
-    private TableColumn<Schedule, String> hallScheduleTable;
+    private TableColumn<Session, String> hallScheduleTable;
 
     @FXML
-    private TableColumn<Schedule, String> movieScheduleTable;
+    private TableColumn<Session, String> movieScheduleTable;
 
     @FXML
-    private TableView<Schedule> schedulesTable;
+    private TableView<Session> schedulesTable;
 
     @FXML
-    private TableColumn<Schedule, String> sessionScheduleTable;
+    private TableColumn<Session, String> sessionScheduleTable;
 
     @FXML
     private Button updateSchedulesButton;
 
-    private ObservableList<Schedule> scheduleList = FXCollections.observableArrayList();
+    private Map<String, Movie> movieMap = new HashMap<>();
+    private Map<String, Halls> hallMap = new HashMap<>();
+
+    private ObservableList<Session> scheduleList = FXCollections.observableArrayList();
+    private DatabaseSession dataS = new DatabaseSession();
+    private static Session selectedSession;
 
     @FXML
     private Button logoutButton;
@@ -74,21 +95,68 @@ public class MonthlySchedulesController {
 
     @FXML
     public void initialize() {
-        dateScheduleTable.setCellValueFactory(new PropertyValueFactory<>("date"));
-        hallScheduleTable.setCellValueFactory(new PropertyValueFactory<>("hall"));
-        sessionScheduleTable.setCellValueFactory(new PropertyValueFactory<>("session"));
-        movieScheduleTable.setCellValueFactory(new PropertyValueFactory<>("movie"));
 
-        scheduleList = null;//TestData.getTestSchedules();
+        dateScheduleTable.setCellValueFactory(cellData -> 
+            new SimpleObjectProperty<>(cellData.getValue().getDateTime().toLocalDate()));
+        hallScheduleTable.setCellValueFactory(cellData -> 
+            new SimpleStringProperty(cellData.getValue().getHall().getName()));
+        movieScheduleTable.setCellValueFactory(cellData -> {
+            Movie movie = cellData.getValue().getMovie();
+            return new SimpleStringProperty(movie.getTitle() + " (" + movie.getYear() + ")");
+        });
+        sessionScheduleTable.setCellValueFactory(cellData -> 
+            new SimpleStringProperty(cellData.getValue().getDateTime().toLocalTime().toString()));
+            
+        scheduleList.setAll(getSchedules());
         schedulesTable.setItems(scheduleList);
+        ScheduleDateChoice.setValue(LocalDate.now());
 
-        ScheduleHallChoice.setItems(FXCollections.observableArrayList("Hall A", "Hall B"));
-        ScheduleSessionChoice.setItems(FXCollections.observableArrayList("12:00", "14:00", "16:00"));
-        ScheduleMovieChoice.setItems(FXCollections.observableArrayList("Movie A", "Movie B"));
+        getMovies(scheduleList);
+        getHalls();
+        ScheduleHallChoice.setItems(FXCollections.observableArrayList(HALLS));
+        ScheduleSessionChoice.setItems(FXCollections.observableArrayList(HOURS));
+        ScheduleMovieChoice.setItems(FXCollections.observableArrayList(MOVIES));
+
+        schedulesTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) { // newVal, seçilen Session nesnesidir
+                selectedSession = newVal;
+            }
+        });
+
+    }
+
+    private void getMovies(ObservableList<Session> schedulelist){
+        for(Session schedule : schedulelist){
+            String movieName = schedule.getMovie().getTitle() + " (" + schedule.getMovie().getYear() + ")";
+            if(!MOVIES.contains(movieName))
+                MOVIES.add(movieName);
+                movieMap.put(movieName, schedule.getMovie());
+        }
+
+    }
+
+    private void getHalls(){
+        DatabaseHalls dataH = new DatabaseHalls();
+        dataH.connectDatabase();
+        ArrayList<Halls> hallsT = dataH.viewHalls();
+        for(Halls hall : hallsT) {
+            HALLS.add(hall.getName());
+            if (hall != null)
+                hallMap.put(hall.getName(), hall);
+        }
+        dataH.disconnectDatabase();
+    }
+
+    private ArrayList<Session> getSchedules(){
+        dataS.connectDatabase();
+        ArrayList<Session> sessions = dataS.getSessions();
+        dataS.disconnectDatabase();
+        return sessions;
     }
 
     @FXML
     void handleBackButton(ActionEvent event) throws IOException {
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/Admin.fxml"));
         Parent root = loader.load();
 
@@ -100,36 +168,73 @@ public class MonthlySchedulesController {
 
     @FXML
     void handleCreateButton(ActionEvent event) {
+
         LocalDate date = ScheduleDateChoice.getValue();
         String hall = ScheduleHallChoice.getValue();
+        Halls selectedHall = hallMap.get(hall);
         String session = ScheduleSessionChoice.getValue();
         String movie = ScheduleMovieChoice.getValue();
+        Movie sMovie = movieMap.get(movie);
+
+        ScheduleDateChoice.setDayCellFactory(datePicker1 -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                LocalDate today = LocalDate.now();
+                LocalDate oneMonthLater = today.plusMonths(1);
+                setDisable(empty || date.compareTo(today) < 0 || date.compareTo(oneMonthLater) > 0);
+            }
+        });
 
         if (date != null && hall != null && session != null && movie != null) {
-            Schedule newSchedule = new Schedule(scheduleList.size() + 1, date, hall, session, movie);
+
+            LocalDateTime sessionTime = LocalDateTime.of(date, LocalTime.parse(session));
+            Session newSchedule = new Session(scheduleList.size() + 1, sMovie, sessionTime, selectedHall, selectedHall.getCapacity());
+
             scheduleList.add(newSchedule);
+            addDatabase(newSchedule);
             schedulesTable.setItems(scheduleList);
             clearFields();
+
         } else {
             showAlert(Alert.AlertType.WARNING, "Warning", "All fields are required!");
         }
     }
 
+    private void addDatabase(Session schedule){
+        dataS.connectDatabase();
+        dataS.insertSession(schedule);
+        dataS.disconnectDatabase();
+    }
+
+    private void updateDatabase(Session schedule){
+        dataS.connectDatabase();
+        dataS.updateSession(schedule);
+        dataS.disconnectDatabase();
+    }
+
     @FXML
     void handleUpdateButton(ActionEvent event) {
-        Schedule selectedSchedule = schedulesTable.getSelectionModel().getSelectedItem();
+        Session selectedSchedule = schedulesTable.getSelectionModel().getSelectedItem();
 
         if (selectedSchedule != null) {
             LocalDate date = ScheduleDateChoice.getValue();
             String hall = ScheduleHallChoice.getValue();
+            Halls selectedHall = hallMap.get(hall);
             String session = ScheduleSessionChoice.getValue();
             String movie = ScheduleMovieChoice.getValue();
+            Movie sMovie = movieMap.get(movie);
 
-            if (date != null) selectedSchedule.setDate(date);
-            if (hall != null) selectedSchedule.setHall(hall);
-            if (session != null) selectedSchedule.setSession(session);
-            if (movie != null) selectedSchedule.setMovie(movie);
+            String temp = date.toString() + " " + session;
+            DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime DateTime = LocalDateTime.parse(temp, format);
 
+            if (date != null) selectedSchedule.setDateTime(DateTime);
+            if (hall != null) selectedSchedule.setHall(selectedHall);
+            if (session != null) selectedSchedule.setAvailableSeats(selectedHall.getCapacity());
+            if (sMovie != null) selectedSchedule.setMovie(sMovie);
+
+            updateDatabase(selectedSchedule);
             schedulesTable.refresh();
             clearFields();
         }

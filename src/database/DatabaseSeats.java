@@ -3,8 +3,10 @@ package database;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 import application.Halls;
+import application.ItemBills;
 import application.Movie;
 import application.Seat;
 
@@ -105,6 +107,34 @@ public class DatabaseSeats implements DatabaseSource{
         } 
     
         return bl;
+    }
+
+    public void fillSeats(List<Seat> selectedSeats) {
+        
+        try{
+            connection.setAutoCommit(false);
+            String query = "UPDATE seats SET taken = '1' WHERE session_id = ? AND seatNo = ?";
+
+            try(PreparedStatement pStatement2 = connection.prepareStatement(query)){
+                
+                for (Seat seat : selectedSeats) {
+                    pStatement2.setInt(1, seat.getSession());
+                    pStatement2.setString(2, seat.getSeat());
+                    pStatement2.addBatch();
+                }
+
+                pStatement2.executeBatch(); // execute more than one sql operation at one time
+                
+            }catch (SQLException sqlException) {
+                connection.rollback();
+                sqlException.printStackTrace();
+            }finally{
+                connection.setAutoCommit(true);
+            } 
+        }catch(SQLException sqlException) {
+            sqlException.printStackTrace();
+        } 
+    
     }
 
     public void disconnectDatabase(){

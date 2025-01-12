@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 import database.DatabaseBill;
 import database.DatabasePrice;
 import database.DatabaseProduct;
+import database.DatabaseSeats;
+import database.DatabaseSession;
 import javafx.util.StringConverter;
 
 
@@ -29,9 +31,10 @@ public class CustomerInfoController {
     private Movie movieData;
     private Session sessionData;
     private List<Seat> selectedSeats;
-    private double totalTicketPrice = 0.0;
-    private double total_amount = 0.0;
+    private double totalTicketPrice;
+    private double total_amount;
     private Price prices;
+    private int flag = 0;
 
     @FXML
     private Button backButton;
@@ -112,7 +115,14 @@ public class CustomerInfoController {
         // value change listener eklendi
         birthDateField.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                validateAge();
+                if(validateAge() && flag==0){
+                    applyAgeDiscount();
+                    flag=1;
+                }
+                else if(!validateAge() && flag==1){
+                    returnAgeDiscount();
+                    flag=0;
+                }
             }
         });
 
@@ -146,15 +156,15 @@ public class CustomerInfoController {
             }
         };
         birthDateField.setConverter(converter);
+        LocalDate today = LocalDate.now();
+        LocalDate yearbefore = today.minusYears(6);
+        birthDateField.setValue(yearbefore);
 
         // Maksimum tarihi bugün olarak ayarla (gelecek tarihleri engelle)
         birthDateField.setDayCellFactory(picker -> new DateCell() {
             @Override
             public void updateItem(LocalDate date, boolean empty) {
                 super.updateItem(date, empty);
-                LocalDate today = LocalDate.now();
-                LocalDate yearbefore = today.minusYears(6);
-                birthDateField.setValue(yearbefore);
                 setDisable(empty || date.compareTo(yearbefore) > 0);
             }
         });
@@ -177,14 +187,16 @@ public class CustomerInfoController {
         productsTable.getItems().addAll(products);
     }
 
-    private int calculateAge(LocalDate birthDate) {
-        return Period.between(birthDate, LocalDate.now()).getYears();
-    }
-
     private void applyAgeDiscount() {
         // %50 indirim uygula
-        double discountRate = prices.getDiscountPercentage()/100;
+        double discountRate = 1-(prices.getDiscountPercentage()/100);
         totalTicketPrice = totalTicketPrice * discountRate;
+        updateTotalPrice();
+    }
+
+    private void returnAgeDiscount(){
+        double discountRate = 1-(prices.getDiscountPercentage()/100);
+        totalTicketPrice = totalTicketPrice / discountRate;
         updateTotalPrice();
     }
 
@@ -316,20 +328,22 @@ public class CustomerInfoController {
         updateTotalPrice();
     }
 
-    private void validateAge() {
+    private boolean validateAge() {
         try {
             LocalDate birthDate = birthDateField.getValue();
             if (birthDate == null) {
-                return;
+                return false;
             }
+            Period period = Period.between(birthDate, LocalDate.now());
 
-            int age = calculateAge(birthDate);
-            if (age < 18 || age > 60) {
-                applyAgeDiscount();
-            }
+            if (period.getYears() < 18 || period.getYears() > 60) {
+                if(totalTicketPrice!=0)
+                    return true;
+            }            
         } catch (Exception e) {
             showError("Invalid Date", "Please select a valid date");
         }
+        return false;
     }
 
     private void handleAddProduct(Product product) {
@@ -374,6 +388,9 @@ public class CustomerInfoController {
         if (!validateFields()) {
             return;
         }
+        if (!customerNameError()){
+            return;
+        }
 
         try {
 
@@ -383,8 +400,9 @@ public class CustomerInfoController {
             deleteStocksFromDatabase(dataP);
             dataP.disconnectDatabase();
             saveBill(createCustomer());
+            fillSeats();
 
-            // Save customer info!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            // Save customer info!!
             // Process payment
             // Generate tickets and invoice
             // Return to movie search
@@ -393,6 +411,17 @@ public class CustomerInfoController {
         } catch (Exception e) {
             showError("Payment Error", "Could not process payment: " + e.getMessage());
         }
+    }
+
+    private void fillSeats(){
+        DatabaseSeats dataS = new DatabaseSeats();
+        dataS.connectDatabase();
+        dataS.fillSeats(selectedSeats);
+        dataS.disconnectDatabase();
+        DatabaseSession dataSs = new DatabaseSession();
+        dataSs.connectDatabase();
+        dataSs.fillSeats(sessionData,selectedSeats.size());
+        dataSs.disconnectDatabase();
     }
 
     private Customer createCustomer() {
@@ -456,6 +485,20 @@ public class CustomerInfoController {
             return false;
         }
         return true;
+    }
+
+    private boolean customerNameError(){
+        if (firstNameField.getText().matches("[a-zA-ZÇçĞğİıÖöŞşÜü]+")){
+            if(lastNameField.getText().matches("[a-zA-ZÇçĞğİıÖöŞşÜü]+"))
+                return false;
+            else{
+                showError("Validation Error", "Please fill customer last name with only alphabetical characters");
+                return true;
+            }
+        } else{
+            showError("Validation Error", "Please fill customer first name with only alphabetical characters");
+            return true;
+        }
     }
 
     private void showError(String header, String content) {

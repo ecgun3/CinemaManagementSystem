@@ -55,7 +55,7 @@ public class AdminController {
     
     @FXML
     void handleUpdateMovieButton(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/MonthlySchdules.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/MonthlySchedules.fxml"));
         Parent root = loader.load();
     
         Scene scene = new Scene(root);

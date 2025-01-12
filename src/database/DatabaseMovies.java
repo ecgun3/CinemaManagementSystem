@@ -231,14 +231,17 @@ public class DatabaseMovies implements DatabaseSource{
         }
     }
 
-    public void updateMovie(Movie movie, String column, String value){
+    public void updateMovie(Movie movie){
 
-        int ID = movie.getId();
-        String query = "UPDATE employee SET " + column + " = ? WHERE idMovie = ? ";
+        String query = "UPDATE movies SET title = ? , year = ? , genre = ? , summary = ? , poster_url = ? WHERE idMovie = ? ";
         try(PreparedStatement pStatement = connection.prepareStatement(query);){
 
-            pStatement.setString(1, value);
-            pStatement.setInt(2, ID);
+            pStatement.setString(1, movie.getTitle());
+            pStatement.setInt(2, movie.getYear());
+            pStatement.setString(3, movie.getGenre());
+            pStatement.setString(4, movie.getSummary());
+            pStatement.setString(5, movie.getPoster());
+            pStatement.setInt(6, movie.getId());
 
             if (pStatement.executeUpdate() > 0)
                 System.out.println("Movie updated successfully!");

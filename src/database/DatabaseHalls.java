@@ -124,6 +124,28 @@ public class DatabaseHalls implements DatabaseSource {
         return hall;
     }
 
+    public ArrayList<String> getHalls(){
+
+        ArrayList<String> halls = new ArrayList<>();
+        String query = "SELECT DISTINCT name FROM halls";
+
+        try{
+            ResultSet rs = executeQuery(query);
+
+            while (rs.next()){ 
+
+                String hall = "";
+                hall = rs.getString("name");
+                halls.add(hall);
+            }
+            
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        } 
+    
+        return halls;
+    }
+
 
     public void disconnectDatabase(){
 

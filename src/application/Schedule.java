@@ -7,9 +7,9 @@ public class Schedule {
     private LocalDate date; 
     private String hall;
     private String session;
-    private String movie;
+    private Movie movie;
 
-    public Schedule(int id, LocalDate date, String hall, String session, String movie) {
+    public Schedule(int id, LocalDate date, String hall, String session, Movie movie) {
         this.id = id;
         this.date = date;
         this.hall = hall;
@@ -50,11 +50,11 @@ public class Schedule {
         this.session = session;
     }
 
-    public String getMovie() {
+    public Movie getMovie() {
         return movie;
     }
 
-    public void setMovie(String movie) {
+    public void setMovie(Movie movie) {
         this.movie = movie;
     }
 }

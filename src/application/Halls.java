@@ -2,9 +2,9 @@ package application;
 
 public class Halls {
     
-    protected int id_halls;
-    protected String name;
-    protected int capacity;
+    private int id_halls;
+    private String name;
+    private int capacity;
 
     public Halls() {
         this.id_halls = 0;

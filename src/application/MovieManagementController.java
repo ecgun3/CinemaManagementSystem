@@ -20,9 +20,15 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.Node;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
 import javafx.embed.swing.SwingFXUtils;
 import javax.imageio.ImageIO;
+
+import database.DatabaseMovies;
+
 import java.io.ByteArrayOutputStream;
 
 public class MovieManagementController {
@@ -61,6 +67,8 @@ public class MovieManagementController {
     private TextField YearAddMovie;
 
     private ObservableList<Movie> movieList;
+    private DatabaseMovies mov = new DatabaseMovies();
+    //Seçilen film bilgilerini tutacak model sınıf
 
     @FXML
     public void initialize() {
@@ -75,11 +83,9 @@ public class MovieManagementController {
 
         // Tablonun veri setini ayarla
         TableMovieManagement.setItems(movieList);
-
+        movieList.setAll(showMovies());
         // Veritabanından filmleri yükle
-        loadMoviesFromDatabase();
     }
-
 
     @FXML
     void handleAddButton(ActionEvent event) {
@@ -101,14 +107,19 @@ public class MovieManagementController {
             return;
         }
 
-        if (summary.length() > 500) {
-            showAlert(Alert.AlertType.WARNING, "Summary Too Long", "The summary cannot be longer than 500 characters.");
+        if (genre.length() > 100) {
+            showAlert(Alert.AlertType.WARNING, "Genre Too Long", "The title cannot be longer than 100 characters.");
+            return;
+        }
+
+        if (summary.length() > 700) {
+            showAlert(Alert.AlertType.WARNING, "Summary Too Long", "The summary cannot be longer than 700 characters.");
             return;
         }
 
         try {
             int yearValue = Integer.parseInt(year);
-            if (yearValue < 1850 || yearValue > 2025) {
+            if (yearValue < 1850 || yearValue > 2025){
                 showAlert(Alert.AlertType.WARNING, "Invalid Year", "Please enter a valid year (1850-2025).");
                 return;
             }
@@ -165,6 +176,21 @@ public class MovieManagementController {
 
         boolean isUpdated = false;
 
+        if (newTitle.length() > 100) {
+            showAlert(Alert.AlertType.WARNING, "Title Too Long", "The title cannot be longer than 100 characters.");
+            return;
+        }
+
+        if (newGenre.length() > 100) {
+            showAlert(Alert.AlertType.WARNING, "Genre Too Long", "The title cannot be longer than 100 characters.");
+            return;
+        }
+
+        if (newSummary.length() > 700) {
+            showAlert(Alert.AlertType.WARNING, "Summary Too Long", "The summary cannot be longer than 700 characters.");
+            return;
+        }
+
         if (!newTitle.isEmpty() && !newTitle.equals(selectedMovie.getTitle())) {
             selectedMovie.setTitle(newTitle);
             isUpdated = true;
@@ -183,6 +209,10 @@ public class MovieManagementController {
         if (!newYear.isEmpty()) {
             try {
                 int yearValue = Integer.parseInt(newYear);
+                if (yearValue < 1850 || yearValue > 2025){
+                    showAlert(Alert.AlertType.WARNING, "Invalid Year", "Please enter a valid year (1850-2025).");
+                    return;
+                }
                 if (yearValue != selectedMovie.getYear()) {
                     selectedMovie.setYear(yearValue);
                     isUpdated = true;
@@ -239,20 +269,29 @@ public class MovieManagementController {
         YearAddMovie.clear();
     }
 
-    private void loadMoviesFromDatabase() {
-        // Veritabanından veri yükleme
+    private List<Movie> showMovies() {
+        mov.connectDatabase();
+        ArrayList<Movie> movies = mov.getMovies();
+        mov.disconnectDatabase();
+        return movies;
     }
 
     private void addMovieToDatabase(Movie movie) {
-        // Veritabanına film ekleme
+        mov.connectDatabase();
+        mov.insertMovie(movie);
+        mov.disconnectDatabase();
     }
 
     private void deleteMovieFromDatabase(Movie movie) {
-        // Veritabanından film silme
+        mov.connectDatabase();
+        mov.deleteMovie(movie);
+        mov.disconnectDatabase();
     }
 
     private void updateMovieInDatabase(Movie movie) {
-        // Veritabanında güncelleme
+        mov.connectDatabase();
+        mov.updateMovie(movie);
+        mov.disconnectDatabase();
     }
 
     private void showAlert(Alert.AlertType alertType, String title, String message) {
