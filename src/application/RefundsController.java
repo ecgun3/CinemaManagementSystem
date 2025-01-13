@@ -66,6 +66,7 @@ public class RefundsController {
     private TableColumn<Bills, ?> totalReceiptCol;
 
     private DatabaseBill dataB = new DatabaseBill();
+    private Bills selectedBill = new Bills();
 
     public void initialize(){
         dataB.connectDatabase();
@@ -76,6 +77,11 @@ public class RefundsController {
         totalReceiptCol.setCellValueFactory(new PropertyValueFactory<>("total_amount"));
         taxReceiptCol.setCellValueFactory(new PropertyValueFactory<>("tax_amount"));
 
+        receiptTable.getSelectionModel().selectedItemProperty().addListener((obs,oldVal,newWal) -> {
+            if(newWal != null) {
+                selectedBill = newWal;
+            }
+        });
         loadBills();
         }
     
@@ -131,18 +137,25 @@ public class RefundsController {
         stage.show();
         }
 
+    void returnProducts(){};
+
     @SuppressWarnings("unused")
     @FXML
     void handleRefund(ActionEvent event) {
 
-        try {
-            int receiptno = Integer.parseInt(noOfReceiptText.getText());
-            dataB.deleteBill(receiptno);
-            showInfo("Receipt Refunded Succesfully");
-
-        } catch (NumberFormatException e) {
-            showError("Invalid Input, Please Try Again.");
+        if(selectedBill==null){
+            showError("Please choose a bill");
+            return;
         }
+        dataB.returnBill(selectedBill);            
+        boolean success = dataB.deleteBill(selectedBill.getBill_id());
+        if(success==true){
+            loadBills();
+            showInfo("Bill Refunded Succesfully");
+        }
+        else
+            showInfo("Delete failed! There is no bill with this id.");
+
     }
 
     @FXML

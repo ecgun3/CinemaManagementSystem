@@ -240,14 +240,13 @@ public class PersonnelActionsController {
 
     @FXML 
     public void initialize(){
+        
         HireRoleChoice.setItems(FXCollections.observableArrayList("Admin", "Manager", "Cashier"));
         EditRole.setItems(FXCollections.observableArrayList("Admin", "Manager", "Cashier"));
         configureTableColumns(personnelAction);
         configureTableColumns(personnelAction1);
         configureTableColumns(personnelAction2);
         dataE.connectDatabase();
-
-        ClickFire.setOnAction(event -> fireemployee());
 
         personnelAction.getSelectionModel().selectedItemProperty().addListener((obs,oldVal,newWal) -> {
             if(newWal != null)
@@ -283,9 +282,12 @@ public class PersonnelActionsController {
         ArrayList<Employee> employeeList = dataE.getEmployees();
 
         ObservableList<Employee> employee = FXCollections.observableArrayList(employeeList);
+        ObservableList<Employee> employee2 = FXCollections.observableArrayList(employeeList);
+        ObservableList<Employee> employee3 = FXCollections.observableArrayList(employeeList);
+
         personnelAction.setItems(employee);
-        personnelAction1.setItems(employee);
-        personnelAction2.setItems(employee);
+        personnelAction1.setItems(employee2);
+        personnelAction2.setItems(employee3);
 
     }
 
@@ -374,7 +376,6 @@ public class PersonnelActionsController {
         }
     }
     
-    //onaction ile tuşa eklenicek
     @FXML 
     @SuppressWarnings("unused")
     private void editemployee(){
@@ -518,7 +519,9 @@ public class PersonnelActionsController {
         stage.setScene(scene);
         stage.show();
         }
-
+    
+    @FXML
+    @SuppressWarnings("unused")
     private void hireemployee(){
 
         if (HireFirstName.getText().isEmpty() || 

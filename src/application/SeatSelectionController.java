@@ -80,7 +80,7 @@ public class SeatSelectionController {
         nextButton.setDisable(true);
 
         // Toplam fiyat başlangıçta 0
-        // updateTotalPrice();
+        updateTotalPrice();
     }
 
     public void setMainController(MainCashierController controller) {
@@ -202,15 +202,28 @@ public class SeatSelectionController {
         }
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/CustomerInfo.fxml"));
-            Parent customerView = loader.load();
+            System.out.println("asss");
 
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/CustomerInfo.fxml"));
+            System.out.println("0");
+
+            Parent customerView = loader.load();
+            System.out.println("a");
             CustomerInfoController customerController = loader.getController();
+            System.out.println("aa");
+
             customerController.setMainController(mainController);
+            System.out.println("aaaa");
+
             customerController.setBookingData(movieData, sessionData, selectedSeats);
+            System.out.println("asss");
+
 
             mainController.getContentArea().getChildren().setAll(customerView);
+            System.out.println("avvv");
+
         } catch (IOException e) {
+            e.printStackTrace();
             showError("Loading Error", "Could not load customer information screen: " + e.getMessage());
         }
     }

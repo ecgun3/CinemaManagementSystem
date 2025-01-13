@@ -81,7 +81,7 @@
                         <ChoiceBox fx:id="HireRoleChoice" layoutX="138.0" layoutY="201.0" prefWidth="150.0" />
                         <Button fx:id="backToManagerMenu1" layoutX="213.0" layoutY="301.0" mnemonicParsing="false" onAction="#handleBackToManagerMenuAction" style="-fx-background-color: #C8A2C8;" text="Back to Manager Menu" />
                         <Button fx:id="Logout1" layoutX="390.0" layoutY="301.0" mnemonicParsing="false" onAction="#handleLogoutAction" prefHeight="26.0" prefWidth="154.0" style="-fx-background-color: #C8A2C8;" text="Logout" />
-                        <Button fx:id="ApplyHire" layoutX="389.0" layoutY="178.0" mnemonicParsing="false" text="Apply" />
+                        <Button fx:id="ApplyHire" layoutX="389.0" layoutY="178.0" mnemonicParsing="false" onAction="#hireemployee" text="Apply" />
                         <DatePicker fx:id="Birthdate" layoutX="412.0" layoutY="19.0" />
                         <DatePicker fx:id="StartDate" layoutX="412.0" layoutY="68.0" />
                      </children>
@@ -113,7 +113,7 @@
                         </TableView>
                         <Label layoutX="18.0" layoutY="28.0" text="Search" />
                         <Button fx:id="SearchFireClick" layoutX="278.0" layoutY="24.0" mnemonicParsing="false" onAction="#firesearchemployee" style="-fx-background-color: #89CFF0;" text="Click" />
-                        <Button fx:id="ClickFire" layoutX="333.0" layoutY="216.0" mnemonicParsing="false" style="-fx-background-color: #89CFF0;" text="Fire Personnel" />
+                        <Button fx:id="ClickFire" layoutX="333.0" layoutY="216.0" mnemonicParsing="false" onAction="#fireemployee" style="-fx-background-color: #89CFF0;" text="Fire Personnel" />
                         <Button fx:id="Logout2" layoutX="488.0" layoutY="288.0" mnemonicParsing="false" onAction="#handleLogoutAction" prefHeight="26.0" prefWidth="154.0" style="-fx-background-color: #C8A2C8;" text="Logout" />
                      </children>
                   </AnchorPane>
@@ -148,7 +148,7 @@
                         <TextField fx:id="EditUsername" layoutX="254.0" layoutY="151.0" prefHeight="26.0" prefWidth="71.0" />
                         <TextField fx:id="EditPassword" layoutX="326.0" layoutY="151.0" prefHeight="26.0" prefWidth="76.0" />
                         <TextField fx:id="EditEmail" layoutX="402.0" layoutY="151.0" prefHeight="26.0" prefWidth="143.0" />
-                        <Button fx:id="PersonnelEditApply" layoutX="316.0" layoutY="216.0" mnemonicParsing="false" style="-fx-background-color: #89CFF0;" text="Apply Changes" />
+                        <Button fx:id="PersonnelEditApply" layoutX="316.0" layoutY="216.0" mnemonicParsing="false" onAction="#editemployee" style="-fx-background-color: #89CFF0;" text="Apply Changes" />
                         <Button fx:id="Logout3" layoutX="470.0" layoutY="298.0" mnemonicParsing="false" onAction="#handleLogoutAction" prefHeight="26.0" prefWidth="154.0" style="-fx-background-color: #C8A2C8;" text="Logout" />
                         <ChoiceBox fx:id="EditRole" layoutX="624.0" layoutY="152.0" prefHeight="25.0" prefWidth="60.0" />
                         <TextField fx:id="EditPhoneNo" layoutX="544.0" layoutY="151.0" prefHeight="26.0" prefWidth="81.0" />

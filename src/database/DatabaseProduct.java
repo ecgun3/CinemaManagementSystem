@@ -222,6 +222,26 @@ public class DatabaseProduct implements DatabaseSource {
 
     }
 
+    public void returnProduct(String product, int quantity){
+
+        String query = "UPDATE products SET stock = stock + ? WHERE name = ? ";
+
+        try(PreparedStatement pStatement = connection.prepareStatement(query)){
+
+            pStatement.setInt(1, quantity);
+            pStatement.setString(2, product);
+
+            if (pStatement.executeUpdate() > 0)
+                System.out.println("Product stock updated successfully!");
+            else
+                System.out.println("Update failed!");
+
+        }
+        catch(SQLException sqlException){
+            sqlException.printStackTrace();
+        }
+    }
+
     public double[] viewRevenue(){
         
         double[] revenue = new double[3];

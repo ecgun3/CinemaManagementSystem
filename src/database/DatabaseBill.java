@@ -58,6 +58,46 @@ public class DatabaseBill implements DatabaseSource{
         }
     }
 
+    public void returnBill(Bills selectedBill){
+
+        DatabaseSeats dataS = new DatabaseSeats();
+        DatabaseProduct dataP = new DatabaseProduct();
+        DatabaseSession dataSs = new DatabaseSession();
+
+        String query = "SELECT * FROM bills WHERE bill_id = ?";
+
+        int session = selectedBill.getSessionId();
+
+        try(PreparedStatement prStatement = connection.prepareStatement(query)){
+
+            prStatement.setInt(1, selectedBill.getBill_id());
+
+            ResultSet rs = prStatement.executeQuery();
+
+            while (rs.next()){
+                if(rs.getString("item_type")=="ticket"){
+                    String seats = rs.getString("item_name");
+                    seats = seats.substring(1); 
+                    while (seats.length() > 0) {
+                        String seat = seats.substring(0, 2);            
+                        seats = seats.substring(2);
+                        dataS.returnSeats(session, seat);
+                    }
+                    dataSs.fillSeats(session, (rs.getInt("item_quantity")*-1));
+                }
+                else{
+                    String product = rs.getString("item_name");
+                    dataP.returnProduct(product,rs.getInt("item_quantity"));
+                }
+
+            }
+            
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        } 
+    
+    }
+
     public void setBill(ArrayList<ItemBills> itemBills, Bills bill){
         try{
             try{
@@ -176,7 +216,7 @@ public class DatabaseBill implements DatabaseSource{
     }
 
 
-    public void deleteBill(int billId){
+    public Boolean deleteBill(int billId){
 
         int ID = billId;
         String query = "DELETE FROM bills WHERE bill_id = ?";
@@ -184,12 +224,13 @@ public class DatabaseBill implements DatabaseSource{
         try(PreparedStatement pStatement = connection.prepareStatement(query)){
             pStatement.setInt(1, ID);
             if (pStatement.executeUpdate() > 0)
-            System.out.println("Bill Refunded Succesfully");
+            return true;
             else
-                System.out.println("Delete failed!");
+            return false;
         } catch(SQLException sqlException){
         sqlException.printStackTrace();
         }
+        return true;
     }
 
 

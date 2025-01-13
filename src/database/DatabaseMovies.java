@@ -347,10 +347,17 @@ public class DatabaseMovies implements DatabaseSource{
     public void loadAllMovieImages() {
         connectDatabase();
 
-        // Her film için resim yükle
-        loadImageToDatabase(1, "shawshank.png");
-        loadImageToDatabase(2, "godfather.png");
-        // loadImageToDatabase(3, "darkknight.png");
+        // // Her film için resim yükle
+        // loadImageToDatabase(1, "shawshank.png");
+        // loadImageToDatabase(2, "godfather.png");
+        // loadImageToDatabase(3, "dark_knight.png");
+        // loadImageToDatabase(4, "pulp.png");
+        // loadImageToDatabase(5, "forrest_gump.png");
+        // loadImageToDatabase(6, "inception.png");
+        // loadImageToDatabase(7, "fight_club.png");
+        // loadImageToDatabase(8, "matrix.png");
+
+
         // ... diğer filmler için de ekleyin
 
         disconnectDatabase();

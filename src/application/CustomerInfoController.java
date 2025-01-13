@@ -419,7 +419,7 @@ public class CustomerInfoController {
         dataS.disconnectDatabase();
         DatabaseSession dataSs = new DatabaseSession();
         dataSs.connectDatabase();
-        dataSs.fillSeats(sessionData,selectedSeats.size());
+        dataSs.fillSeats(sessionData.getId(),selectedSeats.size());
         dataSs.disconnectDatabase();
     }
 
@@ -472,7 +472,7 @@ public class CustomerInfoController {
         DatabaseBill dataB = new DatabaseBill();
         dataB.connectDatabase();
         dataB.setBill(createItems(), bill);
-
+        dataB.disconnectDatabase();
     }
 
     private boolean validateFields() {

@@ -109,6 +109,25 @@ public class DatabaseSeats implements DatabaseSource{
         return bl;
     }
 
+    public void returnSeats(int sessionId, String seat){
+    
+        String query = "UPDATE seats SET taken = '0' WHERE session_id = ? AND seatNo = ?";
+
+        try(PreparedStatement pStatement2 = connection.prepareStatement(query)){
+            
+            pStatement2.setInt(1, sessionId);
+            pStatement2.setString(2, seat);
+
+        if (pStatement2.executeUpdate() > 0)
+            System.out.println("Seat returned successfully!");
+        else
+            System.out.println("Seat return failed!: " + seat);
+        }catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        }
+    }
+
+
     public void fillSeats(List<Seat> selectedSeats) {
         
         try{

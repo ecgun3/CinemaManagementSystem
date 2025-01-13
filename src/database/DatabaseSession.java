@@ -226,17 +226,14 @@ public class DatabaseSession implements DatabaseSource{
         return ses;
     }
 
-    public void fillSeats(Session sessionData, int size) {
+    public void fillSeats(int sessionId, int size) {
         
         String query = "UPDATE session SET available_seats = (available_seats - ?) WHERE idSession = ?";
 
             try(PreparedStatement pStatement2 = connection.prepareStatement(query)){
                 
                 pStatement2.setInt(1, size);
-                System.out.println(size);
-                pStatement2.setInt(2, sessionData.getId());
-                System.out.println(sessionData.getId());
-
+                pStatement2.setInt(2, sessionId);
                 
             if (pStatement2.executeUpdate() > 0)
                 System.out.println("Seats filled successfully!");
@@ -248,6 +245,7 @@ public class DatabaseSession implements DatabaseSource{
             }
     }
 
+ 
     public void insertSession(Session session){
 
         String query = "INSERT INTO session (movieId, hallId, session_time, available_seats) VALUES (?,?,?,?)";
