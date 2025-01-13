@@ -273,8 +273,30 @@ public class PersonnelActionsController {
         email.setCellValueFactory(new PropertyValueFactory<>("email"));
         phoneno.setCellValueFactory(new PropertyValueFactory<>("phoneNo"));
         role.setCellValueFactory(new PropertyValueFactory<>("role"));
-        birthdate.setCellValueFactory(new PropertyValueFactory<>("dateOfStart"));
-        startdate.setCellValueFactory(new PropertyValueFactory<>("dateOfBirth"));
+        birthdate.setCellValueFactory(new PropertyValueFactory<>("dateOfBirth"));
+        startdate.setCellValueFactory(new PropertyValueFactory<>("dateOfStart"));
+
+        fireid.setCellValueFactory(new PropertyValueFactory<>("employeeID"));
+        firename.setCellValueFactory(new PropertyValueFactory<>("name"));
+        firesurname.setCellValueFactory(new PropertyValueFactory<>("surname"));
+        fireusername.setCellValueFactory(new PropertyValueFactory<>("username"));
+        firepassword.setCellValueFactory(new PropertyValueFactory<>("password"));
+        fireemail.setCellValueFactory(new PropertyValueFactory<>("email"));
+        firephoneno.setCellValueFactory(new PropertyValueFactory<>("phoneNo"));
+        firerole.setCellValueFactory(new PropertyValueFactory<>("role"));
+        firebirthdate.setCellValueFactory(new PropertyValueFactory<>("dateOfBirth"));
+        firestartdate.setCellValueFactory(new PropertyValueFactory<>("dateOfStart"));
+
+        EditIdCol.setCellValueFactory(new PropertyValueFactory<>("employeeID"));
+        EditFirstNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        EditSurnameCol.setCellValueFactory(new PropertyValueFactory<>("surname"));
+        EditUsernameCol.setCellValueFactory(new PropertyValueFactory<>("username"));
+        EditPasswordCol.setCellValueFactory(new PropertyValueFactory<>("password"));
+        EditEmailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
+        EditPhoneNoCol.setCellValueFactory(new PropertyValueFactory<>("phoneNo"));
+        EditRoleCol.setCellValueFactory(new PropertyValueFactory<>("role"));
+        EditBirthDateCol.setCellValueFactory(new PropertyValueFactory<>("dateOfBirth"));
+        EditStartDateCol.setCellValueFactory(new PropertyValueFactory<>("dateOfStart"));
     }
 
     private void loadPersonnelTable(){
@@ -384,7 +406,7 @@ public class PersonnelActionsController {
 
         String name = EditFirstName.getText();
 
-        if(name != null){
+        if(!name.isEmpty()){
             if(nameError(name)){
                 showError("Please fill customer name with only alphabetical characters");
                 return;
@@ -398,7 +420,7 @@ public class PersonnelActionsController {
 
         String surname = EditLastName.getText();
 
-        if(surname != null){
+        if(!surname.isEmpty()){
             if(nameError(name)){
                 showError("Please fill customer surname with only alphabetical characters");
                 return;
@@ -412,7 +434,7 @@ public class PersonnelActionsController {
 
         String username = EditUsername.getText();
 
-        if(username != null){
+        if(!username.isEmpty()){
             if(username.matches("^[a-zA-Z0-9]+$")){
                 if(username.length()>50){
                     showError("Customer name too long. Maximum 50 character.");
@@ -428,7 +450,7 @@ public class PersonnelActionsController {
 
         String password = EditPassword.getText();
 
-        if(password != null){
+        if(!password.isEmpty()){
             if(password.matches("^[a-zA-Z0-9]+$")){
                 if(password.length()>70){
                     showError("Password name too long. Maximum 70 character.");
@@ -444,7 +466,7 @@ public class PersonnelActionsController {
 
         String email = EditEmail.getText();
 
-        if(email != null){
+        if(!email.isEmpty()){
             if(email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")){
                 if(email.length()>45){
                     showError("Password name too long. Maximum 45 character.");
@@ -460,26 +482,28 @@ public class PersonnelActionsController {
 
         String phoneNo = EditPhoneNo.getText();
 
-        if(phoneNo != null){
+        if(!phoneNo.isEmpty()){
             if(phoneNo.matches("^(\\\\+90|0)?5\\\\d{2} \\\\d{3} \\\\d{2} \\\\d{2}$"))
-                dataE.updateEmployee(employee, "phoneNo", phoneNo);
+                dataE.updateEmployee(employee, "phone_no", phoneNo);
             else{
                 showError("Please fill valid phone number.");
                 return;
             }
         }
+        String role = EditRole.getValue();
 
-        if(EditRole.getValue()!=null) dataE.updateEmployee(employee, "role", EditRole.getValue());
+        if(role != null) dataE.updateEmployee(employee, "role", EditRole.getValue());
 
         LocalDate startDate = EditStartDate.getValue();
     
-        LocalDate birthdate = Birthdate.getValue();
-        if(birthdate!=null){
+        LocalDate birthdate = EditBirthDate.getValue();
+
+        if(birthdate != null){
             if (Period.between(birthdate, LocalDate.now()).getYears() < 18) {
                 showError("Employee must be at least 18 years old!");
                 return;
             }
-            dataE.updateEmployee(employee, "dateOfBirth", birthdate.toString());
+            dataE.updateEmployee(employee, "date_of_birth", birthdate.toString());
         }
 
         if(startDate!=null){ 
@@ -487,9 +511,9 @@ public class PersonnelActionsController {
                 showError("Start date must be at least 18 years after the birthdate!");
                 return;
             }
-            dataE.updateEmployee(employee, "dateOfStart", EditStartDate.getValue().toString());
+            dataE.updateEmployee(employee, "date_of_start", startDate.toString());
         }
-        System.out.println("Employee updated successfully.");
+        loadPersonnelTable();
     }
 
 
@@ -524,6 +548,8 @@ public class PersonnelActionsController {
     @SuppressWarnings("unused")
     private void hireemployee(){
 
+        Employee employee = new Employee();
+
         if (HireFirstName.getText().isEmpty() || 
         HireLastName.getText().isEmpty() || 
         HireUsername.getText().isEmpty() || 
@@ -551,7 +577,6 @@ public class PersonnelActionsController {
     }
 
 
-        Employee employee = new Employee();
 
         String name = HireFirstName.getText();
 
@@ -620,14 +645,16 @@ public class PersonnelActionsController {
             return;
         }
 
-        String phoneNo = EditPhoneNo.getText();
+        String phoneNo = HirePhoneNo.getText();
 
-        if(phoneNo.matches("^(\\\\+90|0)?5\\\\d{2} \\\\d{3} \\\\d{2} \\\\d{2}$"))
+        System.out.println(phoneNo);
+        if (phoneNo.matches("^(\\+90|0)?5\\d{2} \\d{3} \\d{2} \\d{2}$"))
             employee.setPhoneNo(phoneNo);
         else{
             showError("Please fill valid phone number.");
-            return;
+        return;
         }
+
 
         employee.setRole(HireRoleChoice.getValue());
         employee.setDateOfBirth(Date.valueOf(birthdate));
@@ -635,6 +662,7 @@ public class PersonnelActionsController {
 
         dataE.insertEmployee(employee);
         showDone("Employee hired succesfully!");
+        loadPersonnelTable();
     }
 
     private void showError(String message) {
